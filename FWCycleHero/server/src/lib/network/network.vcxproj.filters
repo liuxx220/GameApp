@@ -1,0 +1,132 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="network">
+      <UniqueIdentifier>{63214f80-6467-44d1-89ef-ce95a328a273}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="event">
+      <UniqueIdentifier>{059cf826-b041-4382-b50f-ab9a19ec12ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="interface">
+      <UniqueIdentifier>{fafcdec5-a468-4692-809d-c1353b9cbeb9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="utility">
+      <UniqueIdentifier>{a00c4026-4305-4caa-b74e-c7a08dab405f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="CListener.cpp">
+      <Filter>network</Filter>
+    </ClCompile>
+    <ClCompile Include="event_dispatcher.cpp">
+      <Filter>event</Filter>
+    </ClCompile>
+    <ClCompile Include="event_epoll.cpp">
+      <Filter>event</Filter>
+    </ClCompile>
+    <ClCompile Include="event_iocp.cpp">
+      <Filter>event</Filter>
+    </ClCompile>
+    <ClCompile Include="event_poller.cpp">
+      <Filter>event</Filter>
+    </ClCompile>
+    <ClCompile Include="message_handler.cpp">
+      <Filter>event</Filter>
+    </ClCompile>
+    <ClCompile Include="CliSocket.cpp">
+      <Filter>network</Filter>
+    </ClCompile>
+    <ClCompile Include="ISessionFactory.cpp">
+      <Filter>interface</Filter>
+    </ClCompile>
+    <ClCompile Include="SessionMgr.cpp">
+      <Filter>network</Filter>
+    </ClCompile>
+    <ClCompile Include="Session.cpp">
+      <Filter>network</Filter>
+    </ClCompile>
+    <ClCompile Include="common.cpp">
+      <Filter>network</Filter>
+    </ClCompile>
+    <ClCompile Include="safe_mem_pool.cpp">
+      <Filter>utility</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="common.hpp">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="CListener.hpp">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="event_dispatcher.hpp">
+      <Filter>event</Filter>
+    </ClInclude>
+    <ClInclude Include="event_epoll.hpp">
+      <Filter>event</Filter>
+    </ClInclude>
+    <ClInclude Include="event_iocp.hpp">
+      <Filter>event</Filter>
+    </ClInclude>
+    <ClInclude Include="event_poller.hpp">
+      <Filter>event</Filter>
+    </ClInclude>
+    <ClInclude Include="message_handler.hpp">
+      <Filter>event</Filter>
+    </ClInclude>
+    <ClInclude Include="CliSocket.hpp">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="IListener.hpp">
+      <Filter>interface</Filter>
+    </ClInclude>
+    <ClInclude Include="ISocket.hpp">
+      <Filter>interface</Filter>
+    </ClInclude>
+    <ClInclude Include="ISessionFactory.hpp">
+      <Filter>interface</Filter>
+    </ClInclude>
+    <ClInclude Include="ISession.hpp">
+      <Filter>interface</Filter>
+    </ClInclude>
+    <ClInclude Include="interfaces.hpp">
+      <Filter>interface</Filter>
+    </ClInclude>
+    <ClInclude Include="SessionMgr.hpp">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="Session.hpp">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="pointerpool.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="safe_mem_pool.h">
+      <Filter>utility</Filter>
+    </ClInclude>
+    <ClInclude Include="x_queue.h">
+      <Filter>utility</Filter>
+    </ClInclude>
+    <ClInclude Include="x_list.h">
+      <Filter>utility</Filter>
+    </ClInclude>
+    <ClInclude Include="safe_map.h">
+      <Filter>utility</Filter>
+    </ClInclude>
+    <ClInclude Include="simple_map.h">
+      <Filter>utility</Filter>
+    </ClInclude>
+    <ClInclude Include="safe_list.h">
+      <Filter>utility</Filter>
+    </ClInclude>
+    <ClInclude Include="net_define.h">
+      <Filter>interface</Filter>
+    </ClInclude>
+    <ClInclude Include="simple_list.h">
+      <Filter>utility</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ReadMe.txt" />
+  </ItemGroup>
+</Project>
