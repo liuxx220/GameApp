@@ -17,24 +17,19 @@ GNU Lesser General Public License for more details.
 You should have received a copy of the GNU Lesser General Public License
 along with KBEngine.  If not, see <http://www.gnu.org/licenses/>.
 */
-
-
-#include "server/glw_main.hpp"
 #include "baseapp.hpp"
 
 
 
-#undef DEFINE_IN_INTERFACE
-#include "dbmgr/dbmgr_interface.hpp"
-#define DEFINE_IN_INTERFACE
-#include "dbmgr/dbmgr_interface.hpp"
-
 
 using namespace KBEngine;
-
 int KBENGINE_MAIN(int argc, char* argv[])
 {
-	ENGINE_COMPONENT_INFO& info = g_kbeSrvConfig.getBaseApp();
-	return kbeMainT<Baseapp>(argc, argv, BASEAPP_TYPE, info.externalPorts_min, 
-		info.externalPorts_max, info.externalInterface, 0, info.internalInterface);
+	Baseapp app;
+	if (app.Initialize(BASEAPP_TYPE))
+	{
+		app.MainLoop();
+	}
+	
+	return 0;
 }

@@ -23,83 +23,37 @@ along with KBEngine.  If not, see <http://www.gnu.org/licenses/>.
 #define KBE_CELLAPPMGR_H
 	
 #include "cellapp.h"
-#include "server/glw_main.hpp"
-#include "server/serverapp.hpp"
 #include "server/serverconfig.hpp"
 #include "common/timer.hpp"
-#include "network/endpoint.hpp"
+
+
+
+
+
 
 namespace KBEngine{
 
 
-class Cellappmgr :	public ServerApp, 
-					public Singleton<Cellappmgr>
-{
-public:
-	enum TimeOutType
+	class Cellappmgr : public Singleton<Cellappmgr>
 	{
-		TIMEOUT_GAME_TICK = TIMEOUT_SERVERAPP_MAX + 1
+	public:
+	
+		 Cellappmgr();
+		~Cellappmgr();
+	
+		bool						Initialize(COMPONENT_TYPE componentType);
+		void						MainLoop(void);
+
+		/* 初始化相关接口 */
+		/* 初始化相关接口 */
+		bool						initDB();
+		bool						InitializeEnd();
+		void						Destroy(void);
+	protected:
+
+		COMPONENT_TYPE				mComponentType;
+		std::map< COMPONENT_ID, Cellapp >	cellapps_;
 	};
-	
-	Cellappmgr(	EventDispatcher& dispatcher, 
-				NetSession& ninterface, 
-				COMPONENT_TYPE componentType,COMPONENT_ID componentID);
-
-	~Cellappmgr();
-	
-	bool run();
-	
-	virtual void onChannelDeregister(Channel * pChannel);
-
-	void handleTimeout(TimerHandle handle, void * arg);
-	void handleGameTick();
-
-	/* 初始化相关接口 */
-	bool initializeBegin();
-	bool inInitialize();
-	bool initializeEnd();
-	void finalise();
-
-	/** 找出一个最空闲的cellapp */
-	COMPONENT_ID findFreeCellapp(void);
-	void updateBestCellapp();
-
-	/** 网络接口
-		baseEntity请求创建在一个新的space中
-	*/
-	void reqCreateInNewSpace(Channel* pChannel, MemoryStream& s);
-
-	/** 网络接口
-		baseEntity请求创建在一个新的space中
-	*/
-	void reqRestoreSpaceInCell(Channel* pChannel, MemoryStream& s);
-	
-	/** 网络接口
-		消息转发， 由某个app想通过本app将消息转发给某个app。
-	*/
-	void forwardMessage(Channel* pChannel, MemoryStream& s);
-
-	/** 网络接口
-		更新cellapp情况。
-	*/
-	void updateCellapp(Channel* pChannel, COMPONENT_ID componentID, ENTITY_ID numEntities, float load, uint32 flags);
-
-	/** 网络接口
-		cellapp同步自己的初始化信息
-		startGlobalOrder: 全局启动顺序 包括各种不同组件
-		startGroupOrder: 组内启动顺序， 比如在所有baseapp中第几个启动。
-	*/
-	void onCellappInitProgress(Channel* pChannel, COMPONENT_ID cid, float progress);
-
-	bool componentsReady();
-	bool componentReady(COMPONENT_ID cid);
-
-protected:
-	TimerHandle							gameTimer_;
-	COMPONENT_ID						bestCellappID_;
-
-	std::map< COMPONENT_ID, Cellapp >	cellapps_;
-};
 
 }
 

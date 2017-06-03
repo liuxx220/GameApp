@@ -17,15 +17,18 @@ GNU Lesser General Public License for more details.
 You should have received a copy of the GNU Lesser General Public License
 along with KBEngine.  If not, see <http://www.gnu.org/licenses/>.
 */
-
-#include "server/glw_main.hpp"
 #include "cellapp.h"
+
+
 
 
 using namespace KBEngine;
 int main(int argc, char* argv[])
 {
-	ENGINE_COMPONENT_INFO& info = g_kbeSrvConfig.getCellApp();
-	int ret = kbeMainT<Cellapp>(argc, argv, CELLAPP_TYPE, -1, 0);
-	return ret; 
+	CellServerApp app;
+	if (app.Initialize(CELLAPP_TYPE))
+	{
+		app.MainLoop();
+	}
+	return 0; 
 }

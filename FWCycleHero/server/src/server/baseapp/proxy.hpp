@@ -27,7 +27,6 @@ along with KBEngine.  If not, see <http://www.gnu.org/licenses/>.
 #include "data_downloads.hpp"
 #include "common/common.hpp"
 #include "helper/debug_helper.hpp"
-#include "network/address.hpp"
 #include "network/message_handler.hpp"
 
 //#define NDEBUG

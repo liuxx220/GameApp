@@ -24,57 +24,34 @@ along with KBEngine.  If not, see <http://www.gnu.org/licenses/>.
 // common include	
 #include "spaces.h"
 #include "cells.h"
-#include "server/serverapp.hpp"
+
 
 	
 namespace KBEngine
 {
 
-
-class Cellapp : public ServerApp,
-				public Singleton<Cellapp>
-{
-public:
-	enum TimeOutType
+	class CellServerApp : public Singleton<CellServerApp>
 	{
-		TIMEOUT_LOADING_TICK = TIMEOUT_SERVERAPP_MAX + 1
+	public:
+	
+		 CellServerApp();
+		~CellServerApp();
+	
+		bool						Initialize(COMPONENT_TYPE componentType);
+		void						MainLoop(void);
+
+		/* 初始化相关接口 */
+		/* 初始化相关接口 */
+		bool						initDB();
+		bool						InitializeEnd();
+		void						Destroy(void);
+	protected:
+
+		// 所有的cell
+		COMPONENT_TYPE				mComponentType;
+		Cells						cells_;
+		uint32						flags_;
 	};
-	
-	Cellapp(EventDispatcher& dispatcher, NetSession& ninterface,
-				COMPONENT_TYPE componentType,COMPONENT_ID componentID);
-
-	~Cellapp();
-	
-	bool run();
-	
-	
-	/**  
-		相关处理接口 
-	*/
-	virtual void		handleTimeout(TimerHandle handle, void * arg);
-	virtual void		handleGameTick();
-
-	/**  
-		初始化相关接口 
-	*/
-	bool				initializeBegin();
-	bool				initializeEnd();
-	void				finalise();
-
-	virtual bool		canShutdown();
-	virtual void		onShutdown(bool first);
-
-	virtual void		onUpdateLoad();
-
-	
-protected:
-	
-	
-	// 所有的cell
-	Cells								cells_;
-	// APP的标志
-	uint32								flags_;
-};
 
 }
 
