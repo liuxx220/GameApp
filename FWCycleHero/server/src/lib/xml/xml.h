@@ -120,11 +120,7 @@ public:
 #if KBE_PLATFORM == PLATFORM_WIN32
 			printf("%s", (fmt::format("TiXmlNode::openXML: {}, is error!\n", pathbuf)).c_str());
 #endif
-			if(DebugHelper::isInit())
-			{
-				ERROR_MSG(fmt::format("TiXmlNode::openXML: {}, is error!\n", pathbuf));
-			}
-
+			
 			isGood_ = false;
 			return false;
 		}

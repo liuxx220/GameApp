@@ -37,28 +37,28 @@ along with KBEngine.  If not, see <http://www.gnu.org/licenses/>.
 namespace KBEngine
 {
 
-	class SyncAppDatasHandler : public Task
+	/*class SyncAppDatasHandler : public Task
 	{
 	public:
-		struct ComponentInitInfo
-		{
-			COMPONENT_ID cid;
-			COMPONENT_ORDER startGroupOrder;
-			COMPONENT_ORDER startGlobalOrder;
-		};
-
-		SyncAppDatasHandler(NetSession& SessionDB );
-		~SyncAppDatasHandler();
-	
-		bool							process();
-
-		void							pushApp(COMPONENT_ID cid, COMPONENT_ORDER startGroupOrder, COMPONENT_ORDER startGlobalOrder);
-	private:
-		NetSession&						m_SessionDB;
-		uint64							lastRegAppTime_;
-		std::vector<ComponentInitInfo>	apps_;
-
+	struct ComponentInitInfo
+	{
+	COMPONENT_ID cid;
+	COMPONENT_ORDER startGroupOrder;
+	COMPONENT_ORDER startGlobalOrder;
 	};
+
+	SyncAppDatasHandler(NetSession& SessionDB );
+	~SyncAppDatasHandler();
+
+	bool							process();
+
+	void							pushApp(COMPONENT_ID cid, COMPONENT_ORDER startGroupOrder, COMPONENT_ORDER startGlobalOrder);
+	private:
+	NetSession&						m_SessionDB;
+	uint64							lastRegAppTime_;
+	std::vector<ComponentInitInfo>	apps_;
+
+	};*/
 }
 
 #endif // KBE_SYNC_APP_DATAS_HANDLER_HPP

@@ -6,8 +6,6 @@ author		:
 log			:
 ------------------------------------------------------------------------------------------------------------------
 */
-
-#include "server/glw_main.hpp"
 #include "dbmgr.hpp"
 
 
@@ -15,7 +13,10 @@ log			:
 using namespace KBEngine;
 int main(int argc, char* argv[])
 {
-	loadConfig();
-	ENGINE_COMPONENT_INFO& info = g_kbeSrvConfig.getDBMgr();
-	return kbeMainT<AppDBServer>(argc, argv, DBMGR_TYPE, -1, -1);
+	AppDBServer app;
+	if (app.Initialize(DBMGR_TYPE))
+	{
+		app.MainLoop();
+	}
+	return 0;
 }

@@ -29,7 +29,7 @@ namespace KBEngine
 	/*
 		处理计费、第三方运营账号、注册登录系统等挂接
 	*/
-	class BillingHandler
+	/*class BillingHandler
 	{
 	public:
 		BillingHandler(thread::ThreadPool& threadPool, DBThreadPool& dbThreadPool);
@@ -141,7 +141,7 @@ namespace KBEngine
 		static BillingHandler* create(std::string type, thread::ThreadPool& threadPool, 
 										DBThreadPool& dbThreadPool);
 	};
-
+*/
 }
 
 #endif // KBE_BILLING_HANDLER_HPP
