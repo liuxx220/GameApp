@@ -68,38 +68,7 @@ namespace KBEngine
 		}*/
 	}
 
-	void INetSessionMgr::SendMsgToSession(SESSION_TYPE stype, int sessionId, google::protobuf::Message& sMsg, int n32MsgID)
-	{
-		/*if (!mIsUnSafeSend)
-		{
-			int n32MsgSize = sMsg.ByteSize();
-			int n32Length = n32MsgSize + 2 * sizeof(int);
-			char* pBuffer = new char[n32Length];
-			memcpy(pBuffer + 0 * sizeof(int), (char*)&n32Length, sizeof(int));
-			memcpy(pBuffer + 1 * sizeof(int), (char*)&n32MsgID, sizeof(int));
-			bool res = sMsg.SerializeToArray(pBuffer + 2 * sizeof(int), n32MsgSize);
-			Assert(res);
-			Send(stype, sessionId, pBuffer);
-			delete[]pBuffer;
-		}
-		else
-		{
-			int n32MsgSize = sMsg.ByteSize();
-			int n32Length = n32MsgSize + 4 * sizeof(int);
-			char* pBuffer = new char[n32Length];
-			memcpy(pBuffer + 0 * sizeof(int), (char*)&stype, sizeof(int));
-			memcpy(pBuffer + 1 * sizeof(int), (char*)&sessionId, sizeof(int));
-			n32Length = n32MsgSize + 8;
-			memcpy(pBuffer + 2 * sizeof(int), (char*)&n32Length, sizeof(int));
-			memcpy(pBuffer + 3 * sizeof(int), (char*)&n32MsgID, sizeof(int));
-			bool res = sMsg.SerializeToArray(pBuffer + 4 * sizeof(int), n32MsgSize);
-			Assert(res);
-			EnterCriticalSection(&mNetworkCs);
-			m_SafeQueue.push_back(pBuffer);
-			LeaveCriticalSection(&mNetworkCs);
-		}*/
-	}
-
+	
 	void INetSessionMgr::SendMsgToSession(SESSION_TYPE stype, int sessionId, const std::string& sMsg, int n32MsgID)
 	{
 		SendMsgToSession(stype, sessionId, sMsg.c_str(), sMsg.size(), n32MsgID);

@@ -16662,7 +16662,7 @@ bool rcBuildContours(rcContext* ctx, rcCompactHeightfield& chf,
 					 const float maxError, const int maxEdgeLen,
 					 rcContourSet& cset, const int buildFlags)
 {
-	(void)( (!!(ctx)) || (_wassert(L"ctx", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\recastcontour.cpp", 610), 0) );
+	(void)( (!!(ctx)) || (_wassert(L"ctx", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\recastcontour.cpp", 610), 0) );
 	
 	const int w = chf.width;
 	const int h = chf.height;

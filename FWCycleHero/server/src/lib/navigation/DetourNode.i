@@ -9868,16 +9868,16 @@ dtNodePool::dtNodePool(int maxNodes, int hashSize) :
 	m_hashSize(hashSize),
 	m_nodeCount(0)
 {
-	(void)( (!!(dtNextPow2(m_hashSize) == (unsigned int)m_hashSize)) || (_wassert(L"dtNextPow2(m_hashSize) == (unsigned int)m_hashSize", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\detournode.cpp", 45), 0) );
-	(void)( (!!(m_maxNodes > 0)) || (_wassert(L"m_maxNodes > 0", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\detournode.cpp", 46), 0) );
+	(void)( (!!(dtNextPow2(m_hashSize) == (unsigned int)m_hashSize)) || (_wassert(L"dtNextPow2(m_hashSize) == (unsigned int)m_hashSize", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\detournode.cpp", 45), 0) );
+	(void)( (!!(m_maxNodes > 0)) || (_wassert(L"m_maxNodes > 0", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\detournode.cpp", 46), 0) );
 
 	m_nodes = (dtNode*)dtAlloc(sizeof(dtNode)*m_maxNodes, DT_ALLOC_PERM);
 	m_next = (dtNodeIndex*)dtAlloc(sizeof(dtNodeIndex)*m_maxNodes, DT_ALLOC_PERM);
 	m_first = (dtNodeIndex*)dtAlloc(sizeof(dtNodeIndex)*hashSize, DT_ALLOC_PERM);
 
-	(void)( (!!(m_nodes)) || (_wassert(L"m_nodes", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\detournode.cpp", 52), 0) );
-	(void)( (!!(m_next)) || (_wassert(L"m_next", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\detournode.cpp", 53), 0) );
-	(void)( (!!(m_first)) || (_wassert(L"m_first", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\detournode.cpp", 54), 0) );
+	(void)( (!!(m_nodes)) || (_wassert(L"m_nodes", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\detournode.cpp", 52), 0) );
+	(void)( (!!(m_next)) || (_wassert(L"m_next", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\detournode.cpp", 53), 0) );
+	(void)( (!!(m_first)) || (_wassert(L"m_first", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\detournode.cpp", 54), 0) );
 
 	memset(m_first, 0xff, sizeof(dtNodeIndex)*m_hashSize);
 	memset(m_next, 0xff, sizeof(dtNodeIndex)*m_maxNodes);
@@ -9948,10 +9948,10 @@ dtNodeQueue::dtNodeQueue(int n) :
 	m_capacity(n),
 	m_size(0)
 {
-	(void)( (!!(m_capacity > 0)) || (_wassert(L"m_capacity > 0", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\detournode.cpp", 125), 0) );
+	(void)( (!!(m_capacity > 0)) || (_wassert(L"m_capacity > 0", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\detournode.cpp", 125), 0) );
 	
 	m_heap = (dtNode**)dtAlloc(sizeof(dtNode*)*(m_capacity+1), DT_ALLOC_PERM);
-	(void)( (!!(m_heap)) || (_wassert(L"m_heap", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\detournode.cpp", 128), 0) );
+	(void)( (!!(m_heap)) || (_wassert(L"m_heap", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\detournode.cpp", 128), 0) );
 }
 
 dtNodeQueue::~dtNodeQueue()

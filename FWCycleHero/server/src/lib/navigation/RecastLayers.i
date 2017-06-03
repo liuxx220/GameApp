@@ -26210,7 +26210,7 @@ bool rcBuildHeightfieldLayers(rcContext* ctx, rcCompactHeightfield& chf,
 							  const int borderSize, const int walkableHeight,
 							  rcHeightfieldLayerSet& lset)
 {
-	(void)( (!!(ctx)) || (_wassert(L"ctx", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\recastlayers.cpp", 88), 0) );
+	(void)( (!!(ctx)) || (_wassert(L"ctx", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\recastlayers.cpp", 88), 0) );
 	
 	ctx->startTimer(RC_TIMER_BUILD_LAYERS);
 	
@@ -26577,7 +26577,7 @@ bool rcBuildHeightfieldLayers(rcContext* ctx, rcCompactHeightfield& chf,
 	}
 	
 	
-	(void)( (!!(lset.layers == 0)) || (_wassert(L"lset.layers == 0", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\recastlayers.cpp", 455), 0) );
+	(void)( (!!(lset.layers == 0)) || (_wassert(L"lset.layers == 0", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\recastlayers.cpp", 455), 0) );
 	
 	const int lw = w - borderSize*2;
 	const int lh = h - borderSize*2;

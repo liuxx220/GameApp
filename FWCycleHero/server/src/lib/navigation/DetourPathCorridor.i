@@ -10400,7 +10400,7 @@ int dtMergeCorridorEndMoved(dtPolyRef* path, const int npath, const int maxPath,
 	const int ppos = furthestPath+1;
 	const int vpos = furthestVisited+1;
 	const int count = dtMin(nvisited-vpos, maxPath-ppos);
-	(void)( (!!(ppos+count <= maxPath)) || (_wassert(L"ppos+count <= maxPath", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\detourpathcorridor.cpp", 103), 0) );
+	(void)( (!!(ppos+count <= maxPath)) || (_wassert(L"ppos+count <= maxPath", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\detourpathcorridor.cpp", 103), 0) );
 	if (count)
 		memcpy(path+ppos, visited+vpos, sizeof(dtPolyRef)*count);
 	
@@ -10514,7 +10514,7 @@ dtPathCorridor::~dtPathCorridor()
 
 bool dtPathCorridor::init(const int maxPath)
 {
-	(void)( (!!(!m_path)) || (_wassert(L"!m_path", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\detourpathcorridor.cpp", 217), 0) );
+	(void)( (!!(!m_path)) || (_wassert(L"!m_path", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\detourpathcorridor.cpp", 217), 0) );
 	m_path = (dtPolyRef*)dtAlloc(sizeof(dtPolyRef)*maxPath, DT_ALLOC_PERM);
 	if (!m_path)
 		return false;
@@ -10529,7 +10529,7 @@ bool dtPathCorridor::init(const int maxPath)
 
 void dtPathCorridor::reset(dtPolyRef ref, const float* pos)
 {
-	(void)( (!!(m_path)) || (_wassert(L"m_path", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\detourpathcorridor.cpp", 232), 0) );
+	(void)( (!!(m_path)) || (_wassert(L"m_path", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\detourpathcorridor.cpp", 232), 0) );
 	dtVcopy(m_pos, pos);
 	dtVcopy(m_target, pos);
 	m_path[0] = ref;
@@ -10552,8 +10552,8 @@ int dtPathCorridor::findCorners(float* cornerVerts, unsigned char* cornerFlags,
 							  dtPolyRef* cornerPolys, const int maxCorners,
 							  dtNavMeshQuery* navquery, const dtQueryFilter* )
 {
-	(void)( (!!(m_path)) || (_wassert(L"m_path", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\detourpathcorridor.cpp", 255), 0) );
-	(void)( (!!(m_npath)) || (_wassert(L"m_npath", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\detourpathcorridor.cpp", 256), 0) );
+	(void)( (!!(m_path)) || (_wassert(L"m_path", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\detourpathcorridor.cpp", 255), 0) );
+	(void)( (!!(m_npath)) || (_wassert(L"m_npath", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\detourpathcorridor.cpp", 256), 0) );
 	
 	static const float MIN_TARGET_DIST = 0.01f;
 	
@@ -10610,7 +10610,7 @@ int dtPathCorridor::findCorners(float* cornerVerts, unsigned char* cornerFlags,
 void dtPathCorridor::optimizePathVisibility(const float* next, const float pathOptimizationRange,
 										  dtNavMeshQuery* navquery, const dtQueryFilter* filter)
 {
-	(void)( (!!(m_path)) || (_wassert(L"m_path", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\detourpathcorridor.cpp", 313), 0) );
+	(void)( (!!(m_path)) || (_wassert(L"m_path", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\detourpathcorridor.cpp", 313), 0) );
 	
 	
 	float goal[3];
@@ -10652,9 +10652,9 @@ void dtPathCorridor::optimizePathVisibility(const float* next, const float pathO
 
 bool dtPathCorridor::optimizePathTopology(dtNavMeshQuery* navquery, const dtQueryFilter* filter)
 {
-	(void)( (!!(navquery)) || (_wassert(L"navquery", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\detourpathcorridor.cpp", 355), 0) );
-	(void)( (!!(filter)) || (_wassert(L"filter", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\detourpathcorridor.cpp", 356), 0) );
-	(void)( (!!(m_path)) || (_wassert(L"m_path", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\detourpathcorridor.cpp", 357), 0) );
+	(void)( (!!(navquery)) || (_wassert(L"navquery", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\detourpathcorridor.cpp", 355), 0) );
+	(void)( (!!(filter)) || (_wassert(L"filter", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\detourpathcorridor.cpp", 356), 0) );
+	(void)( (!!(m_path)) || (_wassert(L"m_path", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\detourpathcorridor.cpp", 357), 0) );
 	
 	if (m_npath < 3)
 		return false;
@@ -10681,9 +10681,9 @@ bool dtPathCorridor::moveOverOffmeshConnection(dtPolyRef offMeshConRef, dtPolyRe
 											   float* startPos, float* endPos,
 											   dtNavMeshQuery* navquery)
 {
-	(void)( (!!(navquery)) || (_wassert(L"navquery", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\detourpathcorridor.cpp", 384), 0) );
-	(void)( (!!(m_path)) || (_wassert(L"m_path", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\detourpathcorridor.cpp", 385), 0) );
-	(void)( (!!(m_npath)) || (_wassert(L"m_npath", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\detourpathcorridor.cpp", 386), 0) );
+	(void)( (!!(navquery)) || (_wassert(L"navquery", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\detourpathcorridor.cpp", 384), 0) );
+	(void)( (!!(m_path)) || (_wassert(L"m_path", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\detourpathcorridor.cpp", 385), 0) );
+	(void)( (!!(m_npath)) || (_wassert(L"m_npath", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\detourpathcorridor.cpp", 386), 0) );
 
 	
 	dtPolyRef prevRef = 0, polyRef = m_path[0];
@@ -10709,7 +10709,7 @@ bool dtPathCorridor::moveOverOffmeshConnection(dtPolyRef offMeshConRef, dtPolyRe
 	refs[1] = polyRef;
 	
 	const dtNavMesh* nav = navquery->getAttachedNavMesh();
-	(void)( (!!(nav)) || (_wassert(L"nav", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\detourpathcorridor.cpp", 412), 0) );
+	(void)( (!!(nav)) || (_wassert(L"nav", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\detourpathcorridor.cpp", 412), 0) );
 
 	dtStatus status = nav->getOffMeshConnectionPolyEndPoints(refs[0], refs[1], startPos, endPos);
 	if (dtStatusSucceed(status))
@@ -10738,8 +10738,8 @@ bool dtPathCorridor::moveOverOffmeshConnection(dtPolyRef offMeshConRef, dtPolyRe
 
 void dtPathCorridor::movePosition(const float* npos, dtNavMeshQuery* navquery, const dtQueryFilter* filter)
 {
-	(void)( (!!(m_path)) || (_wassert(L"m_path", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\detourpathcorridor.cpp", 441), 0) );
-	(void)( (!!(m_npath)) || (_wassert(L"m_npath", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\detourpathcorridor.cpp", 442), 0) );
+	(void)( (!!(m_path)) || (_wassert(L"m_path", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\detourpathcorridor.cpp", 441), 0) );
+	(void)( (!!(m_npath)) || (_wassert(L"m_npath", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\detourpathcorridor.cpp", 442), 0) );
 	
 	
 	float result[3];
@@ -10772,8 +10772,8 @@ void dtPathCorridor::movePosition(const float* npos, dtNavMeshQuery* navquery, c
 
 void dtPathCorridor::moveTargetPosition(const float* npos, dtNavMeshQuery* navquery, const dtQueryFilter* filter)
 {
-	(void)( (!!(m_path)) || (_wassert(L"m_path", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\detourpathcorridor.cpp", 475), 0) );
-	(void)( (!!(m_npath)) || (_wassert(L"m_npath", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\detourpathcorridor.cpp", 476), 0) );
+	(void)( (!!(m_path)) || (_wassert(L"m_path", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\detourpathcorridor.cpp", 475), 0) );
+	(void)( (!!(m_npath)) || (_wassert(L"m_npath", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\detourpathcorridor.cpp", 476), 0) );
 	
 	
 	float result[3];
@@ -10801,9 +10801,9 @@ void dtPathCorridor::moveTargetPosition(const float* npos, dtNavMeshQuery* navqu
 
 void dtPathCorridor::setCorridor(const float* target, const dtPolyRef* path, const int npath)
 {
-	(void)( (!!(m_path)) || (_wassert(L"m_path", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\detourpathcorridor.cpp", 504), 0) );
-	(void)( (!!(npath > 0)) || (_wassert(L"npath > 0", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\detourpathcorridor.cpp", 505), 0) );
-	(void)( (!!(npath < m_maxPath)) || (_wassert(L"npath < m_maxPath", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\detourpathcorridor.cpp", 506), 0) );
+	(void)( (!!(m_path)) || (_wassert(L"m_path", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\detourpathcorridor.cpp", 504), 0) );
+	(void)( (!!(npath > 0)) || (_wassert(L"npath > 0", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\detourpathcorridor.cpp", 505), 0) );
+	(void)( (!!(npath < m_maxPath)) || (_wassert(L"npath < m_maxPath", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\detourpathcorridor.cpp", 506), 0) );
 	
 	dtVcopy(m_target, target);
 	memcpy(m_path, path, sizeof(dtPolyRef)*npath);
@@ -10812,7 +10812,7 @@ void dtPathCorridor::setCorridor(const float* target, const dtPolyRef* path, con
 
 bool dtPathCorridor::fixPathStart(dtPolyRef safeRef, const float* safePos)
 {
-	(void)( (!!(m_path)) || (_wassert(L"m_path", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\detourpathcorridor.cpp", 515), 0) );
+	(void)( (!!(m_path)) || (_wassert(L"m_path", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\detourpathcorridor.cpp", 515), 0) );
 
 	dtVcopy(m_pos, safePos);
 	if (m_npath < 3 && m_npath > 0)
@@ -10834,9 +10834,9 @@ bool dtPathCorridor::fixPathStart(dtPolyRef safeRef, const float* safePos)
 bool dtPathCorridor::trimInvalidPath(dtPolyRef safeRef, const float* safePos,
 									 dtNavMeshQuery* navquery, const dtQueryFilter* filter)
 {
-	(void)( (!!(navquery)) || (_wassert(L"navquery", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\detourpathcorridor.cpp", 537), 0) );
-	(void)( (!!(filter)) || (_wassert(L"filter", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\detourpathcorridor.cpp", 538), 0) );
-	(void)( (!!(m_path)) || (_wassert(L"m_path", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\detourpathcorridor.cpp", 539), 0) );
+	(void)( (!!(navquery)) || (_wassert(L"navquery", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\detourpathcorridor.cpp", 537), 0) );
+	(void)( (!!(filter)) || (_wassert(L"filter", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\detourpathcorridor.cpp", 538), 0) );
+	(void)( (!!(m_path)) || (_wassert(L"m_path", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\detourpathcorridor.cpp", 539), 0) );
 	
 	
 	int n = 0;

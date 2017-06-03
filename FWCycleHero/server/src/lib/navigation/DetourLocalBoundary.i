@@ -14997,7 +14997,7 @@ void dtLocalBoundary::addSegment(const float dist, const float* s)
 				break;
 		const int tgt = i+1;
 		const int n = dtMin(m_nsegs-i, MAX_LOCAL_SEGS-tgt);
-		(void)( (!!(tgt+n <= MAX_LOCAL_SEGS)) || (_wassert(L"tgt+n <= MAX_LOCAL_SEGS", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\detourlocalboundary.cpp", 71), 0) );
+		(void)( (!!(tgt+n <= MAX_LOCAL_SEGS)) || (_wassert(L"tgt+n <= MAX_LOCAL_SEGS", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\detourlocalboundary.cpp", 71), 0) );
 		if (n > 0)
 			memmove(&m_segs[tgt], &m_segs[i], sizeof(Segment)*n);
 		seg = &m_segs[i];

@@ -16,8 +16,7 @@
 #include <map>
 #include "network/CliSocket.hpp"
 #include "network/ISession.hpp"
-#include "google/protobuf/descriptor.h"
-#include "google/protobuf/message.h"
+
 
 
 

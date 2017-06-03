@@ -28652,7 +28652,7 @@ int rcGetHeightFieldSpanCount(rcContext* , rcHeightfield& hf)
 bool rcBuildCompactHeightfield(rcContext* ctx, const int walkableHeight, const int walkableClimb,
 							   rcHeightfield& hf, rcCompactHeightfield& chf)
 {
-	(void)( (!!(ctx)) || (_wassert(L"ctx", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\recast.cpp", 334), 0) );
+	(void)( (!!(ctx)) || (_wassert(L"ctx", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\recast.cpp", 334), 0) );
 	
 	ctx->startTimer(RC_TIMER_BUILD_COMPACTHEIGHTFIELD);
 	

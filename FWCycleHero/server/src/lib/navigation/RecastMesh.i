@@ -16958,7 +16958,7 @@ static bool removeVertex(rcContext* ctx, rcPolyMesh& mesh, const unsigned short 
 
 bool rcBuildPolyMesh(rcContext* ctx, rcContourSet& cset, const int nvp, rcPolyMesh& mesh)
 {
-	(void)( (!!(ctx)) || (_wassert(L"ctx", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\recastmesh.cpp", 906), 0) );
+	(void)( (!!(ctx)) || (_wassert(L"ctx", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\recastmesh.cpp", 906), 0) );
 	
 	ctx->startTimer(RC_TIMER_BUILD_POLYMESH);
 
@@ -17276,7 +17276,7 @@ bool rcBuildPolyMesh(rcContext* ctx, rcContourSet& cset, const int nvp, rcPolyMe
 
 bool rcMergePolyMeshes(rcContext* ctx, rcPolyMesh** meshes, const int nmeshes, rcPolyMesh& mesh)
 {
-	(void)( (!!(ctx)) || (_wassert(L"ctx", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\recastmesh.cpp", 1224), 0) );
+	(void)( (!!(ctx)) || (_wassert(L"ctx", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\recastmesh.cpp", 1224), 0) );
 	
 	if (!nmeshes || !meshes)
 		return true;
@@ -17420,14 +17420,14 @@ bool rcMergePolyMeshes(rcContext* ctx, rcPolyMesh** meshes, const int nmeshes, r
 
 bool rcCopyPolyMesh(rcContext* ctx, const rcPolyMesh& src, rcPolyMesh& dst)
 {
-	(void)( (!!(ctx)) || (_wassert(L"ctx", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\recastmesh.cpp", 1368), 0) );
+	(void)( (!!(ctx)) || (_wassert(L"ctx", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\recastmesh.cpp", 1368), 0) );
 	
 	
-	(void)( (!!(dst.verts == 0)) || (_wassert(L"dst.verts == 0", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\recastmesh.cpp", 1371), 0) );
-	(void)( (!!(dst.polys == 0)) || (_wassert(L"dst.polys == 0", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\recastmesh.cpp", 1372), 0) );
-	(void)( (!!(dst.regs == 0)) || (_wassert(L"dst.regs == 0", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\recastmesh.cpp", 1373), 0) );
-	(void)( (!!(dst.areas == 0)) || (_wassert(L"dst.areas == 0", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\recastmesh.cpp", 1374), 0) );
-	(void)( (!!(dst.flags == 0)) || (_wassert(L"dst.flags == 0", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\recastmesh.cpp", 1375), 0) );
+	(void)( (!!(dst.verts == 0)) || (_wassert(L"dst.verts == 0", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\recastmesh.cpp", 1371), 0) );
+	(void)( (!!(dst.polys == 0)) || (_wassert(L"dst.polys == 0", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\recastmesh.cpp", 1372), 0) );
+	(void)( (!!(dst.regs == 0)) || (_wassert(L"dst.regs == 0", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\recastmesh.cpp", 1373), 0) );
+	(void)( (!!(dst.areas == 0)) || (_wassert(L"dst.areas == 0", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\recastmesh.cpp", 1374), 0) );
+	(void)( (!!(dst.flags == 0)) || (_wassert(L"dst.flags == 0", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\recastmesh.cpp", 1375), 0) );
 	
 	dst.nverts = src.nverts;
 	dst.npolys = src.npolys;

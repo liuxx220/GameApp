@@ -119457,7 +119457,7 @@ namespace strutil {
 
 	inline char* str_toupper(char* s)
 	{
-	  (void)( (!!(s != 0)) || (_wassert(L"s != NULL", L"e:\\work\\fwcyclehero\\server\\src\\lib\\common\\strutil.hpp", 83), 0) );
+	  (void)( (!!(s != 0)) || (_wassert(L"s != NULL", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\common\\strutil.hpp", 83), 0) );
 
 	  while(*s)
 	  {
@@ -119473,7 +119473,7 @@ namespace strutil {
 
 	inline char* str_tolower(char* s)
 	{
-	  (void)( (!!(s != 0)) || (_wassert(L"s != NULL", L"e:\\work\\fwcyclehero\\server\\src\\lib\\common\\strutil.hpp", 99), 0) );
+	  (void)( (!!(s != 0)) || (_wassert(L"s != NULL", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\common\\strutil.hpp", 99), 0) );
 
 	  while(*s)
 	  {
@@ -404150,7 +404150,6 @@ typedef UINT_PTR        										uintptr;
 
 
 
-
 typedef uint16													ENTITY_TYPE;											
 typedef int32													ENTITY_ID;												
 typedef uint32													SPACE_ID;												
@@ -404165,6 +404164,8 @@ typedef int32													ScriptID;
 typedef uint32													ArraySize;												
 typedef uint64													DBID;													
 typedef uint32													CELL_ID;
+
+
 typedef std::tr1::unordered_map< std::string, std::string >			SPACE_DATA;												
 
 
@@ -404447,47 +404448,6 @@ inline uint32 getSystemTimeDiff(uint32 oldTime, uint32 newTime)
         return newTime - oldTime;
 }
 
-
-
-extern COMPONENT_ORDER g_componentGlobalOrder;
-extern COMPONENT_ORDER g_componentGroupOrder;
-
-inline uint64 genUUID64()
-{
-	static uint64 tv = (uint64)getSystemTime();
-	static uint32 lastNum = 0;
-	
-	uint64 now = (uint64)getSystemTime();	
-	if(now != tv)
-	{
-		tv = now;
-		lastNum = 0;
-	}
-	
-	if(g_componentGlobalOrder <= 0)
-	{
-		
-		static uint64 rnd = 0;
-		if(rnd == 0)
-		{
-			srand(getSystemTime());
-			rnd = ((uint64)rand() % 65535) + 1;
-		}
-		
-		(void)( (!!(lastNum < 65536 && "genUUID64(): overflow!")) || (_wassert(L"lastNum < 65536 && \"genUUID64(): overflow!\"", L"e:\\work\\fwcyclehero\\server\\src\\lib\\common\\platform.hpp", 641), 0) );
-		
-		return (rnd << 48) + (tv << 16) + lastNum++;
-	}
-	else
-	{
-		
-		static uint64 appOrder = g_componentGlobalOrder;
-		
-		(void)( (!!(lastNum < 16777216 && "genUUID64(): overflow!")) || (_wassert(L"lastNum < 16777216 && \"genUUID64(): overflow!\"", L"e:\\work\\fwcyclehero\\server\\src\\lib\\common\\platform.hpp", 650), 0) );
-		
-		return (appOrder << 56) + (tv << 24) + lastNum++;
-	}
-}
 
 
 
@@ -406780,7 +406740,7 @@ protected:
 public:
 	Singleton(void)
 	{
-		(void)( (!!(!singleton_)) || (_wassert(L"!singleton_", L"e:\\work\\fwcyclehero\\server\\src\\lib\\common\\singleton.hpp", 59), 0) );
+		(void)( (!!(!singleton_)) || (_wassert(L"!singleton_", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\common\\singleton.hpp", 59), 0) );
 
 
 
@@ -406790,8 +406750,8 @@ public:
 	}
 	
 	
-	~Singleton(void){  (void)( (!!(singleton_)) || (_wassert(L"singleton_", L"e:\\work\\fwcyclehero\\server\\src\\lib\\common\\singleton.hpp", 69), 0) );  singleton_ = 0; }
-	static T& getSingleton(void) { (void)( (!!(singleton_)) || (_wassert(L"singleton_", L"e:\\work\\fwcyclehero\\server\\src\\lib\\common\\singleton.hpp", 70), 0) );  return (*singleton_); }
+	~Singleton(void){  (void)( (!!(singleton_)) || (_wassert(L"singleton_", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\common\\singleton.hpp", 69), 0) );  singleton_ = 0; }
+	static T& getSingleton(void) { (void)( (!!(singleton_)) || (_wassert(L"singleton_", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\common\\singleton.hpp", 70), 0) );  return (*singleton_); }
 	static T* getSingletonPtr(void){ return singleton_; }
 };
 
@@ -409622,7 +409582,7 @@ class MemoryBuffer : private Allocator, public Buffer<T> {
   }
 
   MemoryBuffer &operator=(MemoryBuffer &&other) {
-    (void)( (!!(this != &other)) || (_wassert(L"this != &other", L"e:\\work\\fwcyclehero\\server\\src\\lib\\common\\format.hpp", 348), 0) );
+    (void)( (!!(this != &other)) || (_wassert(L"this != &other", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\common\\format.hpp", 348), 0) );
     free();
     move(other);
     return *this;
@@ -410134,7 +410094,7 @@ class ArgVisitor {
   Result visit(const Arg &arg) {
     switch (arg.type) {
     default:
-      (void)( (!!(false)) || (_wassert(L"false", L"e:\\work\\fwcyclehero\\server\\src\\lib\\common\\format.hpp", 860), 0) );
+      (void)( (!!(false)) || (_wassert(L"false", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\common\\format.hpp", 860), 0) );
       
     case Arg::INT:
       return static_cast<Impl*>(this)->visit_int(arg.int_value);
@@ -411741,26 +411701,6 @@ namespace KBEngine{
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-extern GAME_TIME g_kbetime;
-
-
 enum ACCOUNT_TYPE
 {
 	ACCOUNT_TYPE_NORMAL = 1,	
@@ -411820,8 +411760,6 @@ enum COMPONENT_TYPE
 };
 
 
-extern COMPONENT_TYPE g_componentType;
-extern COMPONENT_ID g_componentID;
 
 
 const char COMPONENT_NAME[][255] = {
@@ -411837,7 +411775,6 @@ const char COMPONENT_NAME[][255] = {
 	"console",
 	"messagelog",
 	"bots",
-	"watcher",
 	"billing",
 };
 
@@ -411854,7 +411791,6 @@ const char COMPONENT_NAME_1[][255] = {
 	"console    ",
 	"messagelog ",
 	"bots",
-	"watcher",
 	"billing",
 };
 
@@ -411892,12 +411828,12 @@ inline COMPONENT_TYPE ComponentName2ComponentType(const char* name)
 
 const COMPONENT_TYPE ALL_COMPONENT_TYPES[] = {BASEAPPMGR_TYPE, CELLAPPMGR_TYPE, DBMGR_TYPE, CELLAPP_TYPE, 
 						BASEAPP_TYPE, LOGINAPP_TYPE, MACHINE_TYPE, CONSOLE_TYPE, MESSAGELOG_TYPE, 
-						WATCHER_TYPE, BILLING_TYPE, BOTS_TYPE, UNKNOWN_COMPONENT_TYPE};
+						 BILLING_TYPE, BOTS_TYPE, UNKNOWN_COMPONENT_TYPE};
 
 
 const COMPONENT_TYPE ALL_SERVER_COMPONENT_TYPES[] = {BASEAPPMGR_TYPE, CELLAPPMGR_TYPE, DBMGR_TYPE, CELLAPP_TYPE, 
 						BASEAPP_TYPE, LOGINAPP_TYPE, MACHINE_TYPE, MESSAGELOG_TYPE, 
-						WATCHER_TYPE, BILLING_TYPE, BOTS_TYPE, UNKNOWN_COMPONENT_TYPE};
+						BILLING_TYPE, BOTS_TYPE, UNKNOWN_COMPONENT_TYPE};
 
 
 const COMPONENT_TYPE ALL_GAME_SERVER_COMPONENT_TYPES[] = {BASEAPPMGR_TYPE, CELLAPPMGR_TYPE, DBMGR_TYPE, CELLAPP_TYPE, 
@@ -411985,26 +411921,6 @@ typedef int8 CLIENT_CTYPE;
 
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -417299,74 +417215,45 @@ inline const char* KBELOG_TYPE_NAME_EX(uint32 CTYPE)
 
 class DebugHelper  : public Singleton<DebugHelper>
 {
-public:
-	DebugHelper();
 
+public:
+	 DebugHelper();
 	~DebugHelper();
 	
-	static bool isInit() { return getSingletonPtr() != 0; }
-
 	static void initialize(COMPONENT_TYPE componentType);
 	static void finalise();
 
-	void setFile(std::string funcname, std::string file, uint32 line){
-		_currFile = file;
-		_currLine = line;
-		_currFuncName = funcname;
-	}
-	
-	std::string getLogName();
 
-	void lockthread();
-	void unlockthread();
-    
-	void pDispatcher(EventDispatcher* dispatcher);
+	void			print_msg(const std::string& s);
+	void			debug_msg(const std::string& s);
+	void			error_msg(const std::string& s);
+	void			info_msg(const std::string& s);
+	void			warning_msg(const std::string& s);
+	void			critical_msg(const std::string& s);
 	
-	EventDispatcher* pDispatcher()const{ return pDispatcher_; }
-	
-	void print_msg(const std::string& s);
-	void debug_msg(const std::string& s);
-	void error_msg(const std::string& s);
-	void info_msg(const std::string& s);
-	void warning_msg(const std::string& s);
-	void critical_msg(const std::string& s);
-	void script_msg(const std::string& s);
-	void backtrace_msg();
-
-	void onMessage(uint32 logType, const char * str, uint32 length);
+	void			printmsg(INT32 eType, const char* format, ...);
 
 	
-	void changeLogger(std::string name);
-
-	void clearBufferedLog(bool destroy = false);
-
-	void setScriptMsgType(int msgtype);
-	void resetScriptMsgType();
-
-	void shouldWriteToSyslog(bool v = true);
+	void			changeLogger(std::string name);
+	void			clearBufferedLog(bool destroy = false);
+	void			shouldWriteToSyslog(bool v = true);
 
 	
 
 
-	void sync();
+	void			sync();
 private:
-	FILE* _logfile;
-	std::string _currFile, _currFuncName;
-	uint32 _currLine;
+	FILE*			_logfile;
+	std::string		_currFile, _currFuncName;
+	uint32			_currLine;
 
-	EventDispatcher* pDispatcher_;
-
-	int scriptMsgType_;
-
-	bool noSyncLog_;
-
-	bool canLogFile_;
+	bool			noSyncLog_;
+	bool			canLogFile_;
 };
 
 
 
-
-
+	
 
 
 
@@ -419697,7 +419584,7 @@ public:
 	{
 		
 		int currRef = --refCount_;
-		(void)( (!!(currRef >= 0 && "RefCountable:currRef maybe a error!")) || (_wassert(L"currRef >= 0 && \"RefCountable:currRef maybe a error!\"", L"e:\\work\\fwcyclehero\\server\\src\\lib\\common\\refcountable.hpp", 74), 0) );
+		(void)( (!!(currRef >= 0 && "RefCountable:currRef maybe a error!")) || (_wassert(L"currRef >= 0 && \"RefCountable:currRef maybe a error!\"", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\common\\refcountable.hpp", 74), 0) );
 		if (0 >= currRef)
 			onRefOver();											
 	}
@@ -419724,7 +419611,7 @@ protected:
 
 	virtual ~RefCountable(void) 
 	{ 
-		(void)( (!!(0 == refCount_ && "RefCountable:currRef maybe a error!")) || (_wassert(L"0 == refCount_ && \"RefCountable:currRef maybe a error!\"", L"e:\\work\\fwcyclehero\\server\\src\\lib\\common\\refcountable.hpp", 101), 0) ); 
+		(void)( (!!(0 == refCount_ && "RefCountable:currRef maybe a error!")) || (_wassert(L"0 == refCount_ && \"RefCountable:currRef maybe a error!\"", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\common\\refcountable.hpp", 101), 0) ); 
 	}
 
 protected:
@@ -419744,7 +419631,7 @@ public:
 	{
 		
 		long currRef =::_InterlockedDecrement(&refCount_);
-		(void)( (!!(currRef >= 0 && "RefCountable:currRef maybe a error!")) || (_wassert(L"currRef >= 0 && \"RefCountable:currRef maybe a error!\"", L"e:\\work\\fwcyclehero\\server\\src\\lib\\common\\refcountable.hpp", 121), 0) );
+		(void)( (!!(currRef >= 0 && "RefCountable:currRef maybe a error!")) || (_wassert(L"currRef >= 0 && \"RefCountable:currRef maybe a error!\"", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\common\\refcountable.hpp", 121), 0) );
 		if (0 >= currRef)
 			onRefOver();											
 	}
@@ -419771,7 +419658,7 @@ protected:
 
 	virtual ~SafeRefCountable(void) 
 	{ 
-		(void)( (!!(0 == refCount_ && "SafeRefCountable:currRef maybe a error!")) || (_wassert(L"0 == refCount_ && \"SafeRefCountable:currRef maybe a error!\"", L"e:\\work\\fwcyclehero\\server\\src\\lib\\common\\refcountable.hpp", 148), 0) ); 
+		(void)( (!!(0 == refCount_ && "SafeRefCountable:currRef maybe a error!")) || (_wassert(L"0 == refCount_ && \"SafeRefCountable:currRef maybe a error!\"", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\common\\refcountable.hpp", 148), 0) ); 
 	}
 
 protected:
@@ -435738,14 +435625,14 @@ class TiXmlString
 	
 	const char& at (size_type index) const
 	{
-		(void)( (!!(index < length())) || (_wassert(L"index < length()", L"e:\\work\\fwcyclehero\\server\\src\\lib\\dependencies\\tinyxml\\tinystr.h", 149), 0) );
+		(void)( (!!(index < length())) || (_wassert(L"index < length()", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\dependencies\\tinyxml\\tinystr.h", 149), 0) );
 		return rep_->str[ index ];
 	}
 
 	
 	char& operator [] (size_type index) const
 	{
-		(void)( (!!(index < length())) || (_wassert(L"index < length()", L"e:\\work\\fwcyclehero\\server\\src\\lib\\dependencies\\tinyxml\\tinystr.h", 156), 0) );
+		(void)( (!!(index < length())) || (_wassert(L"index < length()", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\dependencies\\tinyxml\\tinystr.h", 156), 0) );
 		return rep_->str[ index ];
 	}
 
@@ -436172,11 +436059,11 @@ protected:
 	
 	inline static const char* GetChar( const char* p, char* _value, int* length, TiXmlEncoding encoding )
 	{
-		(void)( (!!(p)) || (_wassert(L"p", L"e:\\work\\fwcyclehero\\server\\src\\lib\\dependencies\\tinyxml\\tinyxml.h", 329), 0) );
+		(void)( (!!(p)) || (_wassert(L"p", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\dependencies\\tinyxml\\tinyxml.h", 329), 0) );
 		if ( encoding == TIXML_ENCODING_UTF8 )
 		{
 			*length = utf8ByteTable[ *((const unsigned char*)p) ];
-			(void)( (!!(*length >= 0 && *length < 5)) || (_wassert(L"*length >= 0 && *length < 5", L"e:\\work\\fwcyclehero\\server\\src\\lib\\dependencies\\tinyxml\\tinyxml.h", 333), 0) );
+			(void)( (!!(*length >= 0 && *length < 5)) || (_wassert(L"*length >= 0 && *length < 5", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\dependencies\\tinyxml\\tinyxml.h", 333), 0) );
 		}
 		else
 		{
@@ -437710,10 +437597,6 @@ public:
 
 			printf("%s", (fmt::format("TiXmlNode::openXML: {}, is error!\n", pathbuf)).c_str());
 
-			if(DebugHelper::isInit())
-			{
-				DebugHelper::getSingleton().error_msg((fmt::format("TiXmlNode::openXML: {}, is error!\n", pathbuf)));
-			}
 
 			return 0;
 		}
@@ -437913,8 +437796,6 @@ namespace KBEngine
 
 		ResourceObjectPtr openResource(const char* res, const char* model, 
 										uint32 flags = 0x00000000);
-
-		bool initializeWatcher();
 
 		void update();
 	private:
@@ -442837,7 +442718,7 @@ public:
 		m_Start = AllocateNode();
 		m_Goal = AllocateNode();
 
-		(void)( (!!((m_Start != 0 && m_Goal != 0))) || (_wassert(L"(m_Start != NULL && m_Goal != NULL)", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\stlastar.h", 157), 0) );
+		(void)( (!!((m_Start != 0 && m_Goal != 0))) || (_wassert(L"(m_Start != NULL && m_Goal != NULL)", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\stlastar.h", 157), 0) );
 		
 		m_Start->m_UserState = Start;
 		m_Goal->m_UserState = Goal;
@@ -442867,7 +442748,7 @@ public:
 	unsigned int SearchStep()
 	{
 		
-		(void)( (!!((m_State > SEARCH_STATE_NOT_INITIALISED) && (m_State < SEARCH_STATE_INVALID))) || (_wassert(L"(m_State > SEARCH_STATE_NOT_INITIALISED) && (m_State < SEARCH_STATE_INVALID)", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\stlastar.h", 188), 0) );
+		(void)( (!!((m_State > SEARCH_STATE_NOT_INITIALISED) && (m_State < SEARCH_STATE_INVALID))) || (_wassert(L"(m_State > SEARCH_STATE_NOT_INITIALISED) && (m_State < SEARCH_STATE_INVALID)", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\stlastar.h", 188), 0) );
 
 		
 		if( (m_State == SEARCH_STATE_SUCCEEDED) ||
@@ -443307,7 +443188,7 @@ public:
 	void EnsureMemoryFreed()
 	{
 
-		(void)( (!!(m_AllocateNodeCount == 0)) || (_wassert(L"m_AllocateNodeCount == 0", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\stlastar.h", 628), 0) );
+		(void)( (!!(m_AllocateNodeCount == 0)) || (_wassert(L"m_AllocateNodeCount == 0", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\stlastar.h", 628), 0) );
 
 
 	}

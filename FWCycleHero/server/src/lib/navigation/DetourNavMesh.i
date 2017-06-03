@@ -39743,7 +39743,7 @@ const dtOffMeshConnection* dtNavMesh::getOffMeshConnectionByRef(dtPolyRef ref) c
 		return 0;
 
 	const unsigned int idx =  ip - tile->header->offMeshBase;
-	(void)( (!!(idx < (unsigned int)tile->header->offMeshConCount)) || (_wassert(L"idx < (unsigned int)tile->header->offMeshConCount", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\detournavmesh.cpp", 1410), 0) );
+	(void)( (!!(idx < (unsigned int)tile->header->offMeshConCount)) || (_wassert(L"idx < (unsigned int)tile->header->offMeshConCount", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\detournavmesh.cpp", 1410), 0) );
 	return &tile->offMeshCons[idx];
 }
 

@@ -34669,7 +34669,7 @@ dtObstacleAvoidanceDebugData::~dtObstacleAvoidanceDebugData()
 		
 bool dtObstacleAvoidanceDebugData::init(const int maxSamples)
 {
-	(void)( (!!(maxSamples)) || (_wassert(L"maxSamples", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\detourobstacleavoidance.cpp", 113), 0) );
+	(void)( (!!(maxSamples)) || (_wassert(L"maxSamples", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\detourobstacleavoidance.cpp", 113), 0) );
 	m_maxSamples = maxSamples;
 
 	m_vel = (float*)dtAlloc(sizeof(float)*3*m_maxSamples, DT_ALLOC_PERM);
@@ -34707,13 +34707,13 @@ void dtObstacleAvoidanceDebugData::addSample(const float* vel, const float ssize
 {
 	if (m_nsamples >= m_maxSamples)
 		return;
-	(void)( (!!(m_vel)) || (_wassert(L"m_vel", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\detourobstacleavoidance.cpp", 151), 0) );
-	(void)( (!!(m_ssize)) || (_wassert(L"m_ssize", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\detourobstacleavoidance.cpp", 152), 0) );
-	(void)( (!!(m_pen)) || (_wassert(L"m_pen", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\detourobstacleavoidance.cpp", 153), 0) );
-	(void)( (!!(m_vpen)) || (_wassert(L"m_vpen", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\detourobstacleavoidance.cpp", 154), 0) );
-	(void)( (!!(m_vcpen)) || (_wassert(L"m_vcpen", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\detourobstacleavoidance.cpp", 155), 0) );
-	(void)( (!!(m_spen)) || (_wassert(L"m_spen", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\detourobstacleavoidance.cpp", 156), 0) );
-	(void)( (!!(m_tpen)) || (_wassert(L"m_tpen", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\detourobstacleavoidance.cpp", 157), 0) );
+	(void)( (!!(m_vel)) || (_wassert(L"m_vel", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\detourobstacleavoidance.cpp", 151), 0) );
+	(void)( (!!(m_ssize)) || (_wassert(L"m_ssize", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\detourobstacleavoidance.cpp", 152), 0) );
+	(void)( (!!(m_pen)) || (_wassert(L"m_pen", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\detourobstacleavoidance.cpp", 153), 0) );
+	(void)( (!!(m_vpen)) || (_wassert(L"m_vpen", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\detourobstacleavoidance.cpp", 154), 0) );
+	(void)( (!!(m_vcpen)) || (_wassert(L"m_vcpen", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\detourobstacleavoidance.cpp", 155), 0) );
+	(void)( (!!(m_spen)) || (_wassert(L"m_spen", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\detourobstacleavoidance.cpp", 156), 0) );
+	(void)( (!!(m_tpen)) || (_wassert(L"m_tpen", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\detourobstacleavoidance.cpp", 157), 0) );
 	dtVcopy(&m_vel[m_nsamples*3], vel);
 	m_ssize[m_nsamples] = ssize;
 	m_pen[m_nsamples] = pen;

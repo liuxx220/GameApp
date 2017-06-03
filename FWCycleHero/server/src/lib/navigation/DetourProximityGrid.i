@@ -29828,8 +29828,8 @@ dtProximityGrid::~dtProximityGrid()
 
 bool dtProximityGrid::init(const int poolSize, const float cellSize)
 {
-	(void)( (!!(poolSize > 0)) || (_wassert(L"poolSize > 0", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\detourproximitygrid.cpp", 68), 0) );
-	(void)( (!!(cellSize > 0.0f)) || (_wassert(L"cellSize > 0.0f", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\detourproximitygrid.cpp", 69), 0) );
+	(void)( (!!(poolSize > 0)) || (_wassert(L"poolSize > 0", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\detourproximitygrid.cpp", 68), 0) );
+	(void)( (!!(cellSize > 0.0f)) || (_wassert(L"cellSize > 0.0f", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\detourproximitygrid.cpp", 69), 0) );
 	
 	m_cellSize = cellSize;
 	m_invCellSize = 1.0f / m_cellSize;

@@ -38,7 +38,6 @@ namespace KBEngine
 		// 关于 Session 相关的操作 
 		INetSession*				GetSession(int sessionId);
 		bool						RemoveSession(INetSession* pSession);
-		void						SendMsgToSession(SESSION_TYPE stype, int sessionId, google::protobuf::Message& sMsg, int n32MsgID);
 		void						SendMsgToSession(SESSION_TYPE stype, int sessionId, const std::string& sMsg, int n32MsgID);
 		void						SendMsgToSession(SESSION_TYPE stype, int sessionId, const char* pMsgBuffer, int n32MsgLen, int n32MsgID);
 		void						TranMsgToSession(SESSION_TYPE stype, int sessionId, const char* pMsgBuffer, int n32MsgLen, int n32MsgID, int n32TransId, int n32GcNet);//优化GS专用(不解析pb)

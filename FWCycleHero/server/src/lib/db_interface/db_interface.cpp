@@ -171,7 +171,7 @@ const char* DBUtil::dbtype()
 const char* DBUtil::accountScriptName()
 {
 	ENGINE_COMPONENT_INFO& dbcfg = g_kbeSrvConfig.getDBMgr();
-	return dbcfg.dbAccountEntityScriptType;
+	return NULL;
 }
 
 //-------------------------------------------------------------------------------------

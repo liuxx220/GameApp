@@ -27075,7 +27075,7 @@ bool rcBuildPolyMeshDetail(rcContext* ctx, const rcPolyMesh& mesh, const rcCompa
 						   const float sampleDist, const float sampleMaxError,
 						   rcPolyMeshDetail& dmesh)
 {
-	(void)( (!!(ctx)) || (_wassert(L"ctx", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\recastmeshdetail.cpp", 953), 0) );
+	(void)( (!!(ctx)) || (_wassert(L"ctx", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\recastmeshdetail.cpp", 953), 0) );
 	
 	ctx->startTimer(RC_TIMER_BUILD_POLYMESHDETAIL);
 
@@ -27292,7 +27292,7 @@ bool rcBuildPolyMeshDetail(rcContext* ctx, const rcPolyMesh& mesh, const rcCompa
 
 bool rcMergePolyMeshDetails(rcContext* ctx, rcPolyMeshDetail** meshes, const int nmeshes, rcPolyMeshDetail& mesh)
 {
-	(void)( (!!(ctx)) || (_wassert(L"ctx", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\recastmeshdetail.cpp", 1170), 0) );
+	(void)( (!!(ctx)) || (_wassert(L"ctx", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\recastmeshdetail.cpp", 1170), 0) );
 	
 	ctx->startTimer(RC_TIMER_MERGE_POLYMESHDETAIL);
 

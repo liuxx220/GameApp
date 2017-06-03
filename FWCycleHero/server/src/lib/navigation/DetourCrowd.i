@@ -36761,7 +36761,7 @@ static int addNeighbour(const int idx, const float dist,
 		const int tgt = i+1;
 		const int n = dtMin(nneis-i, maxNeis-tgt);
 		
-		(void)( (!!(tgt+n <= maxNeis)) || (_wassert(L"tgt+n <= maxNeis", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\detourcrowd.cpp", 173), 0) );
+		(void)( (!!(tgt+n <= maxNeis)) || (_wassert(L"tgt+n <= maxNeis", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\detourcrowd.cpp", 173), 0) );
 		
 		if (n > 0)
 			memmove(&neis[tgt], &neis[i], sizeof(dtCrowdNeighbour)*n);
@@ -36833,7 +36833,7 @@ static int addToOptQueue(dtCrowdAgent* newag, dtCrowdAgent** agents, const int n
 		const int tgt = i+1;
 		const int n = dtMin(nagents-i, maxAgents-tgt);
 		
-		(void)( (!!(tgt+n <= maxAgents)) || (_wassert(L"tgt+n <= maxAgents", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\detourcrowd.cpp", 245), 0) );
+		(void)( (!!(tgt+n <= maxAgents)) || (_wassert(L"tgt+n <= maxAgents", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\detourcrowd.cpp", 245), 0) );
 		
 		if (n > 0)
 			memmove(&agents[tgt], &agents[i], sizeof(dtCrowdAgent*)*n);
@@ -36869,7 +36869,7 @@ static int addToPathQueue(dtCrowdAgent* newag, dtCrowdAgent** agents, const int 
 		const int tgt = i+1;
 		const int n = dtMin(nagents-i, maxAgents-tgt);
 		
-		(void)( (!!(tgt+n <= maxAgents)) || (_wassert(L"tgt+n <= maxAgents", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\detourcrowd.cpp", 281), 0) );
+		(void)( (!!(tgt+n <= maxAgents)) || (_wassert(L"tgt+n <= maxAgents", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\detourcrowd.cpp", 281), 0) );
 		
 		if (n > 0)
 			memmove(&agents[tgt], &agents[i], sizeof(dtCrowdAgent*)*n);
@@ -37267,7 +37267,7 @@ void dtCrowd::updateMoveRequest(const float )
 		{
 			const dtPolyRef* path = ag->corridor.getPath();
 			const int npath = ag->corridor.getPathCount();
-			(void)( (!!(npath)) || (_wassert(L"npath", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\detourcrowd.cpp", 679), 0) );
+			(void)( (!!(npath)) || (_wassert(L"npath", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\detourcrowd.cpp", 679), 0) );
 
 			static const int MAX_RES = 32;
 			float reqPos[3];
@@ -37381,7 +37381,7 @@ void dtCrowd::updateMoveRequest(const float )
 			{
 				const dtPolyRef* path = ag->corridor.getPath();
 				const int npath = ag->corridor.getPathCount();
-				(void)( (!!(npath)) || (_wassert(L"npath", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\detourcrowd.cpp", 793), 0) );
+				(void)( (!!(npath)) || (_wassert(L"npath", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\detourcrowd.cpp", 793), 0) );
 				
 				
 				float targetPos[3];

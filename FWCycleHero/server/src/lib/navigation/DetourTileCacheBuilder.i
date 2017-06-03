@@ -12644,7 +12644,7 @@ static const int MAX_REM_EDGES = 48;
 
 dtTileCacheContourSet* dtAllocTileCacheContourSet(dtTileCacheAlloc* alloc)
 {
-	(void)( (!!(alloc)) || (_wassert(L"alloc", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\detourtilecachebuilder.cpp", 61), 0) );
+	(void)( (!!(alloc)) || (_wassert(L"alloc", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\detourtilecachebuilder.cpp", 61), 0) );
 
 	dtTileCacheContourSet* cset = (dtTileCacheContourSet*)alloc->alloc(sizeof(dtTileCacheContourSet));
 	memset(cset, 0, sizeof(dtTileCacheContourSet));
@@ -12653,7 +12653,7 @@ dtTileCacheContourSet* dtAllocTileCacheContourSet(dtTileCacheAlloc* alloc)
 
 void dtFreeTileCacheContourSet(dtTileCacheAlloc* alloc, dtTileCacheContourSet* cset)
 {
-	(void)( (!!(alloc)) || (_wassert(L"alloc", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\detourtilecachebuilder.cpp", 70), 0) );
+	(void)( (!!(alloc)) || (_wassert(L"alloc", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\detourtilecachebuilder.cpp", 70), 0) );
 
 	if (!cset) return;
 	for (int i = 0; i < cset->nconts; ++i)
@@ -12664,7 +12664,7 @@ void dtFreeTileCacheContourSet(dtTileCacheAlloc* alloc, dtTileCacheContourSet* c
 
 dtTileCachePolyMesh* dtAllocTileCachePolyMesh(dtTileCacheAlloc* alloc)
 {
-	(void)( (!!(alloc)) || (_wassert(L"alloc", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\detourtilecachebuilder.cpp", 81), 0) );
+	(void)( (!!(alloc)) || (_wassert(L"alloc", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\detourtilecachebuilder.cpp", 81), 0) );
 
 	dtTileCachePolyMesh* lmesh = (dtTileCachePolyMesh*)alloc->alloc(sizeof(dtTileCachePolyMesh));
 	memset(lmesh, 0, sizeof(dtTileCachePolyMesh));
@@ -12673,7 +12673,7 @@ dtTileCachePolyMesh* dtAllocTileCachePolyMesh(dtTileCacheAlloc* alloc)
 
 void dtFreeTileCachePolyMesh(dtTileCacheAlloc* alloc, dtTileCachePolyMesh* lmesh)
 {
-	(void)( (!!(alloc)) || (_wassert(L"alloc", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\detourtilecachebuilder.cpp", 90), 0) );
+	(void)( (!!(alloc)) || (_wassert(L"alloc", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\detourtilecachebuilder.cpp", 90), 0) );
 	
 	if (!lmesh) return;
 	alloc->free(lmesh->verts);
@@ -12766,7 +12766,7 @@ dtStatus dtBuildTileCacheRegions(dtTileCacheAlloc* alloc,
 								 dtTileCacheLayer& layer,
 								 const int walkableClimb)
 {
-	(void)( (!!(alloc)) || (_wassert(L"alloc", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\detourtilecachebuilder.cpp", 183), 0) );
+	(void)( (!!(alloc)) || (_wassert(L"alloc", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\detourtilecachebuilder.cpp", 183), 0) );
 	
 	const int w = (int)layer.header->width;
 	const int h = (int)layer.header->height;
@@ -13329,7 +13329,7 @@ dtStatus dtBuildTileCacheContours(dtTileCacheAlloc* alloc,
 								  const int walkableClimb, 	const float maxError,
 								  dtTileCacheContourSet& lcset)
 {
-	(void)( (!!(alloc)) || (_wassert(L"alloc", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\detourtilecachebuilder.cpp", 746), 0) );
+	(void)( (!!(alloc)) || (_wassert(L"alloc", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\detourtilecachebuilder.cpp", 746), 0) );
 
 	const int w = (int)layer.header->width;
 	const int h = (int)layer.header->height;
@@ -14329,7 +14329,7 @@ dtStatus dtBuildTileCachePolyMesh(dtTileCacheAlloc* alloc,
 								  dtTileCacheContourSet& lcset,
 								  dtTileCachePolyMesh& mesh)
 {
-	(void)( (!!(alloc)) || (_wassert(L"alloc", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\detourtilecachebuilder.cpp", 1746), 0) );
+	(void)( (!!(alloc)) || (_wassert(L"alloc", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\detourtilecachebuilder.cpp", 1746), 0) );
 	
 	int maxVertices = 0;
 	int maxTris = 0;
@@ -14635,7 +14635,7 @@ dtStatus dtBuildTileCacheLayer(dtTileCacheCompressor* comp,
 
 void dtFreeTileCacheLayer(dtTileCacheAlloc* alloc, dtTileCacheLayer* layer)
 {
-	(void)( (!!(alloc)) || (_wassert(L"alloc", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\detourtilecachebuilder.cpp", 2052), 0) );
+	(void)( (!!(alloc)) || (_wassert(L"alloc", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\detourtilecachebuilder.cpp", 2052), 0) );
 	
 	alloc->free(layer);
 }
@@ -14644,8 +14644,8 @@ dtStatus dtDecompressTileCacheLayer(dtTileCacheAlloc* alloc, dtTileCacheCompress
 									unsigned char* compressed, const int compressedSize,
 									dtTileCacheLayer** layerOut)
 {
-	(void)( (!!(alloc)) || (_wassert(L"alloc", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\detourtilecachebuilder.cpp", 2061), 0) );
-	(void)( (!!(comp)) || (_wassert(L"comp", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\detourtilecachebuilder.cpp", 2062), 0) );
+	(void)( (!!(alloc)) || (_wassert(L"alloc", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\detourtilecachebuilder.cpp", 2061), 0) );
+	(void)( (!!(comp)) || (_wassert(L"comp", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\detourtilecachebuilder.cpp", 2062), 0) );
 
 	if (!layerOut)
 		return DT_FAILURE | DT_INVALID_PARAM;

@@ -39035,7 +39035,7 @@ static bool filterSmallRegions(rcContext* ctx, int minRegionArea, int mergeRegio
 
 bool rcBuildDistanceField(rcContext* ctx, rcCompactHeightfield& chf)
 {
-	(void)( (!!(ctx)) || (_wassert(L"ctx", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\recastregion.cpp", 951), 0) );
+	(void)( (!!(ctx)) || (_wassert(L"ctx", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\recastregion.cpp", 951), 0) );
 	
 	ctx->startTimer(RC_TIMER_BUILD_DISTANCEFIELD);
 	
@@ -39137,7 +39137,7 @@ struct rcSweepSpan
 bool rcBuildRegionsMonotone(rcContext* ctx, rcCompactHeightfield& chf,
 							const int borderSize, const int minRegionArea, const int mergeRegionArea)
 {
-	(void)( (!!(ctx)) || (_wassert(L"ctx", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\recastregion.cpp", 1053), 0) );
+	(void)( (!!(ctx)) || (_wassert(L"ctx", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\recastregion.cpp", 1053), 0) );
 	
 	ctx->startTimer(RC_TIMER_BUILD_REGIONS);
 	
@@ -39308,7 +39308,7 @@ bool rcBuildRegionsMonotone(rcContext* ctx, rcCompactHeightfield& chf,
 bool rcBuildRegions(rcContext* ctx, rcCompactHeightfield& chf,
 					const int borderSize, const int minRegionArea, const int mergeRegionArea)
 {
-	(void)( (!!(ctx)) || (_wassert(L"ctx", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\recastregion.cpp", 1224), 0) );
+	(void)( (!!(ctx)) || (_wassert(L"ctx", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\recastregion.cpp", 1224), 0) );
 	
 	ctx->startTimer(RC_TIMER_BUILD_REGIONS);
 	

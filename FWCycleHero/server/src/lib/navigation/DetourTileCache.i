@@ -31531,8 +31531,8 @@ dtStatus dtTileCache::buildNavMeshTilesAt(const int tx, const int ty, dtNavMesh*
 
 dtStatus dtTileCache::buildNavMeshTile(const dtCompressedTileRef ref, dtNavMesh* navmesh)
 {	
-	(void)( (!!(m_talloc)) || (_wassert(L"m_talloc", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\detourtilecache.cpp", 577), 0) );
-	(void)( (!!(m_tcomp)) || (_wassert(L"m_tcomp", L"e:\\work\\fwcyclehero\\server\\src\\lib\\navigation\\detourtilecache.cpp", 578), 0) );
+	(void)( (!!(m_talloc)) || (_wassert(L"m_talloc", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\detourtilecache.cpp", 577), 0) );
+	(void)( (!!(m_tcomp)) || (_wassert(L"m_tcomp", L"f:\\mygit\\fwcyclehero\\server\\src\\lib\\navigation\\detourtilecache.cpp", 578), 0) );
 	
 	unsigned int idx = decodeTileIdTile(ref);
 	if (idx > (unsigned int)m_params.maxTiles)
