@@ -1,0 +1,4 @@
+﻿<something>
+		<map id="1" chapterID="1" name="map001" icon="map_002" level="1" PosX="-100" PosY="0" />
+		<map id="2" chapterID="1" name="map001" icon="map_001" level="1" PosX="27" PosY="-19" />
+</something>

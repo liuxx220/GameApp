@@ -1,0 +1,6 @@
+﻿<something>
+		<npc id="10000" PosX="20" PosY="25" PosZ="30" />
+		<npc id="10001" PosX="20" PosY="25" PosZ="30" />
+		<npc id="20002" PosX="20" PosY="25" PosZ="30" />
+		<npc id="20003" PosX="20" PosY="25" PosZ="30" />	
+</something>

@@ -1,0 +1,7 @@
+<something>
+		<skill id="20000101" type="0" usetype="0" name="普通攻击" icon="ui-ZD-01" prefab="" desc="很厉害的技能" ActMode="201" Priority="1" FingerType="0" Dmgtype="1" DmgValue="10" CostType="0" CostValue="0" distance="4" radius="2" CoolDown="1000" />
+		<skill id="20000201" type="1" usetype="1" name="冲锋" icon="ui-skill4" prefab="" desc="很厉害的技能" ActMode="301" Priority="1" FingerType="2" Dmgtype="1" DmgValue="10" CostType="0" CostValue="0" distance="4" radius="2" CoolDown="1000" />
+		<skill id="20000301" type="1" usetype="1" name="三连击" icon="ui-skill2" prefab="" desc="很厉害的技能" ActMode="302" Priority="1" FingerType="3" Dmgtype="1" DmgValue="10" CostType="0" CostValue="0" distance="4" radius="2" CoolDown="1000" />
+		<skill id="20000401" type="1" usetype="1" name="重击" icon="ui-skill3" prefab="" desc="很厉害的技能" ActMode="303" Priority="1" FingerType="4" Dmgtype="1" DmgValue="10" CostType="0" CostValue="0" distance="4" radius="2" CoolDown="1000" />
+		<skill id="30000401" type="2" usetype="1" name="小怪技能" icon="ui-skill3" prefab="" desc="很厉害的技能" ActMode="201" Priority="1" FingerType="0" Dmgtype="1" DmgValue="10" CostType="0" CostValue="0" distance="2" radius="1.5" CoolDown="1000" />
+</something>

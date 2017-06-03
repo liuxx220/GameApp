@@ -1,0 +1,7 @@
+﻿<something>
+		<Hero id="10000" name="car_level1" icon="1" AniType="2" normalskill1="20000101" normalskill2="20000102" />
+		<Hero id="20001" name="Orc" icon="2" AniType="1" normalskill1="20000101" normalskill2="20000103" />
+		<Hero id="20002" name="car_level1" icon="3" AniType="1" normalskill1="20000101" normalskill2="20000102" />
+		<Hero id="20003" name="Orc" icon="4" AniType="1" normalskill1="20000101" normalskill2="20000103" />
+		<Hero id="20005" name="car_level1" icon="5" AniType="1" normalskill1="20000101" normalskill2="20000102" />
+</something>

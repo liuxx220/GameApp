@@ -1,0 +1,38 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnityVS.CycleHeroEdit.CSharp", "UnityVS.CycleHeroEdit.CSharp.csproj", "{D1E16A41-03B6-2D72-F1F3-2147C4B0987A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnityVS.CycleHeroEdit.CSharp.Editor", "UnityVS.CycleHeroEdit.CSharp.Editor.csproj", "{8A65B01F-4A4D-1740-2B64-794C6DBDC1D3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnityVS.CycleHeroEdit.CSharp.Editor.Plugins", "UnityVS.CycleHeroEdit.CSharp.Editor.Plugins.csproj", "{8ACE888E-50D0-38C6-6E6D-56E02B930081}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnityVS.CycleHeroEdit.CSharp.Plugins", "UnityVS.CycleHeroEdit.CSharp.Plugins.csproj", "{F635940F-2E0A-C50E-EFFF-67D48F460FE3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D1E16A41-03B6-2D72-F1F3-2147C4B0987A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1E16A41-03B6-2D72-F1F3-2147C4B0987A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1E16A41-03B6-2D72-F1F3-2147C4B0987A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1E16A41-03B6-2D72-F1F3-2147C4B0987A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8A65B01F-4A4D-1740-2B64-794C6DBDC1D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A65B01F-4A4D-1740-2B64-794C6DBDC1D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A65B01F-4A4D-1740-2B64-794C6DBDC1D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A65B01F-4A4D-1740-2B64-794C6DBDC1D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8ACE888E-50D0-38C6-6E6D-56E02B930081}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8ACE888E-50D0-38C6-6E6D-56E02B930081}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8ACE888E-50D0-38C6-6E6D-56E02B930081}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8ACE888E-50D0-38C6-6E6D-56E02B930081}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F635940F-2E0A-C50E-EFFF-67D48F460FE3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F635940F-2E0A-C50E-EFFF-67D48F460FE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F635940F-2E0A-C50E-EFFF-67D48F460FE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F635940F-2E0A-C50E-EFFF-67D48F460FE3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

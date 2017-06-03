@@ -1,0 +1,6 @@
+<something>
+		<item id="3000000" type="1" name="药品" level="1" quality="1" Price="500" MaxUseTime="1" MaxLap="9" SpecFunction="0" SpecValue1="0" SpecValue2="0" desc="很厉害的技能" icon="item_1_1" />
+		<item id="3000001" type="1" name="蓝瓶" level="1" quality="1" Price="500" MaxUseTime="1" MaxLap="9" SpecFunction="0" SpecValue1="0" SpecValue2="0" desc="很厉害的技能" icon="item_2_1" />
+		<item id="3000002" type="1" name="矿石" level="1" quality="1" Price="500" MaxUseTime="1" MaxLap="9" SpecFunction="0" SpecValue1="0" SpecValue2="0" desc="很厉害的技能" icon="item_3_1" />
+		<item id="3000003" type="1" name="卷轴" level="1" quality="1" Price="500" MaxUseTime="1" MaxLap="1" SpecFunction="0" SpecValue1="0" SpecValue2="0" desc="很厉害的技能" icon="item_4_1" />
+</something>

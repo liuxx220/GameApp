@@ -1,0 +1,7 @@
+﻿<something>
+		<quest id="1" name="初出茅庐" AcceptTalk="给你歌任务吧" CompleteTalk="不错啊小伙子" view="这是一个间距而又危险的任务" />
+		<quest id="2" name="初出茅庐" AcceptTalk="给你歌任务吧" CompleteTalk="不错啊小伙子" view="这是一个间距而又危险的任务" />
+		<quest id="3" name="初出茅庐" AcceptTalk="给你歌任务吧" CompleteTalk="不错啊小伙子" view="这是一个间距而又危险的任务" />
+		<quest id="4" name="初出茅庐" AcceptTalk="给你歌任务吧" CompleteTalk="不错啊小伙子" view="这是一个间距而又危险的任务" />
+		<quest id="5" name="初出茅庐" AcceptTalk="给你歌任务吧" CompleteTalk="不错啊小伙子" view="这是一个间距而又危险的任务" />
+</something>

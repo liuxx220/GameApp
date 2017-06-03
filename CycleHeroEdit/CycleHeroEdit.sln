@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CycleHeroEdit.CSharp", "CycleHeroEdit.CSharp.csproj", "{FD0D52C1-768A-73AB-850C-4E4F812BEBA1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CycleHeroEdit.CSharp.Editor.Plugins", "CycleHeroEdit.CSharp.Editor.Plugins.csproj", "{BE72F61C-A8B2-EC3D-ACCE-4F3296CE9130}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CycleHeroEdit.CSharp.Editor", "CycleHeroEdit.CSharp.Editor.csproj", "{173B06BF-6E08-B0F3-0D2B-37E5808A00C4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FD0D52C1-768A-73AB-850C-4E4F812BEBA1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD0D52C1-768A-73AB-850C-4E4F812BEBA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD0D52C1-768A-73AB-850C-4E4F812BEBA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD0D52C1-768A-73AB-850C-4E4F812BEBA1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE72F61C-A8B2-EC3D-ACCE-4F3296CE9130}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE72F61C-A8B2-EC3D-ACCE-4F3296CE9130}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE72F61C-A8B2-EC3D-ACCE-4F3296CE9130}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE72F61C-A8B2-EC3D-ACCE-4F3296CE9130}.Release|Any CPU.Build.0 = Release|Any CPU
+		{173B06BF-6E08-B0F3-0D2B-37E5808A00C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{173B06BF-6E08-B0F3-0D2B-37E5808A00C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{173B06BF-6E08-B0F3-0D2B-37E5808A00C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{173B06BF-6E08-B0F3-0D2B-37E5808A00C4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

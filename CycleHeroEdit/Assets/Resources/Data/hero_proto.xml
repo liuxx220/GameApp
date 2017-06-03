@@ -1,0 +1,7 @@
+﻿<something>
+		<Hero id="10000" name="soldierBoy" icon="avatar_icon1" AniType="2" normalskill1="20000101" normalskill2="20000201" normalskill3="20000301" normalskill4="20000401" />
+		<Hero id="20001" name="soldierBoy" icon="avatar_icon2" AniType="1" normalskill1="20000101" normalskill2="20000201" normalskill3="20000301" normalskill4="20000401" />
+		<Hero id="20002" name="soldierBoy" icon="avatar_icon4" AniType="1" normalskill1="20000101" normalskill2="20000201" normalskill3="20000301" normalskill4="20000401" />
+		<Hero id="20003" name="soldierBoy" icon="avatar_icon3" AniType="1" normalskill1="20000101" normalskill2="20000201" normalskill3="20000301" normalskill4="20000401" />
+		<Hero id="20005" name="soldierBoy" icon="avatar_icon4" AniType="1" normalskill1="20000101" normalskill2="20000201" normalskill3="20000301" normalskill4="20000401" />
+</something>

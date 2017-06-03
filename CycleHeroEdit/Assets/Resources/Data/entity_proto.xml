@@ -1,0 +1,7 @@
+﻿<something>
+		<Hero id="10000" name="小怪物" Icon="npc_100000" model="Orc" type="1" Level="2" CanAtk="1" CanBeAtk="1" AniType="1" spawnTime="10" LiveTime="0" exp="10" LootID="0" normalskill1="30000401" normalskill2="0" Lookdist="5" Patroldist="5" Physique="15" Strength="20" Pneuma="20" InnerForce="25" Agility="30" />
+		<Hero id="10001" name="武器商" Icon="npc_100000" model="Orc" type="3" Level="2" CanAtk="1" CanBeAtk="1" AniType="1" spawnTime="10" LiveTime="0" exp="10" LootID="0" normalskill1="30000401" normalskill2="0" Lookdist="5" Patroldist="5" Physique="15" Strength="20" Pneuma="20" InnerForce="25" Agility="30" />
+		<Hero id="20002" name="药品商" Icon="npc_100000" model="Orc" type="3" Level="2" CanAtk="1" CanBeAtk="1" AniType="1" spawnTime="10" LiveTime="0" exp="10" LootID="0" normalskill1="30000401" normalskill2="0" Lookdist="5" Patroldist="5" Physique="15" Strength="20" Pneuma="20" InnerForce="25" Agility="30" />
+		<Hero id="20003" name="修理商" Icon="npc_100000" model="Orc" type="3" Level="2" CanAtk="1" CanBeAtk="1" AniType="1" spawnTime="10" LiveTime="0" exp="10" LootID="0" normalskill1="30000401" normalskill2="0" Lookdist="5" Patroldist="5" Physique="15" Strength="20" Pneuma="20" InnerForce="25" Agility="30" />
+		
+</something>
