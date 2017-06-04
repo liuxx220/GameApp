@@ -1,11 +1,11 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2017
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CycleHeroEdit", "CycleHeroEdit.csproj", "{61290153-7488-2A43-7B55-45A977C19DEA}"
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CycleHeroEdit", "Assembly-CSharp.csproj", "{59F916E5-44BC-6F93-265C-8D7AF5061D9B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CycleHeroEdit.Editor.Plugins", "CycleHeroEdit.Editor.Plugins.csproj", "{0E56A72B-FA88-ED86-50FB-3679CE86AEEF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CycleHeroEdit", "Assembly-CSharp-Editor-firstpass.csproj", "{38DB1E31-CEE7-61AC-736C-778F9B5ECD1B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CycleHeroEdit.Editor", "CycleHeroEdit.Editor.csproj", "{7DE09AAB-279C-3B5A-2CC9-CFFFCF3BC673}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CycleHeroEdit", "Assembly-CSharp-Editor.csproj", "{34306843-A91D-A31A-8C1C-04FF486A6153}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,20 +13,23 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{61290153-7488-2A43-7B55-45A977C19DEA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{61290153-7488-2A43-7B55-45A977C19DEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{61290153-7488-2A43-7B55-45A977C19DEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{61290153-7488-2A43-7B55-45A977C19DEA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0E56A72B-FA88-ED86-50FB-3679CE86AEEF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0E56A72B-FA88-ED86-50FB-3679CE86AEEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0E56A72B-FA88-ED86-50FB-3679CE86AEEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0E56A72B-FA88-ED86-50FB-3679CE86AEEF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7DE09AAB-279C-3B5A-2CC9-CFFFCF3BC673}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7DE09AAB-279C-3B5A-2CC9-CFFFCF3BC673}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7DE09AAB-279C-3B5A-2CC9-CFFFCF3BC673}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7DE09AAB-279C-3B5A-2CC9-CFFFCF3BC673}.Release|Any CPU.Build.0 = Release|Any CPU
+		{59F916E5-44BC-6F93-265C-8D7AF5061D9B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{59F916E5-44BC-6F93-265C-8D7AF5061D9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59F916E5-44BC-6F93-265C-8D7AF5061D9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59F916E5-44BC-6F93-265C-8D7AF5061D9B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{38DB1E31-CEE7-61AC-736C-778F9B5ECD1B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38DB1E31-CEE7-61AC-736C-778F9B5ECD1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38DB1E31-CEE7-61AC-736C-778F9B5ECD1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38DB1E31-CEE7-61AC-736C-778F9B5ECD1B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34306843-A91D-A31A-8C1C-04FF486A6153}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34306843-A91D-A31A-8C1C-04FF486A6153}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34306843-A91D-A31A-8C1C-04FF486A6153}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34306843-A91D-A31A-8C1C-04FF486A6153}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = Assembly-CSharp.csproj
 	EndGlobalSection
 EndGlobal
