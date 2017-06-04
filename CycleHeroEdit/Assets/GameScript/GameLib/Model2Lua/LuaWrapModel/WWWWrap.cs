@@ -285,7 +285,7 @@ public class WWWWrap
 			}
 		}
 
-		LuaScriptMgr.Push(L, obj.audioClip);
+		LuaScriptMgr.Push(L, obj.GetAudioClip());
 		return 1;
 	}
 

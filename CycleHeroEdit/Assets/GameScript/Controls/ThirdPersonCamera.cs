@@ -38,7 +38,7 @@ public class ThirdPersonCamera : MonoBehaviour
             CHeroEntity pHero = CFightTeamMgr.Instance.m_pBattleHero;
             if( pHero != null && pHero.gameObject != null )
             {
-                Transform pObj = pHero.gameObject.transform.FindChild("CamPos");
+                Transform pObj = pHero.gameObject.transform.Find("CamPos");
                 if (pObj != null)
                 {
                     standardPos         = pObj;

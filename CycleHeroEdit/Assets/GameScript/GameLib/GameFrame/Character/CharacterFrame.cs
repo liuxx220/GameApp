@@ -272,7 +272,7 @@ public class CharacterFrame : GUIFrame
 
 		if (obj != null) 
 		{
-			Transform pIcon = obj.transform.FindChild("Icon");
+			Transform pIcon = obj.transform.Find("Icon");
 			if( pIcon != null )
 			{
 				UIAtlas tu = Resources.Load("GameIcon", typeof(UIAtlas)) as UIAtlas;
@@ -281,7 +281,7 @@ public class CharacterFrame : GUIFrame
 				ctrl.GetComponent<UISprite>().spriteName = pItem.m_pProto.strIcon;
 			}
 
-			Transform pNum  = obj.transform.FindChild("num");
+			Transform pNum  = obj.transform.Find("num");
 			if( pNum != null )
 			{
 				UnityEngine.GameObject ctrl = pNum.gameObject;
@@ -299,7 +299,7 @@ public class CharacterFrame : GUIFrame
 		
 		if (obj != null) 
 		{
-			Transform pIcon = obj.transform.FindChild("Icon");
+			Transform pIcon = obj.transform.Find("Icon");
 			if( pIcon != null )
 			{
 				UIAtlas tu = Resources.Load("GameIcon", typeof(UIAtlas)) as UIAtlas;
@@ -314,7 +314,7 @@ public class CharacterFrame : GUIFrame
 	{
 		if (obj != null) 
 		{
-			Transform pIcon = obj.transform.FindChild("Icon");
+			Transform pIcon = obj.transform.Find("Icon");
 			if( pIcon != null )
 			{
 				UIAtlas tu = Resources.Load("GameUI", typeof(UIAtlas)) as UIAtlas;

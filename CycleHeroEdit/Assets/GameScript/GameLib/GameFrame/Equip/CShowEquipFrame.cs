@@ -230,7 +230,7 @@ public class CShowEquipFrame : GUIFrame
 		
 		if (obj != null) 
 		{
-			Transform pIcon = obj.transform.FindChild("Icon");
+			Transform pIcon = obj.transform.Find("Icon");
 			if( pIcon != null )
 			{
 				UIAtlas tu = Resources.Load("GameIcon", typeof(UIAtlas)) as UIAtlas;

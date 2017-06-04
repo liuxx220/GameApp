@@ -428,8 +428,8 @@ public class NetworkManager : View
         }
 
         // 心跳更新
-        if (Isconnected )
-            UpdateHeartBeatLogic();
+        //if (Isconnected )
+        //    UpdateHeartBeatLogic();
     }
 
 

@@ -41,10 +41,10 @@ public class CBattleFrame : GUIFrame
 
         m_listSkill      = new List<UnityEngine.GameObject>();
         m_map2ID         = new Dictionary<UnityEngine.GameObject, uint>();
-        m_NoralizeAttack = transform.FindChild("combat/Button_Attack").gameObject;
-        m_btnSkill01     = transform.FindChild("combat/right ski 0").gameObject;
-        m_btnSkill02     = transform.FindChild("combat/right ski 1").gameObject;
-        m_btnSkill03     = transform.FindChild("combat/right ski 2").gameObject;
+        m_NoralizeAttack = transform.Find("combat/Button_Attack").gameObject;
+        m_btnSkill01     = transform.Find("combat/right ski 0").gameObject;
+        m_btnSkill02     = transform.Find("combat/right ski 1").gameObject;
+        m_btnSkill03     = transform.Find("combat/right ski 2").gameObject;
 
 
         UIEventListener.Get(m_NoralizeAttack).onClick = OnBtnNoralizeClick;
@@ -99,10 +99,10 @@ public class CBattleFrame : GUIFrame
             return;
 
         // 如果按钮在CD状态，返回，否则开始CD
-        if (go.transform.FindChild("cd").GetComponent<UISprite>().fillAmount != 0)
+        if (go.transform.Find("cd").GetComponent<UISprite>().fillAmount != 0)
             return;
 
-        go.transform.FindChild("cd").GetComponent<UISprite>().fillAmount = 1;
+        go.transform.Find("cd").GetComponent<UISprite>().fillAmount = 1;
         if (!IsInActCD() || m_LocalFSM.IsInIdle() || m_LocalFSM.IsInMoveing())
         {
             // 直接播放技能
@@ -139,7 +139,7 @@ public class CBattleFrame : GUIFrame
 
             if (pProto.eType == ESkillType.ESUT_Norm)
             {
-                Transform bg = m_NoralizeAttack.transform.FindChild("Background");
+                Transform bg = m_NoralizeAttack.transform.Find("Background");
                 bg.GetComponent<UISprite>().spriteName = pProto.strIcon;
                 m_dwNormSkillID = pEntity.GetID();
                 m_map2ID.Add(m_NoralizeAttack, pEntity.GetID());
@@ -149,7 +149,7 @@ public class CBattleFrame : GUIFrame
             else
             {
                 UnityEngine.GameObject ctrl = m_listSkill[i];
-                Transform bg = ctrl.transform.FindChild("Background");
+                Transform bg = ctrl.transform.Find("Background");
                 bg.GetComponent<UISprite>().spriteName = pProto.strIcon;
                 m_map2ID.Add(ctrl, pEntity.GetID());
             }

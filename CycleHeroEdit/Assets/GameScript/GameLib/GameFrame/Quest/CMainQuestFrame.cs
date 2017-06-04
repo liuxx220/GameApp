@@ -56,7 +56,7 @@ public class CMainQuestFrame : GUIFrame
 
     /// ---------------------------------------------------------------------------
     /// <summary>
-    /// ÊÍ·Å±¾UIFrame ËùÓÃµ½µÄ×ÊÔ´
+    /// ï¿½Í·Å±ï¿½UIFrame ï¿½ï¿½ï¿½Ãµï¿½ï¿½ï¿½ï¿½ï¿½Ô´
     /// </summary>
     /// --------------------------------------------------------------------------
     public override void Destroy()
@@ -141,7 +141,7 @@ public class CMainQuestFrame : GUIFrame
 			GameObject pItem = NGUITools.AddChild( m_questlist, m_questItem );
 			if( pItem != null )
 			{
-				Transform pIcon = pItem.transform.FindChild("Icon");
+				Transform pIcon = pItem.transform.Find("Icon");
 				if( pIcon != null )
 				{
 					UnityEngine.GameObject ctrl = pIcon.gameObject;
@@ -190,7 +190,7 @@ public class CMainQuestFrame : GUIFrame
             CProtoManager.inst.m_mapEquip.TryGetValue(dwTypeID, out pEquipProto);
 			if( pEquipProto != null )
 			{
-				Transform pIcon = item.transform.FindChild("Icon");
+				Transform pIcon = item.transform.Find("Icon");
 				if( pIcon != null )
 				{
 					UIAtlas tu = Resources.Load("GameIcon", typeof(UIAtlas)) as UIAtlas;
@@ -199,7 +199,7 @@ public class CMainQuestFrame : GUIFrame
 					ctrl.GetComponent<UISprite>().spriteName = pEquipProto.strIcon;
 				}
 				
-				Transform pNum  = item.transform.FindChild("num");
+				Transform pNum  = item.transform.Find("num");
 				if( pNum != null )
 				{
 					UnityEngine.GameObject ctrl = pNum.gameObject;
@@ -213,7 +213,7 @@ public class CMainQuestFrame : GUIFrame
             CProtoManager.inst.m_mapItem.TryGetValue(dwTypeID, out pProto);
 			if( pProto != null )
 			{
-				Transform pIcon = item.transform.FindChild("Icon");
+				Transform pIcon = item.transform.Find("Icon");
 				if( pIcon != null )
 				{
 					UIAtlas tu = Resources.Load("GameIcon", typeof(UIAtlas)) as UIAtlas;
@@ -222,7 +222,7 @@ public class CMainQuestFrame : GUIFrame
 					ctrl.GetComponent<UISprite>().spriteName = pProto.strIcon;
 				}
 				
-				Transform pNum  = item.transform.FindChild("num");
+				Transform pNum  = item.transform.Find("num");
 				if( pNum != null )
 				{
 					UnityEngine.GameObject ctrl = pNum.gameObject;

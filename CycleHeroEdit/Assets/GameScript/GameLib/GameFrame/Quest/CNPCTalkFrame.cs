@@ -37,17 +37,17 @@ public class CNPCTalkFrame : GUIFrame
     {
         base.ReloadUI();
 
-        PlayerTalk              = transform.FindChild("Anchor/Panel/player_talk").gameObject;
-        NpcTalk                 = transform.FindChild("Anchor/Panel/npc_talk").gameObject;
-        QuestTalk               = transform.FindChild("Anchor/Panel/quest_talk").gameObject;
+        PlayerTalk              = transform.Find("Anchor/Panel/player_talk").gameObject;
+        NpcTalk                 = transform.Find("Anchor/Panel/npc_talk").gameObject;
+        QuestTalk               = transform.Find("Anchor/Panel/quest_talk").gameObject;
 
-        m_AcceptQuest           = transform.FindChild("Anchor/Panel/quest_talk/acceptedquest").gameObject;
-        m_CompleteQuest         = transform.FindChild("Anchor/Panel/quest_talk/completequest").gameObject;
-        m_LabelExp              = transform.FindChild("Anchor/Panel/quest_talk/exp").gameObject;
-        m_LabelMoney            = transform.FindChild("Anchor/Panel/quest_talk/money").gameObject;
-        m_reward[0]             = transform.FindChild("Anchor/Panel/quest_talk/qreward0").gameObject;
-        m_reward[1]             = transform.FindChild("Anchor/Panel/quest_talk/qreward1").gameObject;
-        m_reward[2]             = transform.FindChild("Anchor/Panel/quest_talk/qreward2").gameObject;
+        m_AcceptQuest           = transform.Find("Anchor/Panel/quest_talk/acceptedquest").gameObject;
+        m_CompleteQuest         = transform.Find("Anchor/Panel/quest_talk/completequest").gameObject;
+        m_LabelExp              = transform.Find("Anchor/Panel/quest_talk/exp").gameObject;
+        m_LabelMoney            = transform.Find("Anchor/Panel/quest_talk/money").gameObject;
+        m_reward[0]             = transform.Find("Anchor/Panel/quest_talk/qreward0").gameObject;
+        m_reward[1]             = transform.Find("Anchor/Panel/quest_talk/qreward1").gameObject;
+        m_reward[2]             = transform.Find("Anchor/Panel/quest_talk/qreward2").gameObject;
 
 
 		UIEventListener.Get( PlayerTalk ).onClick 	= onClickTalkEvent; 
@@ -66,7 +66,7 @@ public class CNPCTalkFrame : GUIFrame
 
     /// ---------------------------------------------------------------------------
     /// <summary>
-    /// ÊÍ·Å±¾UIFrame ËùÓÃµ½µÄ×ÊÔ´
+    /// ï¿½Í·Å±ï¿½UIFrame ï¿½ï¿½ï¿½Ãµï¿½ï¿½ï¿½ï¿½ï¿½Ô´
     /// </summary>
     /// --------------------------------------------------------------------------
     public override void Destroy()
@@ -87,7 +87,7 @@ public class CNPCTalkFrame : GUIFrame
 
     /// ----------------------------------------------------------------------------
     /// <summary>
-    /// UI×ÊÔ´¼ÓÔØÍò³Ì
+    /// UIï¿½ï¿½Ô´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     /// </summary>
     /// ----------------------------------------------------------------------------
     public override void OnAsyncLoaded()
@@ -120,20 +120,20 @@ public class CNPCTalkFrame : GUIFrame
 
 		ClearTalkFrame ();
 		PlayerTalk.SetActive (true);
-		Transform pInfo = PlayerTalk.transform.FindChild("info");
+		Transform pInfo = PlayerTalk.transform.Find("info");
 		if( pInfo != null )
 		{
 			pInfo.GetComponent<UILabel>().text  = strContent;
 		}
 
-		Transform icon = PlayerTalk.transform.FindChild("icon");
+		Transform icon = PlayerTalk.transform.Find("icon");
 		if( icon != null )
 		{
 			UnityEngine.GameObject ctrl = icon.gameObject;
 			ctrl.GetComponent<UISprite>().spriteName = "player_01";
 		}
 
-		Transform name = PlayerTalk.transform.FindChild("name");
+		Transform name = PlayerTalk.transform.Find("name");
 		if( icon != null )
 		{
 
@@ -151,20 +151,20 @@ public class CNPCTalkFrame : GUIFrame
 		
 		ClearTalkFrame ();
 		NpcTalk.SetActive (true);
-		Transform pInfo = NpcTalk.transform.FindChild("info");
+		Transform pInfo = NpcTalk.transform.Find("info");
 		if( pInfo != null )
 		{
 			pInfo.GetComponent<UILabel>().text  = strContent;
 		}
 		
-		Transform icon = NpcTalk.transform.FindChild("icon");
+		Transform icon = NpcTalk.transform.Find("icon");
 		if( icon != null )
 		{
 			UnityEngine.GameObject ctrl = icon.gameObject;
 			ctrl.GetComponent<UISprite>().spriteName = pEntity.szIcon;
 		}
 		
-		Transform name = NpcTalk.transform.FindChild("name");
+		Transform name = NpcTalk.transform.Find("name");
 		if( icon != null )
 		{
 			UnityEngine.GameObject ctrl = name.gameObject;
@@ -204,7 +204,7 @@ public class CNPCTalkFrame : GUIFrame
 		if( pProto == null )
 			return;
 
-		Transform pInfo = QuestTalk.transform.FindChild("info");
+		Transform pInfo = QuestTalk.transform.Find("info");
 		if( pInfo != null )
 		{
 			if (m_eOpType == EOptionType.EOT_AcceptQuest)
@@ -213,7 +213,7 @@ public class CNPCTalkFrame : GUIFrame
 				pInfo.GetComponent<UILabel>().text  = pQuestText.CompleteTalk;
 		}
 
-		Transform icon = QuestTalk.transform.FindChild("icon");
+		Transform icon = QuestTalk.transform.Find("icon");
 		if( icon != null )
 		{
 			UnityEngine.GameObject ctrl = icon.gameObject;
@@ -238,7 +238,7 @@ public class CNPCTalkFrame : GUIFrame
             CProtoManager.inst.m_mapEquip.TryGetValue(dwTypeID, out pEquipProto);
 			if( pEquipProto != null )
 			{
-				Transform pIcon = item.transform.FindChild("Icon");
+				Transform pIcon = item.transform.Find("Icon");
 				if( pIcon != null )
 				{
 					UIAtlas tu = Resources.Load("GameIcon", typeof(UIAtlas)) as UIAtlas;
@@ -247,7 +247,7 @@ public class CNPCTalkFrame : GUIFrame
 					ctrl.GetComponent<UISprite>().spriteName = pEquipProto.strIcon;
 				}
 				
-				Transform pNum  = item.transform.FindChild("num");
+				Transform pNum  = item.transform.Find("num");
 				if( pNum != null )
 				{
 					UnityEngine.GameObject ctrl = pNum.gameObject;
@@ -261,7 +261,7 @@ public class CNPCTalkFrame : GUIFrame
             CProtoManager.inst.m_mapItem.TryGetValue(dwTypeID, out pProto);
 			if( pProto != null )
 			{
-				Transform pIcon = item.transform.FindChild("Icon");
+				Transform pIcon = item.transform.Find("Icon");
 				if( pIcon != null )
 				{
 					UIAtlas tu = Resources.Load("GameIcon", typeof(UIAtlas)) as UIAtlas;
@@ -270,7 +270,7 @@ public class CNPCTalkFrame : GUIFrame
 					ctrl.GetComponent<UISprite>().spriteName = pProto.strIcon;
 				}
 				
-				Transform pNum  = item.transform.FindChild("num");
+				Transform pNum  = item.transform.Find("num");
 				if( pNum != null )
 				{
 					UnityEngine.GameObject ctrl = pNum.gameObject;
