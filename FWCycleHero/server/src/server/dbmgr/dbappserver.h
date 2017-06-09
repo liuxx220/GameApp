@@ -1,25 +1,20 @@
 /*
 ---------------------------------------------------------------------------------------------------------
 		file name : dbappserver.h
-		desc      : db 网络服务器，
+		desc      : db 网络服务器,管理所有到DB server 的链接
 		author    : ljp
 
 		log		  : 2017-06-09 : 15:55
 ---------------------------------------------------------------------------------------------------------
 */
 #pragma once
-#include "helper/debug_helper.hpp"
-#include "common/common.hpp"
+#include "common/memorystream.hpp"
+#include "network/SessionMgr.hpp"
 
 
 
 
 
-#if KBE_PLATFORM == PLATFORM_WIN32
-
-#else
-// linux include
-#endif
 
 
 
@@ -27,27 +22,30 @@
 namespace KBEngine
 {
 
-	/*class SyncAppDatasHandler : public Task
+	class CLoginSession;
+	class CCellSession;
+	class CDBAppSessionMgr : public INetSessionMgr
 	{
+
 	public:
-	struct ComponentInitInfo
-	{
-	COMPONENT_ID cid;
-	COMPONENT_ORDER startGroupOrder;
-	COMPONENT_ORDER startGlobalOrder;
+		CDBAppSessionMgr();
+		virtual ~CDBAppSessionMgr();
+
+	public:
+
+		//////////////////////////////////////////////////////////////////////////
+		// 更新所有Session
+		//////////////////////////////////////////////////////////////////////////
+		void						UpdateSession(void);
+
+		virtual INetSession*		CreateSession(SESSION_TYPE type);
+		virtual bool				RemoveSession(INetSession* pSession);
+
+	protected:
+
+		TMap<UINT32, INetSession*>	mapSession;
+		UINT32						m_GenID;
 	};
-
-	SyncAppDatasHandler(NetSession& SessionDB );
-	~SyncAppDatasHandler();
-
-	bool							process();
-
-	void							pushApp(COMPONENT_ID cid, COMPONENT_ORDER startGroupOrder, COMPONENT_ORDER startGlobalOrder);
-	private:
-	NetSession&						m_SessionDB;
-	uint64							lastRegAppTime_;
-	std::vector<ComponentInitInfo>	apps_;
-
-	};*/
+	
 }
 

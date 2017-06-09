@@ -9,16 +9,14 @@ log		  : 2017-06-09 : 15:55
 */
 #pragma once
 #include "helper/debug_helper.hpp"
+#include "network/Session.hpp"
+#include "network/net_define.h"
 #include "common/common.hpp"
+#include "common/memorystream.hpp"
 
 
 
-#if KBE_PLATFORM == PLATFORM_WIN32
-// window include
-#else
 
-// linux include
-#endif
 
 
 
@@ -26,27 +24,32 @@ log		  : 2017-06-09 : 15:55
 namespace KBEngine
 {
 
-	/*class SyncAppDatasHandler : public Task
+	
+	class CLoginSession : public INetSession
 	{
+
 	public:
-	struct ComponentInitInfo
-	{
-	COMPONENT_ID cid;
-	COMPONENT_ORDER startGroupOrder;
-	COMPONENT_ORDER startGlobalOrder;
+		CLoginSession();
+		virtual ~CLoginSession();
+
+		void				InitProtol();
+		void				Destory();
+
+		////////////////////////////////////////////////////////////////////////////////////////////
+		// ·¢ËÍÏûÏ¢
+		void				SendMessage(tagNetCmd* pMsg);
+		void				SyncSendMessage(tagNetCmd* pMsg);
+
+
+		UINT32				HandleMessage();
+		void				ReturnMsg(tagUnit* pMsg);
+
+
+	protected:
+		
+		MemoryStream		m_SendStream;
+		MemoryStream		m_RecvStream;
+
 	};
-
-	SyncAppDatasHandler(NetSession& SessionDB );
-	~SyncAppDatasHandler();
-
-	bool							process();
-
-	void							pushApp(COMPONENT_ID cid, COMPONENT_ORDER startGroupOrder, COMPONENT_ORDER startGlobalOrder);
-	private:
-	NetSession&						m_SessionDB;
-	uint64							lastRegAppTime_;
-	std::vector<ComponentInitInfo>	apps_;
-
-	};*/
 }
 

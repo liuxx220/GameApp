@@ -21,45 +21,7 @@
 
 namespace KBEngine
 {
-	
-	//////////////////////////////////////////////////////////////////////////
-	class MemoryStream;
-	class CPlayerSession : public INetSession
-	{
-
-	public:
-
-		CPlayerSession();
-		virtual ~CPlayerSession();
-
-		void						InitProtol();
-		void						Destory();
-
-
-		////////////////////////////////////////////////////////////////////////////////////////////
-		// 发送消息
-		void						SendMessage(tagNetCmd* pMsg);
-		void						SyncSendMessage(tagNetCmd* pMsg);
-		
-
-		UINT32						HandleMessage();
-		void						ReturnMsg(tagUnit* pMsg);
-
-
-		///-----------------------------------------------------------------------------------------
-		// 网络消息处理接口
-		UINT32						HandleProofAccount(MemoryStream* pMsg);
-		UINT32						HandleLoginAppMessage(MemoryStream* pMsg);
-		UINT32						HandleHeartBeatMessage(MemoryStream* pMsg);
-
-	public:
-
-		MemoryStream				m_SendStream;
-		MemoryStream				m_RecvStream;
-		PlayerNetCmdMgr				m_playerNetMgr;		// 消息管理器
-	};
-
-
+	class CPlayerSession;
 	class CLoginSessionMgr : public INetSessionMgr
 	{
 

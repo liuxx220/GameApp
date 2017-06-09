@@ -9,17 +9,14 @@
 */
 #pragma once
 #include "helper/debug_helper.hpp"
+#include "network/Session.hpp"
+#include "network/net_define.h"
+#include "common/memorystream.hpp"
 #include "common/common.hpp"
 
 
 
 
-
-#if KBE_PLATFORM == PLATFORM_WIN32
-
-#else
-// linux include
-#endif
 
 
 
@@ -27,27 +24,30 @@
 namespace KBEngine
 {
 
-	/*class SyncAppDatasHandler : public Task
+	class CCellSession : public INetSession
 	{
+
 	public:
-	struct ComponentInitInfo
-	{
-	COMPONENT_ID cid;
-	COMPONENT_ORDER startGroupOrder;
-	COMPONENT_ORDER startGlobalOrder;
+		CCellSession();
+		virtual ~CCellSession();
+
+		void				InitProtol();
+		void				Destory();
+
+		////////////////////////////////////////////////////////////////////////////////////////////
+		// ·¢ËÍÏûÏ¢
+		void				SendMessage(tagNetCmd* pMsg);
+		void				SyncSendMessage(tagNetCmd* pMsg);
+
+
+		UINT32				HandleMessage();
+		void				ReturnMsg(tagUnit* pMsg);
+
+
+	protected:
+
+		MemoryStream		m_SendStream;
+		MemoryStream		m_RecvStream;
 	};
-
-	SyncAppDatasHandler(NetSession& SessionDB );
-	~SyncAppDatasHandler();
-
-	bool							process();
-
-	void							pushApp(COMPONENT_ID cid, COMPONENT_ORDER startGroupOrder, COMPONENT_ORDER startGlobalOrder);
-	private:
-	NetSession&						m_SessionDB;
-	uint64							lastRegAppTime_;
-	std::vector<ComponentInitInfo>	apps_;
-
-	};*/
 }
 
