@@ -292,9 +292,13 @@ namespace LuaFramework
         /// 清理内存
         /// </summary>
         public static void ClearMemory() {
+
             GC.Collect(); Resources.UnloadUnusedAssets();
-            LuaScriptMgr mgr = ClientApp.Instance.GetManager<LuaScriptMgr>(ManagerName.Lua);
-            if (mgr != null && mgr.lua != null) mgr.LuaGC();
+            if (ClientApp.Instance != null)
+            {
+                LuaScriptMgr mgr = ClientApp.Instance.GetManager<LuaScriptMgr>(ManagerName.Lua);
+                if (mgr != null && mgr.lua != null) mgr.LuaGC();
+            }
         }
 
         /// <summary>
