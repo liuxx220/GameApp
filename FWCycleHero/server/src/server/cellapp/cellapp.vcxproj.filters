@@ -1,59 +1,94 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    <Filter Include="Core">
+      <UniqueIdentifier>{34f7b1cf-23c5-4a3b-97f5-5d5a5a68cf5c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files">
+    <Filter Include="Session">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
+    <Filter Include="NetHandle">
+      <UniqueIdentifier>{51ddae72-4a64-4716-8c0d-e651b873c963}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="cell.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="cellapp.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="cellapp_interface.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="cell.cpp">
+      <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="cells.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="space.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="spaces.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="space.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="spaces.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="ClientSession.cpp">
+      <Filter>Session</Filter>
+    </ClCompile>
+    <ClCompile Include="ClientSessionMgr.cpp">
+      <Filter>Session</Filter>
+    </ClCompile>
+    <ClCompile Include="DBSession.cpp">
+      <Filter>Session</Filter>
+    </ClCompile>
+    <ClCompile Include="sync_cellapp_handler.cpp">
+      <Filter>NetHandle</Filter>
+    </ClCompile>
+    <ClCompile Include="sync_dbapp_handler.cpp">
+      <Filter>NetHandle</Filter>
+    </ClCompile>
+    <ClCompile Include="sync_loginapp_handler.cpp">
+      <Filter>NetHandle</Filter>
+    </ClCompile>
+    <ClCompile Include="LoginSession.cpp">
+      <Filter>Session</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="cell.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="cellapp.h">
-      <Filter>Header Files</Filter>
+      <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="cellapp_interface.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="cellapp_interface_macros.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="cell.h">
+      <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="cells.h">
-      <Filter>Header Files</Filter>
+      <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="space.h">
-      <Filter>Header Files</Filter>
+      <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="spaces.h">
-      <Filter>Header Files</Filter>
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="ClientSession.h">
+      <Filter>Session</Filter>
+    </ClInclude>
+    <ClInclude Include="ClientSessionMgr.h">
+      <Filter>Session</Filter>
+    </ClInclude>
+    <ClInclude Include="DBSession.h">
+      <Filter>Session</Filter>
+    </ClInclude>
+    <ClInclude Include="sync_cellapp_handler.h">
+      <Filter>NetHandle</Filter>
+    </ClInclude>
+    <ClInclude Include="sync_dbapp_handler.h">
+      <Filter>NetHandle</Filter>
+    </ClInclude>
+    <ClInclude Include="sync_loginapp_handler.h">
+      <Filter>NetHandle</Filter>
+    </ClInclude>
+    <ClInclude Include="LoginSession.h">
+      <Filter>Session</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

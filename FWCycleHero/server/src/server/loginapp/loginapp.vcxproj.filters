@@ -11,6 +11,9 @@
     <Filter Include="msgid">
       <UniqueIdentifier>{fc55f6a8-461f-4d2c-8be9-68c2eab3c97a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="session">
+      <UniqueIdentifier>{b2f0cf8a-49cc-4deb-8d70-81bf6ea222e3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="proof_Policy.cpp">
@@ -34,14 +37,20 @@
     <ClCompile Include="player.cpp">
       <Filter>core</Filter>
     </ClCompile>
-    <ClCompile Include="fplayer_net_cmd_mgr.cpp">
-      <Filter>core</Filter>
-    </ClCompile>
-    <ClCompile Include="LoginSessionMgr.cpp">
-      <Filter>core</Filter>
-    </ClCompile>
     <ClCompile Include="msg_login.cpp">
       <Filter>msgid</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerSession.cpp">
+      <Filter>session</Filter>
+    </ClCompile>
+    <ClCompile Include="LoginSessionMgr.cpp">
+      <Filter>session</Filter>
+    </ClCompile>
+    <ClCompile Include="fplayer_net_cmd_mgr.cpp">
+      <Filter>session</Filter>
+    </ClCompile>
+    <ClCompile Include="db_net_cmd_mgr.cpp">
+      <Filter>session</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -66,17 +75,23 @@
     <ClInclude Include="msg_cl.h">
       <Filter>msgid</Filter>
     </ClInclude>
-    <ClInclude Include="fplayer_net_cmd_mgr.hpp">
-      <Filter>core</Filter>
-    </ClInclude>
     <ClInclude Include="msg_login.h">
       <Filter>msgid</Filter>
     </ClInclude>
-    <ClInclude Include="LoginSessionMgr.hpp">
-      <Filter>core</Filter>
-    </ClInclude>
     <ClInclude Include="flogin_define.hpp">
       <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerSession.h">
+      <Filter>session</Filter>
+    </ClInclude>
+    <ClInclude Include="LoginSessionMgr.h">
+      <Filter>session</Filter>
+    </ClInclude>
+    <ClInclude Include="fplayer_net_cmd_mgr.hpp">
+      <Filter>session</Filter>
+    </ClInclude>
+    <ClInclude Include="db_net_cmd_mgr.h">
+      <Filter>session</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

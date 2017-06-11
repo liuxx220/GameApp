@@ -18,7 +18,7 @@
 
 namespace KBEngine
 {
-	#define GT_MAX_PACKAGE_LEN		512	
+
 	//-------------------------------------------------------------------------------------
 	PlayerNetCmdMgr::PlayerNetCmdMgr()
 	{

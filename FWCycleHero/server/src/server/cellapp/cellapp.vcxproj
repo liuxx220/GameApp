@@ -114,20 +114,31 @@
   <ItemGroup>
     <ClCompile Include="cell.cpp" />
     <ClCompile Include="cellapp.cpp" />
-    <ClCompile Include="cellapp_interface.cpp" />
     <ClCompile Include="cells.cpp" />
+    <ClCompile Include="ClientSession.cpp" />
+    <ClCompile Include="ClientSessionMgr.cpp" />
+    <ClCompile Include="DBSession.cpp" />
+    <ClCompile Include="LoginSession.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="space.cpp" />
     <ClCompile Include="spaces.cpp" />
+    <ClCompile Include="sync_cellapp_handler.cpp" />
+    <ClCompile Include="sync_dbapp_handler.cpp" />
+    <ClCompile Include="sync_loginapp_handler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cell.h" />
     <ClInclude Include="cellapp.h" />
-    <ClInclude Include="cellapp_interface.h" />
-    <ClInclude Include="cellapp_interface_macros.h" />
     <ClInclude Include="cells.h" />
+    <ClInclude Include="ClientSession.h" />
+    <ClInclude Include="ClientSessionMgr.h" />
+    <ClInclude Include="DBSession.h" />
+    <ClInclude Include="LoginSession.h" />
     <ClInclude Include="space.h" />
     <ClInclude Include="spaces.h" />
+    <ClInclude Include="sync_cellapp_handler.h" />
+    <ClInclude Include="sync_dbapp_handler.h" />
+    <ClInclude Include="sync_loginapp_handler.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />

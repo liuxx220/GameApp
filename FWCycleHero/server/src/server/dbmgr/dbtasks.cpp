@@ -28,18 +28,13 @@ along with KBEngine.  If not, see <http://www.gnu.org/licenses/>.
 #include "server/serverconfig.hpp"
 
 
-#if KBE_PLATFORM == PLATFORM_WIN32
-#ifdef _DEBUG
-#pragma comment(lib, "libeay32_d.lib")
-#pragma comment(lib, "ssleay32_d.lib")
-#else
-#pragma comment(lib, "libeay32.lib")
-#pragma comment(lib, "ssleay32.lib")
-#endif
-#endif
 
 
-//namespace KBEngine{
+
+
+
+
+namespace KBEngine{
 //
 ////-------------------------------------------------------------------------------------
 //DBTask::DBTask(const Address& addr, MemoryStream& datas):
@@ -1642,4 +1637,4 @@ along with KBEngine.  If not, see <http://www.gnu.org/licenses/>.
 //}
 //
 ////-------------------------------------------------------------------------------------
-//}
+}

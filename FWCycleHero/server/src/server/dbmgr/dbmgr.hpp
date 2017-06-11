@@ -6,32 +6,21 @@ author		:
 log			:
 ------------------------------------------------------------------------------------------------------------------
 */
-
 #ifndef KBE_DBMGR_HPP
 #define KBE_DBMGR_HPP
-	
-// common include	
-#include "buffered_dbtasks.hpp"
 #include "server/serverconfig.hpp"
-#include "server/serverconfig.hpp"
-#include "common/timer.hpp"
 #include "server/glw_resmgr.hpp"
-#include "thread/threadpool.hpp"
+#include "network/event_dispatcher.hpp"
+#include "DBSessionMgr.h"
 
-//#define NDEBUG
-// windows include	
-#if KBE_PLATFORM == PLATFORM_WIN32
-#else
-// linux include
-#endif
-	
+
+
+
+
 namespace KBEngine
 {
 
-	class DBInterface;
-	class BillingHandler;
-	class SyncAppDatasHandler;
-
+	
 	class AppDBServer : public Singleton<AppDBServer>
 	{
 
@@ -42,6 +31,7 @@ namespace KBEngine
 	
 		
 		bool						Initialize(COMPONENT_TYPE componentType);
+		void						InitNetWork( void );
 		void						MainLoop(void);
 
 		/* 初始化相关接口 */
@@ -53,7 +43,8 @@ namespace KBEngine
 	protected:
 		
 		COMPONENT_TYPE				mComponentType;		
-		
+		CDBAppSessionMgr*			m_pDBAppSessionMgr;
+		EventDispatcher*			m_pDispatcher;
 	};
 
 }

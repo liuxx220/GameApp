@@ -22,15 +22,7 @@ KBE_SINGLETON_INIT(ServerConfig);
 //-------------------------------------------------------------------------------------
 ServerConfig::ServerConfig():
 gameUpdateHertz_(10),
-tick_max_buffered_logs_(4096),
 tick_max_sync_logs_(32),
-billingSystem_accountType_(""),
-billingSystem_chargeType_(""),
-billingSystem_thirdpartyAccountServiceAddr_(""),
-billingSystem_thirdpartyAccountServicePort_(80),
-billingSystem_thirdpartyChargeServiceAddr_(""),
-billingSystem_thirdpartyChargeServicePort_(80),
-billingSystem_thirdpartyServiceCBPort_(0),
 shutdown_time_(1.f),
 shutdown_waitTickTime_(1.f),
 callback_timeout_(180.f),
@@ -39,6 +31,7 @@ thread_init_create_(1),
 thread_pre_create_(2),
 thread_max_create_(8)
 {
+
 }
 
 //-------------------------------------------------------------------------------------
@@ -110,88 +103,6 @@ bool ServerConfig::loadConfig(std::string fileName)
 		if(childnode)
 		{
 			thread_max_create_ = KBE_MAX(1, xml->getValInt(childnode));
-		}
-	}
-
-	rootNode = xml->getRootNode("channelCommon");
-	if(rootNode != NULL)
-	{
-		TiXmlNode* childnode = xml->enterNode(rootNode, "timeout");
-		if(childnode)
-		{
-			TiXmlNode* childnode1 = xml->enterNode(childnode, "internal");
-			if(childnode1)
-			{
-				channelCommon_.channelInternalTimeout = KBE_MAX(1.f, float(xml->getValFloat(childnode1)));
-				g_channelInternalTimeout = channelCommon_.channelInternalTimeout;
-			}
-
-			childnode1 = xml->enterNode(childnode, "external");
-			if(childnode)
-			{
-				channelCommon_.channelExternalTimeout = KBE_MAX(1.f, float(xml->getValFloat(childnode1)));
-				g_channelExternalTimeout = channelCommon_.channelExternalTimeout;
-			}
-		}
-
-		childnode = xml->enterNode(rootNode, "resend");
-		if(childnode)
-		{
-			TiXmlNode* childnode1 = xml->enterNode(childnode, "internal");
-			if(childnode1)
-			{
-				TiXmlNode* childnode2 = xml->enterNode(childnode1, "interval");
-				if(childnode2)
-				{
-					g_intReSendInterval = uint32(xml->getValInt(childnode2));
-				}
-
-				childnode2 = xml->enterNode(childnode1, "retries");
-				if(childnode2)
-				{
-					g_intReSendRetries = uint32(xml->getValInt(childnode2));
-				}
-			}
-
-			childnode1 = xml->enterNode(childnode, "external");
-			if(childnode)
-			{
-				TiXmlNode* childnode2 = xml->enterNode(childnode1, "interval");
-				if(childnode2)
-				{
-					g_extReSendInterval = uint32(xml->getValInt(childnode2));
-				}
-
-				childnode2 = xml->enterNode(childnode1, "retries");
-				if(childnode2)
-				{
-					g_extReSendRetries = uint32(xml->getValInt(childnode2));
-				}
-			}
-		}
-
-		childnode = xml->enterNode(rootNode, "readBufferSize");
-		if(childnode)
-		{
-			TiXmlNode* childnode1 = xml->enterNode(childnode, "internal");
-			if(childnode1)
-				channelCommon_.intReadBufferSize = KBE_MAX(0, xml->getValInt(childnode1));
-
-			childnode1 = xml->enterNode(childnode, "external");
-			if(childnode1)
-				channelCommon_.extReadBufferSize = KBE_MAX(0, xml->getValInt(childnode1));
-		}
-
-		childnode = xml->enterNode(rootNode, "writeBufferSize");
-		if(childnode)
-		{
-			TiXmlNode* childnode1 = xml->enterNode(childnode, "internal");
-			if(childnode1)
-				channelCommon_.intWriteBufferSize = KBE_MAX(0, xml->getValInt(childnode1));
-
-			childnode1 = xml->enterNode(childnode, "external");
-			if(childnode1)
-				channelCommon_.extWriteBufferSize = KBE_MAX(0, xml->getValInt(childnode1));
 		}
 	}
 
@@ -698,11 +609,6 @@ bool ServerConfig::loadConfig(std::string fileName)
 		node = xml->enterNode(rootNode, "SOMAXCONN");
 		if(node != NULL){
 			_messagelogInfo.tcp_SOMAXCONN = xml->getValInt(node);
-		}
-
-		node = xml->enterNode(rootNode, "tick_max_buffered_logs");
-		if(node != NULL){
-			tick_max_buffered_logs_ = (uint32)xml->getValInt(node);
 		}
 
 		node = xml->enterNode(rootNode, "tick_max_sync_logs");

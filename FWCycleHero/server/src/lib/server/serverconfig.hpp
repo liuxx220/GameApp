@@ -37,21 +37,6 @@ namespace KBEngine
 {
 
 	class Address;
-	// 网络配置信息
-	struct ChannelCommon
-	{
-		float channelInternalTimeout;
-		float channelExternalTimeout;
-		uint32 extReadBufferSize;
-		uint32 extWriteBufferSize;
-		uint32 intReadBufferSize;
-		uint32 intWriteBufferSize;
-		uint32 intReSendInterval;
-		uint32 intReSendRetries;
-		uint32 extReSendInterval;
-		uint32 extReSendRetries;
-	};
-
 	// 引擎组件信息结构体
 	typedef struct EngineComponentInfo
 	{
@@ -189,14 +174,11 @@ namespace KBEngine
 
 		INLINE uint16 billingSystemThirdpartyServiceCBPort()const;
 
-		const ChannelCommon& channelCommon(){ return channelCommon_; }
-
 		uint32 tcp_SOMAXCONN(COMPONENT_TYPE componentType);
 
 		float shutdowntime(){ return shutdown_time_; }
 		float shutdownWaitTickTime(){ return shutdown_waitTickTime_; }
 
-		uint32 tickMaxBufferedLogs()const { return tick_max_buffered_logs_; }
 		uint32 tickMaxSyncLogs()const { return tick_max_sync_logs_; }
 	private:
 		void _updateEmailInfos();
@@ -214,23 +196,10 @@ namespace KBEngine
 		ENGINE_COMPONENT_INFO _billingInfo;
 	public:
 		int16 gameUpdateHertz_;
-		uint32 tick_max_buffered_logs_;
 		uint32 tick_max_sync_logs_;
-
-		ChannelCommon channelCommon_;
 
 		// 每个客户端每秒占用的最大带宽
 		uint32 bitsPerSecondToClient_;		
-
-		std::string billingSystem_accountType_;							// 计费系统类别
-		std::string billingSystem_chargeType_;							// 计费系统类别
-		std::string billingSystem_thirdpartyAccountServiceAddr_;		// 第三方运营账号服务地址(当type是thirdparty时有效)
-		uint16	billingSystem_thirdpartyAccountServicePort_;			
-		std::string billingSystem_thirdpartyChargeServiceAddr_;			// 第三方运营充值服务地址(当type是thirdparty时有效)
-		uint16 billingSystem_thirdpartyChargeServicePort_;	
-		uint16 billingSystem_thirdpartyServiceCBPort_;	
-		uint32 billingSystem_orders_timeout_;
-
 		float shutdown_time_;
 		float shutdown_waitTickTime_;
 

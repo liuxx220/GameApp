@@ -75,7 +75,7 @@
  %(AdditionalOptions)</AdditionalOptions>
       <AdditionalDependencies>netapi32.lib;xmlplus_d.lib;Version.lib;server_d.lib;common_d.lib;helper_d.lib;math_d.lib;network_d.lib;thread_d.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
-      <AdditionalLibraryDirectories>../../../../../../../Work/libs;../../lib/dependencies/vld;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../../../../../../../Work/libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
@@ -114,17 +114,23 @@
   <ItemGroup>
     <ClCompile Include="billingmgr.cpp" />
     <ClCompile Include="buffered_dbtasks.cpp" />
+    <ClCompile Include="cellSession.cpp" />
+    <ClCompile Include="DBSessionMgr.cpp" />
     <ClCompile Include="dbmgr.cpp" />
     <ClCompile Include="dbtasks.cpp" />
+    <ClCompile Include="loginSession.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="sync_app_datas_handler.cpp" />
+    <ClCompile Include="sync_app_handler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="billingmgr.hpp" />
     <ClInclude Include="buffered_dbtasks.hpp" />
+    <ClInclude Include="cellSession.h" />
+    <ClInclude Include="DBSessionMgr.h" />
     <ClInclude Include="dbmgr.hpp" />
     <ClInclude Include="dbtasks.hpp" />
-    <ClInclude Include="sync_app_datas_handler.hpp" />
+    <ClInclude Include="loginSession.h" />
+    <ClInclude Include="sync_app_handler.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />

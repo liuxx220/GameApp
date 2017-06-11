@@ -9,7 +9,6 @@
 */
 #include "loginapp.hpp"
 #include "network/common.hpp"
-#include "network/message_handler.hpp"
 #include "common/kbeversion.hpp"
 #include "server/components.hpp"
 #include "server/glw_resmgr.hpp"

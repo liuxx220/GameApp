@@ -113,10 +113,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="db_net_cmd_mgr.cpp" />
     <ClCompile Include="fplayer_net_cmd_mgr.cpp" />
-    <ClCompile Include="msg_login.cpp" />
-    <ClCompile Include="proof_Policy.cpp" />
     <ClCompile Include="LoginSessionMgr.cpp" />
+    <ClCompile Include="msg_login.cpp" />
+    <ClCompile Include="PlayerSession.cpp" />
+    <ClCompile Include="proof_Policy.cpp" />
     <ClCompile Include="fpworld.cpp" />
     <ClCompile Include="fpworld_mgr.cpp" />
     <ClCompile Include="loginapp.cpp" />
@@ -125,12 +127,14 @@
     <ClCompile Include="player.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="db_net_cmd_mgr.h" />
     <ClInclude Include="flogin_define.hpp" />
     <ClInclude Include="fplayer_net_cmd_mgr.hpp" />
+    <ClInclude Include="LoginSessionMgr.h" />
     <ClInclude Include="msg_login.h" />
     <ClInclude Include="msg_cl.h" />
+    <ClInclude Include="PlayerSession.h" />
     <ClInclude Include="proof_Policy.hpp" />
-    <ClInclude Include="LoginSessionMgr.hpp" />
     <ClInclude Include="fpworld.hpp" />
     <ClInclude Include="fpworld_mgr.hpp" />
     <ClInclude Include="loginapp.hpp" />

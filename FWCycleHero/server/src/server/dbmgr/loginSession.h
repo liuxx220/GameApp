@@ -13,6 +13,7 @@ log		  : 2017-06-09 : 15:55
 #include "network/net_define.h"
 #include "common/common.hpp"
 #include "common/memorystream.hpp"
+#include "sync_app_handler.h"
 
 
 
@@ -49,7 +50,7 @@ namespace KBEngine
 		
 		MemoryStream		m_SendStream;
 		MemoryStream		m_RecvStream;
-
+		CDBAppNetCmdMgr		m_loginNetMgr;
 	};
 }
 

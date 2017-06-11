@@ -1,53 +1,66 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    <Filter Include="Session">
+      <UniqueIdentifier>{815e1c09-8378-46d3-9d50-20bb2091ce08}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
-    </Filter>
-    <Filter Include="Task">
-      <UniqueIdentifier>{4182129c-274f-468c-b86b-8c93a7065ef0}</UniqueIdentifier>
+    <Filter Include="Core">
+      <UniqueIdentifier>{b4927d28-6114-4a87-b7b7-d024b378d800}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="billingmgr.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
     <ClCompile Include="buffered_dbtasks.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="dbmgr.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="dbtasks.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="sync_app_datas_handler.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="loginSession.cpp">
+      <Filter>Session</Filter>
     </ClCompile>
-    <ClCompile Include="billingmgr.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="cellSession.cpp">
+      <Filter>Session</Filter>
+    </ClCompile>
+    <ClCompile Include="DBSessionMgr.cpp">
+      <Filter>Session</Filter>
+    </ClCompile>
+    <ClCompile Include="sync_app_handler.cpp">
+      <Filter>Session</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="billingmgr.hpp">
+      <Filter>Core</Filter>
+    </ClInclude>
     <ClInclude Include="buffered_dbtasks.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="dbmgr.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="dbtasks.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="sync_app_datas_handler.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="loginSession.h">
+      <Filter>Session</Filter>
     </ClInclude>
-    <ClInclude Include="billingmgr.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="cellSession.h">
+      <Filter>Session</Filter>
+    </ClInclude>
+    <ClInclude Include="DBSessionMgr.h">
+      <Filter>Session</Filter>
+    </ClInclude>
+    <ClInclude Include="sync_app_handler.h">
+      <Filter>Session</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

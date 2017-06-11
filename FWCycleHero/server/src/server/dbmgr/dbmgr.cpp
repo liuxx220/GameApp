@@ -7,12 +7,9 @@ log			:
 ------------------------------------------------------------------------------------------------------------------
 */
 #include "dbmgr.hpp"
-#include "dbtasks.hpp"
-#include "billingmgr.hpp"
-#include "sync_app_datas_handler.hpp"
 #include "network/common.hpp"
-#include "network/message_handler.hpp"
-#include "thread/threadpool.hpp"
+#include "network/event_poller.hpp"
+#include "network/event_dispatcher.hpp"
 #include "server/components.hpp"
 #include "db_interface/db_interface.h"
 
@@ -20,11 +17,11 @@ log			:
 
 namespace KBEngine{
 	
-	ServerConfig g_serverConfig;
+
 	KBE_SINGLETON_INIT(AppDBServer);
 
 	//-------------------------------------------------------------------------------------
-	AppDBServer::AppDBServer()
+	AppDBServer::AppDBServer() : m_pDBAppSessionMgr(0), m_pDispatcher(0)
 	{
 
 	}
@@ -40,12 +37,53 @@ namespace KBEngine{
 	{
 		// 注册网络需要处理的消息接口
 		mComponentType = componentType;
+		DebugHelper::initialize(componentType);
+
+		// 资源初始化
+		new Resmgr();
+		Resmgr::getSingleton().initialize();
+		new ServerConfig();
+
+		INFO_MSG("-----------------------------------------------------------------------------------------\n");
+		g_kbeSrvConfig.loadConfig("config/kbengine_defs.xml");
+		g_kbeSrvConfig.loadConfig("config/kbengine.xml");
+		INFO_MSG("Load config files \n");
+
+		if (!initDB())
+			return false;
+		INFO_MSG("Connection DB Success!! \n");
+
+
+
+		m_pDispatcher = new EventDispatcher();
+		InitNetWork();
 		return true;
 	}
 
+	//-------------------------------------------------------------------------------
+	// function : 
+	// desc		: 初始化服务器网络
+	//-------------------------------------------------------------------------------
+	void AppDBServer::InitNetWork(void)
+	{
+		if (m_pDBAppSessionMgr == NULL)
+		{
+			m_pDBAppSessionMgr = new CDBAppSessionMgr();
+		}
+
+		// 创建对内对位监听socket
+		ENGINE_COMPONENT_INFO& info = g_kbeSrvConfig.getLoginApp();
+		if (m_pDispatcher->pPoller() != NULL)
+		{
+			m_pDispatcher->pPoller()->InitNetEngine(info.db_port);
+			m_pDispatcher->pPoller()->SetSessionFactory(m_pDBAppSessionMgr);
+		}
+	}
+
+
 	bool AppDBServer::InitializeEnd()
 	{
-		return initDB();
+		return true;
 	}
 
 	//-------------------------------------------------------------------------------------
@@ -53,7 +91,7 @@ namespace KBEngine{
 	{
 		while (true)
 		{
-			
+			m_pDBAppSessionMgr->UpdateSession();
 			sleep(10);
 		}
 	}
@@ -91,6 +129,5 @@ namespace KBEngine{
 	void AppDBServer::Destroy()
 	{
 	
-		
 	}
 }

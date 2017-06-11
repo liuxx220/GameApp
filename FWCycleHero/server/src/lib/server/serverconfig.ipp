@@ -106,20 +106,4 @@ INLINE ENGINE_COMPONENT_INFO& ServerConfig::getComponent(COMPONENT_TYPE componen
 //-------------------------------------------------------------------------------------	
 INLINE int16 ServerConfig::gameUpdateHertz(void)const { return gameUpdateHertz_;}
 
-//-------------------------------------------------------------------------------------	
-
-
-INLINE const char* ServerConfig::billingSystemAccountType()const { return billingSystem_accountType_.c_str(); }
-INLINE const char* ServerConfig::billingSystemChargeType()const { return billingSystem_chargeType_.c_str(); }
-
-INLINE const char* ServerConfig::billingSystemThirdpartyAccountServiceAddr()const { return billingSystem_thirdpartyAccountServiceAddr_.c_str(); }
-INLINE uint16 ServerConfig::billingSystemThirdpartyAccountServicePort()const { return billingSystem_thirdpartyAccountServicePort_; }
-
-INLINE const char* ServerConfig::billingSystemThirdpartyChargeServiceAddr()const { return billingSystem_thirdpartyChargeServiceAddr_.c_str(); }
-INLINE uint16 ServerConfig::billingSystemThirdpartyChargeServicePort()const { return billingSystem_thirdpartyChargeServicePort_; }
-
-INLINE uint16 ServerConfig::billingSystemThirdpartyServiceCBPort()const { return billingSystem_thirdpartyServiceCBPort_; }
-
-//-------------------------------------------------------------------------------------	
-
 }

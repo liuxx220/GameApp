@@ -1,32 +1,24 @@
 /*
-This source file is part of KBEngine
-For the latest info, see http://www.kbengine.org/
+---------------------------------------------------------------------------------------------------
+			file name : cellapp.h
+			desc      : 場景服務器
+			author	  : ljp
 
-Copyright (c) 2008-2016 KBEngine.
-
-KBEngine is free software: you can redistribute it and/or modify
-it under the terms of the GNU Lesser General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-KBEngine is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU Lesser General Public License for more details.
- 
-You should have received a copy of the GNU Lesser General Public License
-along with KBEngine.  If not, see <http://www.gnu.org/licenses/>.
+			log		  : by ljp create 2017-06-11
+---------------------------------------------------------------------------------------------------
 */
-
-#ifndef KBE_CELLAPP_H
-#define KBE_CELLAPP_H
-	
-// common include	
+#pragma once
 #include "spaces.h"
 #include "cells.h"
-
+#include "LoginSession.h"
+#include "DBSession.h"
+#include "network/event_dispatcher.hpp"
+#include "ClientSessionMgr.h"
 
 	
+
+
+
 namespace KBEngine
 {
 
@@ -49,10 +41,16 @@ namespace KBEngine
 
 		// 所有的cell
 		COMPONENT_TYPE				mComponentType;
+
+		CCellAppSessionMgr*			m_CellSessionMgr;
+		EventDispatcher*			m_pDispatcher;
+		CLoginSession				m_Login;				// 连接到登录服务器
+		CDBSession					m_DB;					// 连接到数据库
+
 		Cells						cells_;
 		uint32						flags_;
 	};
 
 }
 
-#endif // KBE_CELLAPP_H
+

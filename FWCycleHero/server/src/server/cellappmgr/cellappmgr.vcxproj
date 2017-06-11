@@ -112,21 +112,24 @@
     <ClCompile Include="cell.cpp" />
     <ClCompile Include="cellapp.cpp" />
     <ClCompile Include="cellappmgr.cpp" />
-    <ClCompile Include="cellappmgr_interface.cpp" />
     <ClCompile Include="cells.cpp" />
+    <ClCompile Include="CellSession.cpp" />
+    <ClCompile Include="CellSessionMgr.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="space.cpp" />
     <ClCompile Include="spaces.cpp" />
+    <ClCompile Include="sync_cellapp_handler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cell.h" />
     <ClInclude Include="cellapp.h" />
     <ClInclude Include="cellappmgr.h" />
-    <ClInclude Include="cellappmgr_interface.h" />
-    <ClInclude Include="cellappmgr_interface_macros.h" />
     <ClInclude Include="cells.h" />
+    <ClInclude Include="CellSession.h" />
+    <ClInclude Include="CellSessionMgr.h" />
     <ClInclude Include="space.h" />
     <ClInclude Include="spaces.h" />
+    <ClInclude Include="sync_cellapp_handler.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />

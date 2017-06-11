@@ -1,31 +1,23 @@
 /*
-This source file is part of KBEngine
-For the latest info, see http://www.kbengine.org/
+---------------------------------------------------------------------------------------------------
+		file name : cellapp.h
+		desc      : 場景服務器對象
+		author	  : ljp
 
-Copyright (c) 2008-2016 KBEngine.
-
-KBEngine is free software: you can redistribute it and/or modify
-it under the terms of the GNU Lesser General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-KBEngine is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU Lesser General Public License for more details.
- 
-You should have received a copy of the GNU Lesser General Public License
-along with KBEngine.  If not, see <http://www.gnu.org/licenses/>.
+		log		  : by ljp create 2017-06-11
+---------------------------------------------------------------------------------------------------
 */
-
-
 #include "cellapp.h"
 #include "space.h"
-#include "profile.h"
-#include "coordinate_node.h"
-#include "cellapp_interface.h"
+#include "server/glw_resmgr.hpp"
+#include "server/serverconfig.hpp"
 #include "server/components.hpp"
+#include "network/event_poller.hpp"
 #include "navigation/navigation.hpp"
+
+
+
+
 
 
 namespace KBEngine{
@@ -33,9 +25,8 @@ namespace KBEngine{
 
 	KBE_SINGLETON_INIT(CellServerApp);
 	//Navigation g_navigation;
-
 	//-------------------------------------------------------------------------------------
-	CellServerApp::CellServerApp()
+	CellServerApp::CellServerApp() : m_CellSessionMgr(0), m_pDispatcher(0)
 	{
 	
 	}
@@ -52,11 +43,37 @@ namespace KBEngine{
 	{
 		// 注册网络需要处理的消息接口
 		mComponentType = componentType;
+		DebugHelper::initialize(componentType);
+
+		// 资源初始化
+		new Resmgr();
+		Resmgr::getSingleton().initialize();
+		new ServerConfig();
+
+		INFO_MSG("-----------------------------------------------------------------------------------------\n");
+		g_kbeSrvConfig.loadConfig("config/kbengine_defs.xml");
+		g_kbeSrvConfig.loadConfig("config/kbengine.xml");
+		INFO_MSG("Load config files \n");
+
+		m_pDispatcher = new EventDispatcher();
+		InitializeEnd();
 		return true;
 	}
 
 	bool CellServerApp::InitializeEnd()
 	{
+		if (m_CellSessionMgr == NULL)
+		{
+			m_CellSessionMgr = new CCellAppSessionMgr();
+		}
+
+		// 创建对内对位监听socket
+		ENGINE_COMPONENT_INFO& info = g_kbeSrvConfig.getLoginApp();
+		if (m_pDispatcher->pPoller() != NULL)
+		{
+			m_pDispatcher->pPoller()->InitNetEngine(info.db_port);
+			m_pDispatcher->pPoller()->SetSessionFactory(m_CellSessionMgr);
+		}
 		return true;
 	}
 
@@ -65,7 +82,7 @@ namespace KBEngine{
 	{
 		while (true)
 		{
-
+			m_CellSessionMgr->UpdateSession();
 			sleep(10);
 		}
 	}
