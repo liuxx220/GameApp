@@ -16,7 +16,6 @@ class CProtoManager : View
 
 	// 各种数据字典
 	public Dictionary< uint, tagHeroProto > 	m_mapHero;
-	public Dictionary< uint, tagCycleProto > 	m_mapCar;
 	public Dictionary< uint, tagSkillProto > 	m_mapSkill;
 	public Dictionary< uint, tagItemProto > 	m_mapItem;
 	public Dictionary< uint, tagEquipProto > 	m_mapEquip;
@@ -32,7 +31,6 @@ class CProtoManager : View
 	{
 		inst 			= this;
 		m_mapHero  		= new Dictionary< uint, tagHeroProto >();
-		m_mapCar  		= new Dictionary< uint, tagCycleProto >();
 		m_mapSkill  	= new Dictionary< uint, tagSkillProto >();
 		m_mapItem  		= new Dictionary< uint, tagItemProto >();
 		m_mapEquip  	= new Dictionary< uint, tagEquipProto >();
@@ -50,9 +48,6 @@ class CProtoManager : View
 	public void LoadXMLS( )
 	{
 		LoadHeroConfig ();
-
-		LoadCarConfig ();
-
 		LoadSkillConfig ();
 
 		LoadItemConfig ();
@@ -83,8 +78,10 @@ class CProtoManager : View
 			{
 				tagHeroProto hero 	= new tagHeroProto();
 				hero.dwID 			= xml.GetDword( "id",   herolist[i] );
+                hero.strName        = xml.GetString("name", herolist[i], "");
+                hero.strDesc        = xml.GetString("desc", herolist[i], "");
 				hero.strIcon      	= xml.GetString("icon", herolist[i], ""  );
-				hero.strModel      	= xml.GetString("name", herolist[i], ""  );
+				hero.strModel      	= xml.GetString("model", herolist[i], ""  );
 				hero.dwSkill1		= xml.GetDword( "normalskill1", herolist[i] );
 				hero.dwSkill2		= xml.GetDword( "normalskill2", herolist[i] );
                 hero.dwSkill3       = xml.GetDword( "normalskill3", herolist[i]);
@@ -94,25 +91,6 @@ class CProtoManager : View
 		}
 	}
 
-	public void LoadCarConfig( )
-	{
-		CXmlContainer xml = new CXmlContainer ();
-		List< string > herolist = new List<string > ();
-		if (xml.LoadXML ("data/car_proto", "id", herolist)) 
-		{
-			
-			for( int i = 0; i < herolist.Count; i++ )
-			{
-				tagCycleProto car 	= new tagCycleProto();
-				car.dwID 			= xml.GetDword( "id",   herolist[i] );
-				car.strIcon      	= xml.GetString("icon", herolist[i], ""  );
-				car.strModel      	= xml.GetString("name", herolist[i], ""  );
-				car.dwSkill1		= xml.GetDword( "normalskill1", herolist[i] );
-				car.dwSkill2		= xml.GetDword( "normalskill1", herolist[i] ); 
-				m_mapCar.Add( car.dwID, car );
-			}	
-		}
-	}
 
 	public void LoadSkillConfig( )
 	{
