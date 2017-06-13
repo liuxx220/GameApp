@@ -1,80 +1,81 @@
 /*
-This source file is part of KBEngine
-For the latest info, see http://www.kbengine.org/
+--------------------------------------------------------------------------------------------------------------
+		file name : 
+		desc      : 操作数据封装成任务对象
+		author	  : ljp
 
-Copyright (c) 2008-2012 KBEngine.
-
-KBEngine is free software: you can redistribute it and/or modify
-it under the terms of the GNU Lesser General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-KBEngine is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU Lesser General Public License for more details.
- 
-You should have received a copy of the GNU Lesser General Public License
-along with KBEngine.  If not, see <http://www.gnu.org/licenses/>.
+		log		  : by ljp create 2017-06-13
+--------------------------------------------------------------------------------------------------------------
 */
-
-#ifndef KBE_DB_TASKS_H
-#define KBE_DB_TASKS_H
-
-// common include	
-// #define NDEBUG
+#pragma once
 #include "common/common.hpp"
 #include "common/timer.hpp"
 #include "thread/threadtask.hpp"
 
-namespace KBEngine{ 
 
-class MemoryStream;
-class DBInterface;
-class EntityTable;
 
-/*
-	数据库线程任务基础类
-*/
 
-class DBTaskBase : public thread::TPTask
-{
-public:
 
-	DBTaskBase():
-	initTime_(timestamp())
+
+namespace KBEngine
+{ 
+	/*-----------------------------------------------------------------------------------------------
+	enum TPTaskState
 	{
-	}
+		/// 一个任务已经完成
+		TPTASK_STATE_COMPLETED				= 0,
 
-	virtual ~DBTaskBase(){}
-	virtual bool process();
-	virtual bool db_thread_process() = 0;
-	virtual DBTaskBase* tryGetNextTask(){ return NULL; }
-	virtual thread::TPTask::TPTaskState presentMainThread();
+		/// 继续在主线程执行
+		TPTASK_STATE_CONTINUE_MAINTHREAD	= 1,
 
-	virtual void pdbi(DBInterface* ptr){ pdbi_ = ptr; }
+		// 继续在子线程执行
+		TPTASK_STATE_CONTINUE_CHILDTHREAD	= 2,
+	};
+	------------------------------------------------------------------------------------------------*/
+	class MemoryStream;
+	class DBInterface;
+	class EntityTable;
 
-	uint64 initTime() const{ return initTime_; }
-protected:
-	DBInterface* pdbi_;
-	uint64 initTime_;
-};
+	/*
+		数据库线程任务基础类
+	*/
+	class DBTaskBase : public thread::TPTask
+	{
+	public:
 
-/**
-	执行一条sql语句
-*/
-class DBTaskSyncTable : public DBTaskBase
-{
-public:
-	DBTaskSyncTable(SHARED_PTR<EntityTable> pEntityTable);
-	virtual ~DBTaskSyncTable();
-	virtual bool db_thread_process();
-	virtual thread::TPTask::TPTaskState presentMainThread();
-protected:
-	SHARED_PTR<EntityTable> pEntityTable_;
-	bool success_;
-};
+		DBTaskBase():
+		initTime_(timestamp())
+		{
+		}
 
+		virtual ~DBTaskBase(){}
+		virtual bool			process();
+		virtual bool			db_thread_process() = 0;
+		virtual DBTaskBase*		tryGetNextTask(){ return NULL; }
+		
+		virtual void			pdbi(DBInterface* ptr){ pdbi_ = ptr; }
+		virtual thread::TPTask::TPTaskState presentMainThread();
 
+		uint64					initTime() const{ return initTime_; }
+	protected:
+
+		DBInterface*			pdbi_;
+		uint64					initTime_;
+	};
+
+	/**
+		执行一条sql语句
+	*/
+	class DBTaskSyncTable : public DBTaskBase
+	{
+	public:
+		DBTaskSyncTable(SHARED_PTR<EntityTable> pEntityTable);
+		virtual ~DBTaskSyncTable();
+		virtual bool			db_thread_process();
+		virtual thread::TPTask::TPTaskState presentMainThread();
+	protected:
+		SHARED_PTR<EntityTable> pEntityTable_;
+		bool success_;
+	};
 }
-#endif // KBE_DB_TASKS_H
+

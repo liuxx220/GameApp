@@ -1,16 +1,13 @@
 /*
 --------------------------------------------------------------------------------------------------
-file name	:
-desc		: 服务器数据库表维护
-author		: ljp
+		file name	:
+		desc		: 服务器数据库表维护
+		author		: ljp
 
-log			:
+		log			:
 --------------------------------------------------------------------------------------------------
 */
-
-#ifndef KBE_ENTITY_TABLE_H
-#define KBE_ENTITY_TABLE_H
-
+#pragma once
 #include "common/common.hpp"
 #include "common/singleton.hpp"
 #include "helper/debug_helper.hpp"
@@ -22,64 +19,63 @@ log			:
 
 namespace KBEngine { 
 
-class DBUtil;
-class DBInterface;
-class ScriptDefModule;
-class DataType;
-class PropertyDescription;
-class EntityTable;
-class MemoryStream;
+	class DBUtil;
+	class DBInterface;
+	class DataType;
+	class PropertyDescription;
+	class EntityTable;
+	class MemoryStream;
 
-#define TABLE_ITEM_TYPE_UNKONWN		0
-#define TABLE_ITEM_TYPE_FIXEDARRAY	1
-#define TABLE_ITEM_TYPE_FIXEDDICT	2
-#define TABLE_ITEM_TYPE_STRING		3
-#define TABLE_ITEM_TYPE_DIGIT		4
-#define TABLE_ITEM_TYPE_BLOB		5
-#define TABLE_ITEM_TYPE_VECTOR2		6
-#define TABLE_ITEM_TYPE_VECTOR3		7
-#define TABLE_ITEM_TYPE_VECTOR4		8
-#define TABLE_ITEM_TYPE_UNICODE		9
-#define TABLE_ITEM_TYPE_MAILBOX		10
-#define TABLE_ITEM_TYPE_PYTHON		11
+	#define TABLE_ITEM_TYPE_UNKONWN		0
+	#define TABLE_ITEM_TYPE_FIXEDARRAY	1
+	#define TABLE_ITEM_TYPE_FIXEDDICT	2
+	#define TABLE_ITEM_TYPE_STRING		3
+	#define TABLE_ITEM_TYPE_DIGIT		4
+	#define TABLE_ITEM_TYPE_BLOB		5
+	#define TABLE_ITEM_TYPE_VECTOR2		6
+	#define TABLE_ITEM_TYPE_VECTOR3		7
+	#define TABLE_ITEM_TYPE_VECTOR4		8
+	#define TABLE_ITEM_TYPE_UNICODE		9
+	#define TABLE_ITEM_TYPE_MAILBOX		10
+	#define TABLE_ITEM_TYPE_PYTHON		11
 
-#define ENTITY_TABLE_PERFIX						"tbl"
-#define TABLE_ID_CONST_STR						"id"
-#define TABLE_PARENTID_CONST_STR				"parentID"
-#define TABLE_ITEM_PERFIX						"sm"
-#define TABLE_ARRAY_ITEM_VALUE_CONST_STR		"value"
-#define TABLE_ARRAY_ITEM_VALUES_CONST_STR		"values"
-#define TABLE_AUTOLOAD_CONST_STR				"autoLoad"
+	#define ENTITY_TABLE_PERFIX						"tbl"
+	#define TABLE_ID_CONST_STR						"id"
+	#define TABLE_PARENTID_CONST_STR				"parentID"
+	#define TABLE_ITEM_PERFIX						"sm"
+	#define TABLE_ARRAY_ITEM_VALUE_CONST_STR		"value"
+	#define TABLE_ARRAY_ITEM_VALUES_CONST_STR		"values"
+	#define TABLE_AUTOLOAD_CONST_STR				"autoLoad"
 
-/**
-	db表操作
-*/
-enum DB_TABLE_OP
-{
-	TABLE_OP_INSERT					= 1,
-	TABLE_OP_UPDATE					= 2,
-	TABLE_OP_DELETE					= 3
-};
-
-
-/// 账号信息
-struct ACCOUNT_INFOS
-{
-	ACCOUNT_INFOS(): name()
-					,password()
-					,datas()
-					,dbid(0)
-					,flags(0)
-					,deadline(0)
+	/**
+		db表操作
+	*/
+	enum DB_TABLE_OP
 	{
+		TABLE_OP_INSERT = 1,
+		TABLE_OP_UPDATE = 2,
+		TABLE_OP_DELETE = 3
+	};
 
-	}
 
-	std::string name, password, datas, email;
-	DBID		dbid;
-	uint32		flags;
-	uint64		deadline;
-};
+	/// 账号信息
+	struct ACCOUNT_INFOS
+	{
+		ACCOUNT_INFOS(): name()
+						,password()
+						,datas()
+						,dbid(0)
+						,flags(0)
+						,deadline(0)
+		{
+
+		}
+
+		std::string name, password, datas, email;
+		DBID		dbid;
+		uint32		flags;
+		uint64		deadline;
+	};
 
 /**
 	维护entity在数据库中的表中的一个字段
@@ -149,15 +145,6 @@ public:
 	*/
 	virtual bool			syncToDB(DBInterface* dbi, void* pData = NULL) = 0;
 
-	/**
-		更新数据
-	*/
-	virtual bool			writeItem(DBInterface* dbi, DBID dbid, MemoryStream* s, ScriptDefModule* pModule) = 0;
-
-	/**
-		获取所有的数据放到流中
-	*/
-	virtual bool			queryTable(DBInterface* dbi, DBID dbid, MemoryStream* s, ScriptDefModule* pModule) = 0;
 protected:
 	// 字段名称
 	std::string				itemName_;
@@ -203,7 +190,7 @@ public:
 	/**
 		初始化
 	*/
-	virtual bool		initialize(ScriptDefModule* sm, std::string name) { return true; }
+	virtual bool		initialize( std::string name) { return true; }
 
 	/**
 		同步entity表到数据库中
@@ -234,32 +221,11 @@ public:
 	EntityTableItem* findItem(int32/*ENTITY_PROPERTY_UID*/ utype);
 
 	/**
-		更新表
-	*/
-	virtual DBID writeTable(DBInterface* dbi, DBID dbid, int8 shouldAutoLoad, MemoryStream* s, ScriptDefModule* pModule);
-
-	/**
-		从数据库删除entity
-	*/
-	virtual bool removeEntity(DBInterface* dbi, DBID dbid, ScriptDefModule* pModule);
-
-	/**
-		获取所有的数据放到流中
-	*/
-	virtual bool queryTable(DBInterface* dbi, DBID dbid, MemoryStream* s, ScriptDefModule* pModule);
-
-	/**
 		设置是否自动加载
 	*/
 	virtual void entityShouldAutoLoad(DBInterface* dbi, DBID dbid, bool shouldAutoLoad){};
 
 	bool hasSync() const { return sync_; }
-
-	/**
-		查询自动加载的实体
-	*/
-	virtual void queryAutoLoadEntities(DBInterface* dbi, ScriptDefModule* pModule, 
-		ENTITY_ID start, ENTITY_ID end, std::vector<DBID>& outs){}
 
 protected:
 
@@ -302,38 +268,16 @@ public:
 
 	EntityTable* findKBETable(std::string name);
 
-	/**
-		写entity到数据库
-	*/
-	DBID writeEntity(DBInterface* dbi, DBID dbid, int8 shouldAutoLoad, MemoryStream* s, ScriptDefModule* pModule);
-
-	/**
-		从数据库删除entity
-	*/
-	bool removeEntity(DBInterface* dbi, DBID dbid, ScriptDefModule* pModule);
-
-	/**
-		获取某个表所有的数据放到流中
-	*/
-	bool queryEntity(DBInterface* dbi, DBID dbid, MemoryStream* s, ScriptDefModule* pModule);
-
 	void onTableSyncSuccessfully(SHARED_PTR<EntityTable> pEntityTable, bool error);
-
-	/**
-		查询自动加载的实体
-	*/
-	void queryAutoLoadEntities(DBInterface* dbi, ScriptDefModule* pModule, 
-		ENTITY_ID start, ENTITY_ID end, std::vector<DBID>& outs);
 
 protected:
 	// 所有的表
-	TABLES_MAP tables_;
-	TABLES_MAP kbe_tables_;
+	TABLES_MAP			tables_;
+	TABLES_MAP			kbe_tables_;
 
-	int numSyncTables_;
-	bool syncTablesError_;
+	int					numSyncTables_;
+	bool				syncTablesError_;
 };
 
 }
 
-#endif // KBE_ENTITY_TABLE_H

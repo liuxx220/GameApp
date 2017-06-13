@@ -24,96 +24,95 @@
 namespace KBEngine { 
 
 
-/*
-	kbe系统表
-*/
-class KBEEntityLogTable : public EntityTable
-{
-public:
-	struct EntityLog
+	/*
+		kbe系统表
+	*/
+	class KBEEntityLogTable : public EntityTable
 	{
-		DBID dbid;
-		ENTITY_ID entityID;
-		char ip[MAX_IP];
-		uint16 port;
-		COMPONENT_ID componentID;
+	public:
+		struct EntityLog
+		{
+			DBID dbid;
+			ENTITY_ID entityID;
+			char ip[MAX_IP];
+			uint16 port;
+			COMPONENT_ID componentID;
+		};
+
+		KBEEntityLogTable(): EntityTable()
+		{
+			tableName("kbe_entitylog");
+		}
+	
+		virtual ~KBEEntityLogTable()
+		{
+		}
+	
+	
+	protected:
 	};
 
-	KBEEntityLogTable(): EntityTable()
+	class KBEAccountTable : public EntityTable
 	{
-		tableName("kbe_entitylog");
-	}
+	public:
+		KBEAccountTable(): EntityTable(),
+						   accountDefMemoryStream_()
+		{
+			tableName("accountinfos");
+		}
 	
-	virtual ~KBEEntityLogTable()
-	{
-	}
-	
-	
-protected:
-	
-};
+		virtual ~KBEAccountTable()
+		{
+		}
 
-class KBEAccountTable : public EntityTable
-{
-public:
-	KBEAccountTable(): EntityTable(),
-					   accountDefMemoryStream_()
-	{
-		tableName("accountinfos");
-	}
-	
-	virtual ~KBEAccountTable()
-	{
-	}
+		virtual bool			queryAccount(DBInterface * dbi, const std::string& name, ACCOUNT_INFOS& info) = 0;
+		virtual bool			logAccount(DBInterface * dbi, ACCOUNT_INFOS& info) = 0;
+		virtual bool			setFlagsDeadline(DBInterface * dbi, const std::string& name, uint32 flags, uint64 deadline) = 0;
+		virtual bool			updateCount(DBInterface * dbi, DBID dbid) = 0;
+		virtual bool			queryAccountAllInfos(DBInterface * dbi, const std::string& name, ACCOUNT_INFOS& info) = 0;
+		virtual bool			updatePassword(DBInterface * dbi, const std::string& name, const std::string& password) = 0;
 
-	virtual bool			queryAccount(DBInterface * dbi, const std::string& name, ACCOUNT_INFOS& info) = 0;
-	virtual bool			logAccount(DBInterface * dbi, ACCOUNT_INFOS& info) = 0;
-	virtual bool			setFlagsDeadline(DBInterface * dbi, const std::string& name, uint32 flags, uint64 deadline) = 0;
-	virtual bool			updateCount(DBInterface * dbi, DBID dbid) = 0;
-	virtual bool			queryAccountAllInfos(DBInterface * dbi, const std::string& name, ACCOUNT_INFOS& info) = 0;
-	virtual bool			updatePassword(DBInterface * dbi, const std::string& name, const std::string& password) = 0;
+		MemoryStream& accountDefMemoryStream()
+		{ 
+			return accountDefMemoryStream_; 
+		}
 
-	MemoryStream& accountDefMemoryStream()
-	{ 
-		return accountDefMemoryStream_; 
-	}
-
-	void accountDefMemoryStream(MemoryStream& s)
-	{
-		accountDefMemoryStream_.clear(false);
-		accountDefMemoryStream_.append(s.data() + s.rpos(), s.length()); 
-	}
-protected:
-	MemoryStream			accountDefMemoryStream_;
-};
-
-class KBEEmailVerificationTable : public EntityTable
-{
-public:
-	enum V_TYPE
-	{
-		V_TYPE_CREATEACCOUNT = 1,
-		V_TYPE_RESETPASSWORD = 2,
-		V_TYPE_BIND_MAIL = 3
+		void accountDefMemoryStream(MemoryStream& s)
+		{
+			accountDefMemoryStream_.clear(false);
+			accountDefMemoryStream_.append(s.data() + s.rpos(), s.length()); 
+		}
+	protected:
+		MemoryStream			accountDefMemoryStream_;
 	};
 
-	KBEEmailVerificationTable(): EntityTable()
+	class KBEEmailVerificationTable : public EntityTable
 	{
-		tableName("kbe_email_verification");
-	}
-	
-	virtual ~KBEEmailVerificationTable()
-	{
-	}
+	public:
+		enum V_TYPE
+		{
+			V_TYPE_CREATEACCOUNT = 1,
+			V_TYPE_RESETPASSWORD = 2,
+			V_TYPE_BIND_MAIL = 3
+		};
 
-	virtual bool queryAccount(DBInterface * dbi, int8 type, const std::string& name, ACCOUNT_INFOS& info) = 0;
-	virtual bool logAccount(DBInterface * dbi, int8 type, const std::string& name, const std::string& datas, const std::string& code) = 0;
-	virtual bool delAccount(DBInterface * dbi, int8 type, const std::string& name) = 0;
-	virtual bool activateAccount(DBInterface * dbi, const std::string& code, ACCOUNT_INFOS& info) = 0;
-	virtual bool bindEMail(DBInterface * dbi, const std::string& name, const std::string& code) = 0;
-	virtual bool resetpassword(DBInterface * dbi, const std::string& name, const std::string& password, const std::string& code) = 0;
-protected:
-};
+		KBEEmailVerificationTable() : EntityTable()
+		{
+			tableName("kbe_email_verification");
+		}
+
+		virtual ~KBEEmailVerificationTable()
+		{
+		}
+
+		virtual bool queryAccount(DBInterface * dbi, int8 type, const std::string& name, ACCOUNT_INFOS& info) = 0;
+		virtual bool logAccount(DBInterface * dbi, int8 type, const std::string& name, const std::string& datas, const std::string& code) = 0;
+		virtual bool delAccount(DBInterface * dbi, int8 type, const std::string& name) = 0;
+		virtual bool activateAccount(DBInterface * dbi, const std::string& code, ACCOUNT_INFOS& info) = 0;
+		virtual bool bindEMail(DBInterface * dbi, const std::string& name, const std::string& code) = 0;
+		virtual bool resetpassword(DBInterface * dbi, const std::string& name, const std::string& password, const std::string& code) = 0;
+	protected:
+	};
 
 }
 

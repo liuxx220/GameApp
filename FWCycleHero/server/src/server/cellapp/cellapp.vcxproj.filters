@@ -8,9 +8,6 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
-    <Filter Include="NetHandle">
-      <UniqueIdentifier>{51ddae72-4a64-4716-8c0d-e651b873c963}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cellapp.cpp">
@@ -40,16 +37,16 @@
     <ClCompile Include="DBSession.cpp">
       <Filter>Session</Filter>
     </ClCompile>
+    <ClCompile Include="LoginSession.cpp">
+      <Filter>Session</Filter>
+    </ClCompile>
     <ClCompile Include="sync_cellapp_handler.cpp">
-      <Filter>NetHandle</Filter>
+      <Filter>Session</Filter>
     </ClCompile>
     <ClCompile Include="sync_dbapp_handler.cpp">
-      <Filter>NetHandle</Filter>
+      <Filter>Session</Filter>
     </ClCompile>
     <ClCompile Include="sync_loginapp_handler.cpp">
-      <Filter>NetHandle</Filter>
-    </ClCompile>
-    <ClCompile Include="LoginSession.cpp">
       <Filter>Session</Filter>
     </ClCompile>
   </ItemGroup>
@@ -78,16 +75,16 @@
     <ClInclude Include="DBSession.h">
       <Filter>Session</Filter>
     </ClInclude>
-    <ClInclude Include="sync_cellapp_handler.h">
-      <Filter>NetHandle</Filter>
-    </ClInclude>
-    <ClInclude Include="sync_dbapp_handler.h">
-      <Filter>NetHandle</Filter>
+    <ClInclude Include="LoginSession.h">
+      <Filter>Session</Filter>
     </ClInclude>
     <ClInclude Include="sync_loginapp_handler.h">
-      <Filter>NetHandle</Filter>
+      <Filter>Session</Filter>
     </ClInclude>
-    <ClInclude Include="LoginSession.h">
+    <ClInclude Include="sync_cellapp_handler.h">
+      <Filter>Session</Filter>
+    </ClInclude>
+    <ClInclude Include="sync_dbapp_handler.h">
       <Filter>Session</Filter>
     </ClInclude>
   </ItemGroup>
