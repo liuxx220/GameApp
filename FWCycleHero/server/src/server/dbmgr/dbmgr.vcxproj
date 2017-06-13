@@ -118,8 +118,15 @@
     <ClCompile Include="DBSessionMgr.cpp" />
     <ClCompile Include="dbmgr.cpp" />
     <ClCompile Include="dbtasks.cpp" />
+    <ClCompile Include="db_exception.cpp" />
+    <ClCompile Include="db_interface_mysql.cpp" />
+    <ClCompile Include="db_field.cpp" />
     <ClCompile Include="loginSession.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="db_stream.cpp" />
+    <ClCompile Include="db_queryresult.cpp" />
+    <ClCompile Include="db_streampool.cpp" />
+    <ClCompile Include="db_streamqueue.cpp" />
     <ClCompile Include="sync_app_handler.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -129,7 +136,14 @@
     <ClInclude Include="DBSessionMgr.h" />
     <ClInclude Include="dbmgr.hpp" />
     <ClInclude Include="dbtasks.hpp" />
+    <ClInclude Include="db_exception.h" />
+    <ClInclude Include="db_interface_mysql.h" />
+    <ClInclude Include="db_field.h" />
     <ClInclude Include="loginSession.h" />
+    <ClInclude Include="db_stream.h" />
+    <ClInclude Include="db_queryresult.h" />
+    <ClInclude Include="db_streampool.h" />
+    <ClInclude Include="db_streamqueue.h" />
     <ClInclude Include="sync_app_handler.h" />
   </ItemGroup>
   <ItemGroup>

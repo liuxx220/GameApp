@@ -7,6 +7,9 @@
     <Filter Include="Core">
       <UniqueIdentifier>{b4927d28-6114-4a87-b7b7-d024b378d800}</UniqueIdentifier>
     </Filter>
+    <Filter Include="DB">
+      <UniqueIdentifier>{551c64dd-738a-43d3-9797-b43f22f7a280}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="billingmgr.cpp">
@@ -36,6 +39,27 @@
     <ClCompile Include="sync_app_handler.cpp">
       <Filter>Session</Filter>
     </ClCompile>
+    <ClCompile Include="db_interface_mysql.cpp">
+      <Filter>DB</Filter>
+    </ClCompile>
+    <ClCompile Include="db_stream.cpp">
+      <Filter>DB</Filter>
+    </ClCompile>
+    <ClCompile Include="db_field.cpp">
+      <Filter>DB</Filter>
+    </ClCompile>
+    <ClCompile Include="db_queryresult.cpp">
+      <Filter>DB</Filter>
+    </ClCompile>
+    <ClCompile Include="db_exception.cpp">
+      <Filter>DB</Filter>
+    </ClCompile>
+    <ClCompile Include="db_streampool.cpp">
+      <Filter>DB</Filter>
+    </ClCompile>
+    <ClCompile Include="db_streamqueue.cpp">
+      <Filter>DB</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="billingmgr.hpp">
@@ -61,6 +85,27 @@
     </ClInclude>
     <ClInclude Include="sync_app_handler.h">
       <Filter>Session</Filter>
+    </ClInclude>
+    <ClInclude Include="db_interface_mysql.h">
+      <Filter>DB</Filter>
+    </ClInclude>
+    <ClInclude Include="db_stream.h">
+      <Filter>DB</Filter>
+    </ClInclude>
+    <ClInclude Include="db_field.h">
+      <Filter>DB</Filter>
+    </ClInclude>
+    <ClInclude Include="db_queryresult.h">
+      <Filter>DB</Filter>
+    </ClInclude>
+    <ClInclude Include="db_exception.h">
+      <Filter>DB</Filter>
+    </ClInclude>
+    <ClInclude Include="db_streampool.h">
+      <Filter>DB</Filter>
+    </ClInclude>
+    <ClInclude Include="db_streamqueue.h">
+      <Filter>DB</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
