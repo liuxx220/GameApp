@@ -1,26 +1,13 @@
 /*
-This source file is part of KBEngine
-For the latest info, see http://www.kbengine.org/
+----------------------------------------------------------------------------------------------------------------------------
+		file name : db_interface.h
+		desc      : 访问mysql数据接口的封装
+		author    : ljp
 
-Copyright (c) 2008-2012 KBEngine.
-
-KBEngine is free software: you can redistribute it and/or modify
-it under the terms of the GNU Lesser General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-KBEngine is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU Lesser General Public License for more details.
- 
-You should have received a copy of the GNU Lesser General Public License
-along with KBEngine.  If not, see <http://www.gnu.org/licenses/>.
+		log		  : by ljp create 2017-06-13
+----------------------------------------------------------------------------------------------------------------------------
 */
-
-#ifndef KBE_DB_INTERFACE_MYSQL_H
-#define KBE_DB_INTERFACE_MYSQL_H
-
+#pragma once
 #include "common.h"
 #include "db_transaction.h"
 #include "common/common.hpp"
@@ -28,169 +15,171 @@ along with KBEngine.  If not, see <http://www.gnu.org/licenses/>.
 #include "common/memorystream.hpp"
 #include "helper/debug_helper.hpp"
 #include "db_interface/db_interface.h"
-
 #include "mysql/mysql.h"
 #if KBE_PLATFORM == PLATFORM_WIN32
 #pragma comment (lib, "libmysql.lib")
 #pragma comment (lib, "mysqlclient.lib")
 #endif
 
+
+
+
+
+
 namespace KBEngine { 
 
-struct TABLE_FIELD
-{
-	std::string name;
-	int32 length;
-	uint64 maxlength;
-	unsigned int flags;
-	enum_field_types type;
-};
-
-/*
-	数据库接口
-*/
-class DBInterfaceMysql : public DBInterface
-{
-public:
-	DBInterfaceMysql(std::string characterSet, std::string collation);
-	virtual ~DBInterfaceMysql();
-
-	/**
-		与某个数据库关联
-	*/
-	virtual bool attach(const char* databaseName = NULL);
-	virtual bool detach();
-
-	bool ping(){ 
-		return mysql_ping(pMysql_) == 0; 
-	}
-
-	bool reattach();
-
-	void inTransaction(bool value)
+	struct TABLE_FIELD
 	{
-		KBE_ASSERT(inTransaction_ != value);
-		inTransaction_ = value;
-	}
+		std::string name;
+		int32 length;
+		uint64 maxlength;
+		unsigned int flags;
+		enum_field_types type;
+	};
 
-	bool hasLostConnection() const		{ return hasLostConnection_; }
-	void hasLostConnection( bool v )	{ hasLostConnection_ = v; }
-
-	/**
-		检查环境
+	/*
+		数据库接口
 	*/
-	virtual bool checkEnvironment();
-	
-	/**
-		检查错误， 对错误的内容进行纠正
-		如果纠正不成功返回失败
-	*/
-	virtual bool checkErrors();
-
-	virtual bool query(const char* strCommand, uint32 size, bool showexecinfo = true);
-
-	bool execute(const char* strCommand, uint32 size, MemoryStream * resdata);
-
-	/**
-		获取数据库所有的表名
-	*/
-	virtual bool getTableNames( std::vector<std::string>& tableNames, const char * pattern);
-
-	/**
-		获取数据库某个表所有的字段名称
-	*/
-	virtual bool getTableItemNames(const char* tablename, std::vector<std::string>& itemNames);
-
-	/** 
-		从数据库删除entity表字段
-	*/
-	virtual bool dropEntityTableItemFromDB(const char* tablename, const char* tableItemName);
-
-	MYSQL* mysql(){ return pMysql_; }
-
-	void throwError();
-
-	my_ulonglong insertID()		{ return mysql_insert_id( pMysql_ ); }
-
-	my_ulonglong affectedRows()	{ return mysql_affected_rows( pMysql_ ); }
-
-	const char* info()			{ return mysql_info( pMysql_ ); }
-
-	const char* getLastError()	
+	class DBInterfaceMysql : public DBInterface
 	{
-		if(pMysql_ == NULL)
-			return "pMysql is NULL";
+	public:
+		DBInterfaceMysql(std::string characterSet, std::string collation);
+		virtual ~DBInterfaceMysql();
 
-		return mysql_error( pMysql_ ); 
-	}
+		/**
+			与某个数据库关联
+		*/
+		virtual bool attach(const char* databaseName = NULL);
+		virtual bool detach();
 
-	unsigned int getLastErrorNum() { return mysql_errno( pMysql_ ); }
+		bool ping(){
+			return mysql_ping(pMysql_) == 0;
+		}
 
-	typedef UNORDERED_MAP<std::string, TABLE_FIELD> TABLE_FIELDS;
-	void getFields(TABLE_FIELDS& outs, const char* tablename);
+		bool reattach();
 
-	/**
-		返回这个接口的描述
-	*/
-	virtual const char* c_str();
+		void inTransaction(bool value)
+		{
+			KBE_ASSERT(inTransaction_ != value);
+			inTransaction_ = value;
+		}
 
-	/** 
-		获取错误
-	*/
-	virtual const char* getstrerror();
+		bool hasLostConnection() const		{ return hasLostConnection_; }
+		void hasLostConnection(bool v)		{ hasLostConnection_ = v; }
 
-	/** 
-		获取错误编号
-	*/
-	virtual int getlasterror();
-
-	/**
-		如果数据库不存在则创建一个数据库
-	*/
-	virtual bool createDatabaseIfNotExist();
+		/**
+			检查环境
+		*/
+		virtual bool checkEnvironment();
 	
-	/**
-		创建一个entity存储表
-	*/
-	virtual EntityTable* createEntityTable();
+		/**
+			检查错误， 对错误的内容进行纠正
+			如果纠正不成功返回失败
+		*/
+		virtual bool checkErrors();
 
-	/** 
-		从数据库删除entity表
-	*/
-	virtual bool dropEntityTableFromDB(const char* tablename);
+		virtual bool query(const char* strCommand, uint32 size, bool showexecinfo = true);
 
-	/**
-		锁住接口操作
-	*/
-	virtual bool lock();
-	virtual bool unlock();
+		bool execute(const char* strCommand, uint32 size, MemoryStream * resdata);
 
-	/**
-		处理异常
-	*/
-	bool processException(std::exception & e);
+		/**
+			获取数据库所有的表名
+		*/
+		virtual bool getTableNames( std::vector<std::string>& tableNames, const char * pattern);
 
-	/**
-		SQL命令最长大小
-	*/
-	static size_t sql_max_allowed_packet(){ return sql_max_allowed_packet_; }
+		/**
+			获取数据库某个表所有的字段名称
+		*/
+		virtual bool getTableItemNames(const char* tablename, std::vector<std::string>& itemNames);
 
-protected:
-	MYSQL* pMysql_;
+		/** 
+			从数据库删除entity表字段
+		*/
+		virtual bool dropEntityTableItemFromDB(const char* tablename, const char* tableItemName);
 
-	bool hasLostConnection_;
+		MYSQL* mysql(){ return pMysql_; }
 
-	bool inTransaction_;
+		void throwError();
 
-	DBTransaction lock_;
+		my_ulonglong insertID()		{ return mysql_insert_id( pMysql_ ); }
 
-	std::string characterSet_;
-	std::string collation_;
+		my_ulonglong affectedRows()	{ return mysql_affected_rows( pMysql_ ); }
 
-	static size_t sql_max_allowed_packet_;
-};
+		const char* info()			{ return mysql_info( pMysql_ ); }
+
+		const char* getLastError()
+		{
+			if (pMysql_ == NULL)
+				return "pMysql is NULL";
+
+			return mysql_error(pMysql_);
+		}
+
+		unsigned int getLastErrorNum() { return mysql_errno( pMysql_ ); }
+
+		typedef UNORDERED_MAP<std::string, TABLE_FIELD> TABLE_FIELDS;
+		void getFields(TABLE_FIELDS& outs, const char* tablename);
+
+		/**
+			返回这个接口的描述
+		*/
+		virtual const char* c_str();
+
+		/** 
+			获取错误
+		*/
+		virtual const char* getstrerror();
+
+		/** 
+			获取错误编号
+		*/
+		virtual int getlasterror();
+
+		/**
+			如果数据库不存在则创建一个数据库
+		*/
+		virtual bool createDatabaseIfNotExist();
+	
+		/**
+			创建一个entity存储表
+		*/
+		virtual EntityTable* createEntityTable();
+
+		/** 
+			从数据库删除entity表
+		*/
+		virtual bool dropEntityTableFromDB(const char* tablename);
+
+		/**
+			锁住接口操作
+		*/
+		virtual bool lock();
+		virtual bool unlock();
+
+		/**
+			处理异常
+		*/
+		bool processException(std::exception & e);
+
+		/**
+			SQL命令最长大小
+		*/
+		static size_t sql_max_allowed_packet(){ return sql_max_allowed_packet_; }
+
+	protected:
+		MYSQL* pMysql_;
+
+		bool hasLostConnection_;
+
+		bool inTransaction_;
+
+		DBTransaction lock_;
+
+		std::string characterSet_;
+		std::string collation_;
+		static size_t sql_max_allowed_packet_;
+	};
 
 
 }
 
-#endif // KBE_DB_INTERFACE_MYSQL_H

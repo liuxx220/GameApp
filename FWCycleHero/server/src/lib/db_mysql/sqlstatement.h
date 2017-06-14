@@ -1,28 +1,13 @@
 /*
-This source file is part of KBEngine
-For the latest info, see http://www.kbengine.org/
+----------------------------------------------------------------------------------------------------------------
+		file name :
+		desc      : 数据库 sql 语句的生成
+		author    : ljp
 
-Copyright (c) 2008-2012 KBEngine.
-
-KBEngine is free software: you can redistribute it and/or modify
-it under the terms of the GNU Lesser General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-KBEngine is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU Lesser General Public License for more details.
- 
-You should have received a copy of the GNU Lesser General Public License
-along with KBEngine.  If not, see <http://www.gnu.org/licenses/>.
+		log		  : by ljp create 2017-06-13
+----------------------------------------------------------------------------------------------------------------
 */
-
-#ifndef KBE_SQL_STATEMENT_H
-#define KBE_SQL_STATEMENT_H
-
-// common include	
-// #define NDEBUG
+#pragma once
 #include <sstream>
 #include "common.h"
 #include "common/common.hpp"
@@ -32,57 +17,62 @@ along with KBEngine.  If not, see <http://www.gnu.org/licenses/>.
 #include "db_interface/entity_table.h"
 #include "db_interface_mysql.h"
 
-namespace KBEngine{ 
 
-class SqlStatement
-{
-public:
-	SqlStatement(DBInterface* dbi, std::string tableName, DBID parentDBID, DBID dbid, 
-		DBContext::DB_ITEM_DATAS& tableItemDatas):
-	  tableItemDatas_(tableItemDatas),
-	  sqlstr_(),
-	  tableName_(tableName),
-	  dbid_(dbid),
-	  parentDBID_(parentDBID),
-	  dbi_(dbi)
+
+
+
+namespace KBEngine { 
+
+	class SqlStatement
 	{
-	}
-
-	virtual ~SqlStatement()
-	{
-	}
-
-	std::string& sql(){ return sqlstr_; }
-
-	virtual bool query(DBInterface* dbi = NULL)
-	{
-		// 没有数据更新
-		if(sqlstr_ == "")
-			return true;
-
-		bool ret = static_cast<DBInterfaceMysql*>(dbi != NULL ? dbi : dbi_)->query(sqlstr_.c_str(), sqlstr_.size(), false);
-
-		if(!ret)
+	public:
+		SqlStatement(DBInterface* dbi, std::string tableName, DBID parentDBID, DBID dbid, 
+				DBContext::DB_ITEM_DATAS& tableItemDatas):
+				tableItemDatas_(tableItemDatas),
+				sqlstr_(),
+				tableName_(tableName),
+				dbid_(dbid),
+				parentDBID_(parentDBID),
+				dbi_(dbi)
 		{
-			ERROR_MSG(fmt::format("SqlStatement::query: {}\n\tsql:{}\n", 
-				(dbi != NULL ? dbi : dbi_)->getstrerror(), sqlstr_));
 
-			return false;
 		}
 
-		return ret;
-	}
+		virtual ~SqlStatement()
+		{
 
-	DBID dbid() const{ return dbid_; }
+		}
 
-protected:
-	DBContext::DB_ITEM_DATAS& tableItemDatas_;
-	std::string sqlstr_;
-	std::string tableName_;
-	DBID dbid_;
-	DBID parentDBID_;
-	DBInterface* dbi_; 
-};
+		
+		virtual bool query(DBInterface* dbi = NULL)
+		{
+			// 没有数据更新
+			if(sqlstr_ == "")
+				return true;
+
+			bool ret = static_cast<DBInterfaceMysql*>(dbi != NULL ? dbi : dbi_)->query(sqlstr_.c_str(), sqlstr_.size(), false);
+			if(!ret)
+			{
+				ERROR_MSG( fmt::format("SqlStatement::query: {}\n\tsql:{}\n", 
+						   (dbi != NULL ? dbi : dbi_)->getstrerror(), sqlstr_));
+				return false;
+			}
+
+			return ret;
+		}
+
+
+		std::string&	sql()			{ return sqlstr_; }
+		DBID			dbid() const	{ return dbid_; }
+
+	protected:
+		DBContext::DB_ITEM_DATAS& tableItemDatas_;
+		std::string sqlstr_;
+		std::string tableName_;
+		DBID dbid_;
+		DBID parentDBID_;
+		DBInterface* dbi_; 
+	};
 
 class SqlStatementInsert : public SqlStatement
 {
@@ -290,4 +280,4 @@ protected:
 };
 
 }
-#endif // KBE_SQL_STATEMENT_H
+

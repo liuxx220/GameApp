@@ -13,10 +13,9 @@
 #include "common/memorystream.hpp"
 #include "helper/debug_helper.hpp"
 #include "mysql/mysql.h"
-#if KBE_PLATFORM == PLATFORM_WIN32
-#pragma comment (lib, "libmysql.lib")
-#pragma comment (lib, "mysqlclient.lib")
-#endif
+
+
+
 
 
 

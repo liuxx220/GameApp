@@ -1,21 +1,11 @@
 /*
-This source file is part of KBEngine
-For the latest info, see http://www.kbengine.org/
+----------------------------------------------------------------------------------------------------------------------------
+		file name : db_exception.h
+		desc      : 夸平台相关定义
+		author    : ljp
 
-Copyright (c) 2008-2012 KBEngine.
-
-KBEngine is free software: you can redistribute it and/or modify
-it under the terms of the GNU Lesser General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-KBEngine is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU Lesser General Public License for more details.
- 
-You should have received a copy of the GNU Lesser General Public License
-along with KBEngine.  If not, see <http://www.gnu.org/licenses/>.
+		log		  : by ljp create 2017-06-13
+----------------------------------------------------------------------------------------------------------------------------
 */
 
 #ifndef KBE_PLATFORM_HPP
@@ -214,6 +204,7 @@ typedef unsigned char											uchar;
 typedef unsigned short											ushort;
 typedef unsigned int											uint;
 typedef unsigned long											ulong;
+typedef long long												long64;
 
 #define charptr													char*
 #define const_charptr											const char*
@@ -338,8 +329,6 @@ typedef UNORDERED_MAP< std::string, std::string >			SPACE_DATA;												// sp
 #ifndef socklen_t
 	typedef	int													socklen_t;
 #endif
-	typedef unsigned short										u_int16_t;
-	typedef unsigned long										u_int32_t;
 	typedef unsigned short										UINT16;
 	typedef unsigned int										UINT32;
 	

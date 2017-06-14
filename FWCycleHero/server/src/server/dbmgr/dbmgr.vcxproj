@@ -73,7 +73,7 @@
       <AdditionalOptions>/ignore:4049
 /ignore:4217
  %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>netapi32.lib;xmlplus_d.lib;Version.lib;server_d.lib;common_d.lib;helper_d.lib;math_d.lib;network_d.lib;thread_d.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>netapi32.lib;xmlplus_d.lib;Version.lib;server_d.lib;common_d.lib;helper_d.lib;math_d.lib;network_d.lib;thread_d.lib;ws2_32.lib;libmysql.lib;mysqlclient.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <AdditionalLibraryDirectories>../../../../../../../Work/libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
@@ -121,6 +121,7 @@
     <ClCompile Include="db_exception.cpp" />
     <ClCompile Include="db_interface_mysql.cpp" />
     <ClCompile Include="db_field.cpp" />
+    <ClCompile Include="db_threadpool.cpp" />
     <ClCompile Include="loginSession.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="db_stream.cpp" />
@@ -139,6 +140,7 @@
     <ClInclude Include="db_exception.h" />
     <ClInclude Include="db_interface_mysql.h" />
     <ClInclude Include="db_field.h" />
+    <ClInclude Include="db_threadpool.h" />
     <ClInclude Include="loginSession.h" />
     <ClInclude Include="db_stream.h" />
     <ClInclude Include="db_queryresult.h" />

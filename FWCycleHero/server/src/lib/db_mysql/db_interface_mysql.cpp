@@ -1,23 +1,12 @@
 /*
-This source file is part of KBEngine
-For the latest info, see http://www.kbengine.org/
+----------------------------------------------------------------------------------------------------------------------------
+		file name : db_interface.h
+		desc      : 访问mysql数据接口的封装
+		author    : ljp
 
-Copyright (c) 2008-2012 KBEngine.
-
-KBEngine is free software: you can redistribute it and/or modify
-it under the terms of the GNU Lesser General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-KBEngine is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU Lesser General Public License for more details.
- 
-You should have received a copy of the GNU Lesser General Public License
-along with KBEngine.  If not, see <http://www.gnu.org/licenses/>.
+		log		  : by ljp create 2017-06-13
+----------------------------------------------------------------------------------------------------------------------------
 */
-
 
 #include "db_interface_mysql.h"
 #include "entity_table_mysql.h"
@@ -34,287 +23,176 @@ along with KBEngine.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace KBEngine { 
 
-KBEngine::thread::ThreadMutex logMutex;
-UNORDERED_MAP< std::string, uint32 > g_querystatistics;
-bool _g_installedWatcher = false;
-bool _g_debug = false;
-
-void querystatistics(const char* strCommand, uint32 size)
-{
-	std::string op;
-	for(uint32 i=0; i<size; ++i)
+	KBEngine::thread::ThreadMutex logMutex;
+	size_t DBInterfaceMysql::sql_max_allowed_packet_ = 0;
+	//-------------------------------------------------------------------------------------
+	DBInterfaceMysql::DBInterfaceMysql(std::string characterSet, std::string collation) :
+	DBInterface(),
+	pMysql_(NULL),
+	hasLostConnection_(false),
+	inTransaction_(false),
+	lock_(NULL, false),
+	characterSet_(characterSet),
+	collation_(collation)
 	{
-		if(strCommand[i] == ' ')
-			break;
-
-		op += strCommand[i];
+		lock_.pdbi(this);
 	}
 
-	if(op.size() == 0)
-		return;
-
-	std::transform(op.begin(), op.end(), op.begin(), toupper);
-
-	logMutex.lockMutex();
-
-	UNORDERED_MAP< std::string, uint32 >::iterator iter = g_querystatistics.find(op);
-	if(iter == g_querystatistics.end())
+	//-------------------------------------------------------------------------------------
+	DBInterfaceMysql::~DBInterfaceMysql()
 	{
-		g_querystatistics[op] = 1;
-	}
-	else
-	{
-		iter->second += 1;
+
 	}
 
-	logMutex.unlockMutex();
-}
-
-uint32 watcher_query(std::string cmd)
-{
-	KBEngine::thread::ThreadGuard tg(&logMutex); 
-
-	UNORDERED_MAP< std::string, uint32 >::iterator iter = g_querystatistics.find(cmd);
-	if(iter != g_querystatistics.end())
+	//-------------------------------------------------------------------------------------
+	bool DBInterfaceMysql::attach(const char* databaseName)
 	{
-		return iter->second;
-	}
-
-	return 0;
-}
-
-uint32 watcher_select()
-{
-	return watcher_query("SELECT");
-}
-
-uint32 watcher_delete()
-{
-	return watcher_query("DELETE");
-}
-
-uint32 watcher_insert()
-{
-	return watcher_query("INSERT");
-}
-
-uint32 watcher_update()
-{
-	return watcher_query("UPDATE");
-}
-
-uint32 watcher_create()
-{
-	return watcher_query("CREATE");
-}
-
-uint32 watcher_drop()
-{
-	return watcher_query("DROP");
-}
-
-uint32 watcher_show()
-{
-	return watcher_query("SHOW");
-}
-
-uint32 watcher_alter()
-{
-	return watcher_query("ALTER");
-}
-
-uint32 watcher_grant()
-{
-	return watcher_query("GRANT");
-}
-
-void initializeWatcher()
-{
-	if(_g_installedWatcher)
-		return;
-
-	_g_installedWatcher = true;
-	_g_debug = g_kbeSrvConfig.getDBMgr().debugDBMgr;
-}
-
-size_t DBInterfaceMysql::sql_max_allowed_packet_ = 0;
-//-------------------------------------------------------------------------------------
-DBInterfaceMysql::DBInterfaceMysql(std::string characterSet, std::string collation) :
-DBInterface(),
-pMysql_(NULL),
-hasLostConnection_(false),
-inTransaction_(false),
-lock_(NULL, false),
-characterSet_(characterSet),
-collation_(collation)
-{
-	lock_.pdbi(this);
-}
-
-//-------------------------------------------------------------------------------------
-DBInterfaceMysql::~DBInterfaceMysql()
-{
-
-}
-
-//-------------------------------------------------------------------------------------
-bool DBInterfaceMysql::attach(const char* databaseName)
-{
-	if(!_g_installedWatcher)
-	{
-		initializeWatcher();
-	}
-
-	if(db_port_ == 0)
-		db_port_ = 3306;
+		if(db_port_ == 0)
+			db_port_ = 3306;
 	
-	if(databaseName != NULL)
-		kbe_snprintf(db_name_, MAX_BUF, "%s", databaseName);
+		if(databaseName != NULL)
+			kbe_snprintf(db_name_, MAX_BUF, "%s", databaseName);
 
-	hasLostConnection_ = false;
-
-	try
-	{
-		pMysql_ = mysql_init(0);
-		if(pMysql_ == NULL)
+		hasLostConnection_ = false;
+		try
 		{
-			ERROR_MSG("DBInterfaceMysql::attach: mysql_init is error!\n");
-			return false;
-		}
-		
-		DEBUG_MSG(fmt::format("DBInterfaceMysql::attach: connect: {}:{} starting...\n", db_ip_, db_port_));
-
-		int ntry = 0;
-
-__RECONNECT:
-		if(mysql_real_connect(mysql(), db_ip_, db_username_, 
-    		db_password_, db_name_, db_port_, NULL, 0)) // CLIENT_MULTI_STATEMENTS  
-		{
-			if(mysql_select_db(mysql(), db_name_) != 0)
+			pMysql_ = mysql_init(0);
+			if(pMysql_ == NULL)
 			{
-				ERROR_MSG(fmt::format("DBInterfaceMysql::attach: Could not set active db[{}]\n",db_name_));
-				detach();
+				ERROR_MSG("DBInterfaceMysql::attach: mysql_init is error!\n");
 				return false;
 			}
-		}
-		else
-		{
-			if (mysql_errno(pMysql_) == 1049 && ntry++ == 0)
-			{
-				if (mysql())
-				{
-					::mysql_close(mysql());
-					pMysql_ = NULL;
-				}
+		
+			DEBUG_MSG(fmt::format("DBInterfaceMysql::attach: connect: {}:{} starting...\n", db_ip_, db_port_));
 
-				pMysql_ = mysql_init(0);
-				if (pMysql_ == NULL)
+			int ntry = 0;
+	__RECONNECT:
+			if(mysql_real_connect( mysql(), db_ip_, db_username_, 
+    							   db_password_, db_name_, db_port_, NULL, 0)) // CLIENT_MULTI_STATEMENTS  
+			{
+				if(mysql_select_db(mysql(), db_name_) != 0)
 				{
-					ERROR_MSG("DBInterfaceMysql::attach: mysql_init is error!\n");
+					ERROR_MSG(fmt::format("DBInterfaceMysql::attach: Could not set active db[{}]\n",db_name_));
+					detach();
 					return false;
 				}
-
-				if (mysql_real_connect(mysql(), db_ip_, db_username_,
-					db_password_, NULL, db_port_, NULL, 0)) // CLIENT_MULTI_STATEMENTS  
+			}
+			else
+			{
+				if (mysql_errno(pMysql_) == 1049 && ntry++ == 0)
 				{
-					this->createDatabaseIfNotExist();
-					if (mysql_select_db(mysql(), db_name_) != 0)
+					if (mysql())
+					{
+						::mysql_close(mysql());
+						pMysql_ = NULL;
+					}
+
+					pMysql_ = mysql_init(0);
+					if (pMysql_ == NULL)
+					{
+						ERROR_MSG("DBInterfaceMysql::attach: mysql_init is error!\n");
+						return false;
+					}
+
+					if (mysql_real_connect( mysql(), db_ip_, db_username_,
+											db_password_, NULL, db_port_, NULL, 0)) // CLIENT_MULTI_STATEMENTS  
+					{
+						this->createDatabaseIfNotExist();
+						if (mysql_select_db(mysql(), db_name_) != 0)
+						{
+							goto __RECONNECT;
+						}
+					}
+					else
 					{
 						goto __RECONNECT;
 					}
 				}
 				else
 				{
-					goto __RECONNECT;
+					ERROR_MSG(fmt::format("DBInterfaceMysql::attach: mysql_errno={}, mysql_error={}\n",
+						mysql_errno(pMysql_), mysql_error(pMysql_)));
+
+					detach();
+					return false;
 				}
 			}
-			else
-			{
-				ERROR_MSG(fmt::format("DBInterfaceMysql::attach: mysql_errno={}, mysql_error={}\n",
-					mysql_errno(pMysql_), mysql_error(pMysql_)));
 
-				detach();
+			if (mysql_set_character_set(mysql(), "utf8") != 0)
+			{
+				ERROR_MSG("DBInterfaceMysql::attach: Could not set client connection character set to UTF-8\n" );
 				return false;
 			}
-		}
 
-		if (mysql_set_character_set(mysql(), "utf8") != 0)
+			// 不需要关闭自动提交，底层会START TRANSACTION之后再COMMIT
+			// mysql_autocommit(mysql(), 0);
+			char characterset_sql[MAX_BUF];
+			kbe_snprintf( characterset_sql, MAX_BUF, "ALTER DATABASE CHARACTER SET %s COLLATE %s", 
+						  characterSet_.c_str(), collation_.c_str());
+
+			query(&characterset_sql[0], strlen(characterset_sql), false);
+		}
+		catch (std::exception& e)
 		{
-			ERROR_MSG("DBInterfaceMysql::attach: Could not set client connection character set to UTF-8\n" );
+			ERROR_MSG(fmt::format("DBInterfaceMysql::attach: {}\n", e.what()));
+			hasLostConnection_ = true;
+			detach();
 			return false;
 		}
 
-		// 不需要关闭自动提交，底层会START TRANSACTION之后再COMMIT
-		// mysql_autocommit(mysql(), 0);
-
-		char characterset_sql[MAX_BUF];
-		kbe_snprintf(characterset_sql, MAX_BUF, "ALTER DATABASE CHARACTER SET %s COLLATE %s", 
-			characterSet_.c_str(), collation_.c_str());
-
-		query(&characterset_sql[0], strlen(characterset_sql), false);
-	}
-	catch (std::exception& e)
-	{
-		ERROR_MSG(fmt::format("DBInterfaceMysql::attach: {}\n", e.what()));
-		hasLostConnection_ = true;
-		detach();
-		return false;
-	}
-
-	bool ret = mysql() != NULL && ping();
-
-	if(ret)
-	{
-		DEBUG_MSG(fmt::format("DBInterfaceMysql::attach: successfully! addr: {}:{}\n", db_ip_, db_port_));
-	}
-
-    return ret;
-}
-
-//-------------------------------------------------------------------------------------
-bool DBInterfaceMysql::checkEnvironment()
-{
-	std::string querycmd = "SHOW VARIABLES";
-	if(!query(querycmd.c_str(), querycmd.size(), true))
-	{
-		ERROR_MSG(fmt::format("DBInterfaceMysql::checkEnvironment: {}, query is error!\n", querycmd));
-		return false;
-	}
-
-	bool lower_case_table_names = false;
-	MYSQL_RES * pResult = mysql_store_result(mysql());
-	if(pResult)
-	{
-		MYSQL_ROW arow;
-		while((arow = mysql_fetch_row(pResult)) != NULL)
+		bool ret = mysql() != NULL && ping();
+		if(ret)
 		{
-			std::string s = arow[0];
-			std::string v = arow[1];
-			
-			if(s == "lower_case_table_names")
-			{
-				if(v == "1")
-				{
-					lower_case_table_names = true;
-				}
-				else
-				{
-					
-				}
-			}
-			else if(s == "max_allowed_packet")
-			{
-				uint64 size;
-				KBEngine::StringConv::str2value(size, v.c_str());
-				sql_max_allowed_packet_ = (size_t)size;
-			}
+			DEBUG_MSG(fmt::format("DBInterfaceMysql::attach: successfully! addr: {}:{}\n", db_ip_, db_port_));
 		}
 
-		mysql_free_result(pResult);
+		return ret;
 	}
+
+	//-------------------------------------------------------------------------------------
+	bool DBInterfaceMysql::checkEnvironment()
+	{
+		std::string querycmd = "SHOW VARIABLES";
+		if(!query(querycmd.c_str(), querycmd.size(), true))
+		{
+			ERROR_MSG(fmt::format("DBInterfaceMysql::checkEnvironment: {}, query is error!\n", querycmd));
+			return false;
+		}
+
+		bool lower_case_table_names = false;
+		MYSQL_RES * pResult = mysql_store_result(mysql());
+		if(pResult)
+		{
+			MYSQL_ROW arow;
+			while((arow = mysql_fetch_row(pResult)) != NULL)
+			{
+				std::string s = arow[0];
+				std::string v = arow[1];
+			
+				if(s == "lower_case_table_names")
+				{
+					if(v == "1")
+					{
+						lower_case_table_names = true;
+					}
+					else
+					{
+					
+					}
+				}
+				else if(s == "max_allowed_packet")
+				{
+					uint64 size;
+					KBEngine::StringConv::str2value(size, v.c_str());
+					sql_max_allowed_packet_ = (size_t)size;
+				}
+			}
+
+			mysql_free_result(pResult);
+		}
 	
-	return lower_case_table_names;
-}
+		return lower_case_table_names;
+	}
 
 //-------------------------------------------------------------------------------------
 bool DBInterfaceMysql::createDatabaseIfNotExist()
@@ -433,17 +311,11 @@ bool DBInterfaceMysql::query(const char* strCommand, uint32 size, bool showexeci
 		return false;
 	}
 
-	querystatistics(strCommand, size);
-
+	
 	lastquery_ = strCommand;
 
-	if(_g_debug)
-	{
-		DEBUG_MSG(fmt::format("DBInterfaceMysql::query({:p}): {}\n", (void*)this, lastquery_));
-	}
 
     int nResult = mysql_real_query(pMysql_, strCommand, size);  
-
     if(nResult != 0)  
     {  
 		if(showexecinfo)
@@ -470,7 +342,6 @@ bool DBInterfaceMysql::query(const char* strCommand, uint32 size, bool showexeci
 bool DBInterfaceMysql::execute(const char* strCommand, uint32 size, MemoryStream * resdata)
 {
 	bool result = this->query(strCommand, size);
-
 	if (!result)
 	{
 		return false;
@@ -482,18 +353,16 @@ bool DBInterfaceMysql::execute(const char* strCommand, uint32 size, MemoryStream
 	}
 
 	MYSQL_RES * pResult = mysql_store_result(mysql());
-
 	if(pResult)
 	{
 		if (resdata != NULL)
 		{
-			uint32 nrows = (uint32)mysql_num_rows(pResult);
-			uint32 nfields = (uint32)mysql_num_fields(pResult);
+			uint32 nrows	= (uint32)mysql_num_rows(pResult);
+			uint32 nfields	= (uint32)mysql_num_fields(pResult);
 
 			(*resdata) << nfields << nrows;
 
 			MYSQL_ROW arow;
-
 			while((arow = mysql_fetch_row(pResult)) != NULL)
 			{
 				unsigned long *lengths = mysql_fetch_lengths(pResult);
