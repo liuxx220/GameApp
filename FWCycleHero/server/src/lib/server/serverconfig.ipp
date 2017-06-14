@@ -103,7 +103,4 @@ INLINE ENGINE_COMPONENT_INFO& ServerConfig::getComponent(COMPONENT_TYPE componen
 	return getBaseApp();	
 }
 
-//-------------------------------------------------------------------------------------	
-INLINE int16 ServerConfig::gameUpdateHertz(void)const { return gameUpdateHertz_;}
-
 }

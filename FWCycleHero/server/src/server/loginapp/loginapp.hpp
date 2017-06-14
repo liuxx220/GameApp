@@ -7,11 +7,12 @@
 		log		  : [ 2015-04-25 ]
 ----------------------------------------------------------------------------
 */
-#ifndef KBE_LOGINAPP_HPP
-#define KBE_LOGINAPP_HPP	
+#pragma once	
 #include "server/serverconfig.hpp"
 #include "network/event_dispatcher.hpp"
-#include "common/timer.hpp"
+#include "network/event_poller.hpp"
+#include "db_session.h"
+#include "LoginSessionMgr.h"
 
 	
 
@@ -43,10 +44,13 @@ namespace KBEngine
 		
 	protected:
 
-		COMPONENT_TYPE		mComponentType;
+		COMPONENT_TYPE				mComponentType;
 
+		CDBSession*					m_pDB;					// 链接DB的session
+		CLoginSessionMgr*			m_pNetSessionMgr;
+		EventDispatcher*			m_pDispatcher;			// 网络消息派送器
 	};
-
+		
 }
 
-#endif // KBE_LOGINAPP_HPP
+

@@ -30,12 +30,11 @@ namespace KBEngine
 	{
 		ST_None,
 		///////////////////////////
-		ST_CLIENT_Login,
-		ST_SERVER_Login,
-		ST_SERVER_SceneSever,
-		ST_SERVER_DB,
-		ST_SERVER_GS,
-		ST_SERVER_Log,
+		ST_CLIENT_LOGIN,				// 包含 client -> login 、 cell -- > login
+		ST_CLIENT_DB,					// 包含 login -> db 、 cell -- > db
+		ST_CELL_DB,
+		ST_CLIENT_CELL,
+		ST_CELL_CELLMGR,
 	};
 
 	/** @Brief 会话的连接状态

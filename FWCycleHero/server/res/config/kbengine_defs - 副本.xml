@@ -1,0 +1,170 @@
+<root>
+	<!-- 游戏逻辑处理频率 
+		(Update frequency process)
+	-->
+	<gameUpdateHertz> 10 </gameUpdateHertz>
+	
+	<publish>
+		<!-- 发布状态, 可在脚本中获取该值。 KBEngine.publish()
+			(apps released state, This value can be obtained in the script. KBEngine.publish())
+			Type: Integer8
+			0 : debug
+			1 : release
+			其他自定义(Other custom)
+		-->
+		<state> 0 </state>
+
+		<!-- 脚本层发布的版本号
+			(Script layer released version number)
+		 -->
+		<script_version> 0.1.0 </script_version>
+	</publish>
+	
+	<dbmgr>
+		<!-- 指定接口地址，可配置网卡名、MAC、IP
+			（Interface address specified, configurable NIC/MAC/IP） 
+		-->
+		<internalInterface> 127.0.0.1 </internalInterface>
+		
+		<!-- 指定接口地址端口
+			（Interface's port） 
+		-->
+		<appport> 10240 </appport>
+		
+		<!-- 数据库地址 
+			（Database address)
+		-->
+		<host> localhost </host>										<!-- Type: String -->
+		<port> 3306 </port>												<!-- Type: Integer -->
+		
+		<!-- 数据库账号验证 
+			（Database auth)
+		-->
+		<auth>  
+			<username> root </username>									<!-- Type: String -->
+			<password> 111111 </password>									<!-- Type: String -->
+			
+			<!-- 为true则表示password是加密(rsa)的, 可防止明文配置 
+				(is true, password is RSA)
+			-->
+			<encrypt> false </encrypt>
+		</auth>
+		
+		<!-- 数据库名称 
+			(Database name)
+		-->
+		<databaseName> kbe </databaseName> 								<!-- Type: String -->
+		
+		<!-- 数据库允许的连接数 
+			(Number of connections allowed by the database)
+		-->
+		<numConnections> 5 </numConnections>							<!-- Type: Integer -->
+		
+		<!-- 字符编码类型 
+			(Character encoding type)
+		-->
+		<unicodeString>
+			<characterSet> utf8 </characterSet> 						<!-- Type: String -->
+			<collation> utf8_bin </collation> 							<!-- Type: String -->
+		</unicodeString>
+		
+	</dbmgr>
+	
+	<cellapp>
+	
+		<!-- 指定接口地址，可配置网卡名、MAC、IP
+			（Interface address specified, configurable NIC/MAC/IP） 
+		-->
+		<internalInterface> 127.0.0.1 </internalInterface>
+		
+		<!-- 指定接口地址端口
+			（Interface's port） 
+		-->
+		<appport> 10240 </appport>
+		
+		<!-- 服务端关闭过程的参数 
+			(Parameter server shutdown process)
+		-->
+		<shutdown>
+			<!-- 每秒销毁有base部分的entity的数量
+				(In per-seconds, The destruction of the number of entity's(has base))
+			-->
+			<perSecsDestroyEntitySize> 15 </perSecsDestroyEntitySize>
+		</shutdown>
+	</cellapp>
+	
+	<baseapp>
+
+		<!-- 指定接口地址，可配置网卡名、MAC、IP
+			（Interface address specified, configurable NIC/MAC/IP） 
+		-->
+		<internalInterface> 127.0.0.1 </internalInterface>
+		
+		<!-- 指定接口地址端口
+			（Interface's port） 
+		-->
+		<appport> 10241 </appport>
+		
+	</baseapp>
+	
+	<cellappmgr>
+		<!-- 指定接口地址，可配置网卡名、MAC、IP
+			（Interface address specified, configurable NIC/MAC/IP） 
+		-->
+		<internalInterface>  </internalInterface>
+	</cellappmgr>
+	
+	<baseappmgr>
+	
+		<!-- 指定接口地址，可配置网卡名、MAC、IP
+			（Interface address specified, configurable NIC/MAC/IP） 
+		-->
+		<internalInterface> 127.0.0.1 </internalInterface>
+		
+		<!-- 指定接口地址端口
+			（Interface's port） 
+		-->
+		<appport> 10242 </appport>
+		
+	</baseappmgr>
+	
+	<loginapp>
+		<!-- 指定接口地址，可配置网卡名、MAC、IP
+			（Interface address specified, configurable NIC/MAC/IP） 
+		-->
+		<internalInterface> 127.0.0.1 </internalInterface>
+		
+		<!-- 指定接口地址端口
+			（Interface's port） 
+		-->
+		<appport> 20013 </appport>
+		
+		<!-- 加密登录信息
+			(The encrypted user login information)
+			
+			可选择的加密方式(Optional encryption):
+				0: 无加密(No Encryption)
+				1: Blowfish
+				2: RSA (res\key\kbengine_private.key)
+		 -->
+		<encrypt_login> 2 </encrypt_login>
+		
+		<!-- listen监听队列最大值
+		    (listen: Maximum listen queue)
+		 -->
+		<SOMAXCONN> 128 </SOMAXCONN>
+		
+		<!-- 账号的类型								(Account types)
+			1: 普通账号								(Normal Account)
+			2: email账号(需要激活)					(Email Account, Note: activation required.)
+			3: 智能账号(自动识别Email， 普通号码等)	(Smart Account (Email or Normal, etc.))
+		-->
+		<account_type> 3 </account_type>
+		
+		<!-- http回调接口，处理认证、密码重置等 
+			(Http-callback interface, handling authentication, password reset, etc.)
+		-->
+		<http_cbhost> localhost </http_cbhost>
+		<http_cbport> 21103 </http_cbport>
+	</loginapp>		
+</root>

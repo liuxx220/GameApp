@@ -42,7 +42,7 @@ namespace KBEngine
 		CPlayerSession* pSession = new CPlayerSession();
 		if (pSession != nullptr)
 		{
-			pSession->SetType(ST_CLIENT_Login);
+			pSession->SetType(ST_CLIENT_LOGIN);
 			mapSession.Add(m_GenID, pSession);
 			pSession->SetID(m_GenID);
 			m_GenID++;

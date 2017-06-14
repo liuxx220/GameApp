@@ -9,8 +9,6 @@
 */
 #include "fplayer_mgr.hpp"
 #include "player.hpp"
-#include "network/event_poller.hpp"
-#include "network/event_dispatcher.hpp"
 #include "server/serverconfig.hpp"
 
 
@@ -28,7 +26,7 @@ namespace KBEngine
 	//-------------------------------------------------------------------------------
 	CPlayerMgr::CPlayerMgr() : m_nPlayerNum(0), m_nPlayerLoging(0), m_nProofResultNum(0),
 							   m_dwClientIDGen(0), m_dwCurrVer(0), m_nPort(0), 
-							   m_ePolicy(EPP_Null), m_pNetSessionMgr(0)
+							   m_ePolicy(EPP_Null)
 	{
 
 	}
@@ -39,45 +37,6 @@ namespace KBEngine
 	CPlayerMgr::~CPlayerMgr()
 	{
 		Destroy();
-	}
-
-
-	//-------------------------------------------------------------------------------
-	// 初始化函数
-	//-------------------------------------------------------------------------------
-	bool CPlayerMgr::Init(void)
-	{
-		INFO_MSG("-----------------------------------------------------------------------------------------\n");
-		INFO_MSG("Statr CPlayerMgr new EventDispatcher \n");
-		m_pDispatcher = new EventDispatcher();
-
-		INFO_MSG("Load config files \n");
-		g_kbeSrvConfig.loadConfig("config/kbengine_defs.xml");
-		g_kbeSrvConfig.loadConfig("config/kbengine.xml");
-
-		// init net work
-		InitNetWork();
-		return true;
-	}
-
-	//-------------------------------------------------------------------------------
-	// function : 
-	// desc		: 初始化服务器网络
-	//-------------------------------------------------------------------------------
-	void CPlayerMgr::InitNetWork(void)
-	{
-		if (m_pNetSessionMgr == NULL)
-		{
-			m_pNetSessionMgr = new CLoginSessionMgr();
-		}
-
-		// 创建对内对位监听socket
-		ENGINE_COMPONENT_INFO& info = g_kbeSrvConfig.getLoginApp();
-		if (m_pDispatcher->pPoller() != NULL)
-		{
-			m_pDispatcher->pPoller()->InitNetEngine(info.internalPorts);
-			m_pDispatcher->pPoller()->SetSessionFactory(m_pNetSessionMgr);
-		}
 	}
 
 
@@ -141,23 +100,10 @@ namespace KBEngine
 	//-------------------------------------------------------------------------------
 	void CPlayerMgr::Update()
 	{
-		// 更新玩家消息
-		UpdateSession();
-
 		// 更新验证结果
 		UpdateProofResult();
 	}
 
-	//-------------------------------------------------------------------------------
-	// 更新玩家消息
-	//-------------------------------------------------------------------------------
-	void CPlayerMgr::UpdateSession()
-	{
-		if (m_pNetSessionMgr != nullptr)
-		{
-			m_pNetSessionMgr->UpdateSession();
-		}
-	}
 
 	//---------------------------------------------------------------------------------
 	// 玩家登出

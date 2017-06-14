@@ -7,7 +7,7 @@
 		log		  : [ 2016-02-28 ]
 ----------------------------------------------------------------------------
 */
-#include "DBSession.h"
+#include "db_session.h"
 #include "msg_cl.h"
 #include "msg_login.h"
 
