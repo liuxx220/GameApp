@@ -26,7 +26,7 @@ namespace KBEngine
 
 	public:
 		DBThread( thread::ThreadPool* threadPool, int threadWaitSecond = 0):
-				  thread::TPThread(threadPool, threadWaitSecond),_pDBInterface(NULL)
+				  thread::TPThread(threadPool, threadWaitSecond),m_pInterface(NULL)
 		{
 
 		}
@@ -39,8 +39,8 @@ namespace KBEngine
 		virtual void onStart()
 		{
 			DBUtil::initThread();
-			_pDBInterface = DBUtil::createInterface(false);
-			if(_pDBInterface == NULL)
+			m_pInterface = DBUtil::createInterface(false);
+			if (m_pInterface == NULL)
 			{
 				ERROR_MSG("DBThread:: can't create dbinterface!\n");
 			}
@@ -48,10 +48,10 @@ namespace KBEngine
 
 		virtual void onEnd()
 		{
-			if(_pDBInterface)
+			if (m_pInterface)
 			{
-				_pDBInterface->detach();
-				SAFE_RELEASE(_pDBInterface);
+				m_pInterface->detach();
+				SAFE_RELEASE(m_pInterface);
 				DBUtil::finiThread();
 			}
 		}
@@ -75,7 +75,7 @@ namespace KBEngine
 				}
 				catch (std::exception & e)
 				{
-					if(!_pDBInterface->processException(e))
+					if (!m_pInterface->processException(e))
 						break;
 				}
 			}
@@ -83,7 +83,10 @@ namespace KBEngine
 		}
 
 	private:
-		DBInterface* _pDBInterface;
+
+		//////////////////////////////////////////////////////////////////////////
+		// 访问 mysql 的接口
+		DBInterface*		m_pInterface;		
 	};
 
 
