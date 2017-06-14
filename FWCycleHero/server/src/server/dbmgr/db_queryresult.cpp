@@ -24,7 +24,7 @@ namespace KBEngine {
 	//---------------------------------------------------------------------------------------------------
 	// ¹¹Ôìº¯Êý
 	//---------------------------------------------------------------------------------------------------
-	QueryResult::QueryResult(MYSQL_RES* result, INT nRows, INT nCols, Connection* con)
+	QueryResult::QueryResult(MYSQL_RES* result, int32 nRows, int32 nCols, MysqlConnection* con)
 							: m_Result(result), m_nRows(nRows), m_nCols(nCols), m_con(con)
 	{
 		KBE_ASSERT(m_Result != NULL && m_nRows >= 0 && m_nCols > 0);
@@ -33,7 +33,7 @@ namespace KBEngine {
 		KBE_ASSERT(m_CurrentRow != NULL);
 
 		MYSQL_FIELD* field = mysql_fetch_fields(m_Result);
-		for(INT n = 0; n < m_nCols; n++)
+		for (int32 n = 0; n < m_nCols; n++)
 		{
 			m_CurrentRow[n].SetALL(field[n].name, ConvertType(field[n].type), field[n].max_length);
 		}

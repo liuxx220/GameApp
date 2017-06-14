@@ -34,19 +34,19 @@ namespace KBEngine {
 	*/
 	//----------------------------------------------------------------------------------------------------
 	class Field;
-	struct Connection;
+	struct MysqlConnection;
 	class QueryResult
 	{
 	public:
-		QueryResult(MYSQL_RES* result, INT nRows, INT nCols, Connection* con);
+		QueryResult(MYSQL_RES* result, int32 nRows, int32 nCols, MysqlConnection* con);
 		~QueryResult();
 
-		inline INT				GetRowCount() const		{ return m_nRows; }
-		inline INT				GetFieldCount() const		{ return m_nCols; }
-		inline const Field*		Fetch() const		{ return m_CurrentRow; }
+		inline int32			GetRowCount() const			{ return m_nRows; }
+		inline int32			GetFieldCount() const		{ return m_nCols; }
+		inline const Field*		Fetch() const				{ return m_CurrentRow; }
 
 		bool					NextRow();
-		inline Field&			operator [] (INT nIndex) const { KBE_ASSERT(nIndex >= 0 && nIndex < m_nCols && m_CurrentRow != NULL); return m_CurrentRow[nIndex]; }
+		inline Field&			operator [] (int32 nIndex) const { KBE_ASSERT(nIndex >= 0 && nIndex < m_nCols && m_CurrentRow != NULL); return m_CurrentRow[nIndex]; }
 		inline Field&			operator [] (char* szFieldName) const;
 
 	private:
@@ -54,10 +54,10 @@ namespace KBEngine {
 	
 	private:
 		MYSQL_RES*		m_Result;			// mysql结果集
-		INT				m_nRows;			// 结果集行数
-		INT				m_nCols;			// 结果集列数
+		int32			m_nRows;			// 结果集行数
+		int32			m_nCols;			// 结果集列数
 		Field*			m_CurrentRow;		// 当前行列集
-		Connection*		m_con;
+		MysqlConnection*	m_con;
 
 	};
 
