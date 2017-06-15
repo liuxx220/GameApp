@@ -1,0 +1,32 @@
+<root>
+	<dbmgr>
+		<!-- 数据库地址 
+			（Database address)
+		-->
+		<host> localhost </host>										<!-- Type: String -->
+		<port> 3306 </port>												<!-- Type: Integer -->
+		
+		<!-- 数据库账号验证 
+			（Database auth)
+		-->
+		<auth>  
+			<username> root </username>									<!-- Type: String -->
+			<password> 111111 </password>									<!-- Type: String -->
+			
+			<!-- 为true则表示password是加密(rsa)的, 可防止明文配置 
+				(is true, password is RSA)
+			-->
+			<encrypt> false </encrypt>
+		</auth>
+		
+		<!-- 数据库名称 
+			(Database name)
+		-->
+		<databaseName> kbe </databaseName> 								<!-- Type: String -->
+		
+		<!-- 数据库允许的连接数 
+			(Number of connections allowed by the database)
+		-->
+		<numConnections> 5 </numConnections>							<!-- Type: Integer -->
+	</dbmgr>
+</root>

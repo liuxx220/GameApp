@@ -58,21 +58,9 @@ ENGINE_COMPONENT_INFO& ServerConfig::getBaseAppMgr(void)
 }
 
 //-------------------------------------------------------------------------------------		
-INLINE ENGINE_COMPONENT_INFO& ServerConfig::getKBMachine(void)
+INLINE ENGINE_DB_CONFIG& ServerConfig::getDBconfig(void)
 {
-	return _kbMachineInfo;
-}
-
-//-------------------------------------------------------------------------------------		
-INLINE ENGINE_COMPONENT_INFO& ServerConfig::getBots(void)
-{
-	return _botsInfo;
-}
-
-//-------------------------------------------------------------------------------------		
-INLINE ENGINE_COMPONENT_INFO& ServerConfig::getMessagelog(void)
-{
-	return _messagelogInfo;
+	return _dbconfig;
 }
 
 //-------------------------------------------------------------------------------------	
@@ -92,10 +80,6 @@ INLINE ENGINE_COMPONENT_INFO& ServerConfig::getComponent(COMPONENT_TYPE componen
 		return getCellApp();
 	case BASEAPP_TYPE:
 		return getBaseApp();
-	case MACHINE_TYPE:
-		return getKBMachine();
-	case MESSAGELOG_TYPE:
-		return getMessagelog();
 	default:
 		return getCellApp();
 	};

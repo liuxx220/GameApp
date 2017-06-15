@@ -36,7 +36,6 @@
 namespace KBEngine
 {
 
-	class Address;
 	// 引擎组件信息结构体
 	typedef struct EngineComponentInfo
 	{
@@ -50,19 +49,22 @@ namespace KBEngine
 
 		}
 
-		char	ip[MAX_BUF];									// 组件的运行期ip地址
-		uint32	port;											// 组件的运行后监听的端口
-		
-		char	db_ip[MAX_BUF];									// 组件的运行期ip地址
-		char	db_username[MAX_NAME];							// 数据库的用户名
-		char	db_password[MAX_BUF * 10];						// 数据库的密码
-		char	db_name[MAX_NAME];								// 数据库名
-		uint32	db_port;
-		uint16  db_maxconn;										// 数据库最大连接
-		COMPONENT_ID componentID;
+		char			ip[MAX_BUF];									// 组件的运行期ip地址
+		uint32			port;											// 组件的运行后监听的端口
+		COMPONENT_ID	componentID;
 		
 	}ENGINE_COMPONENT_INFO;
 
+
+	typedef struct EngineDBConfig
+	{
+		char			db_ip[MAX_BUF];									// 组件的运行期ip地址
+		char			db_username[MAX_NAME];							// 数据库的用户名
+		char			db_password[MAX_BUF * 10];						// 数据库的密码
+		char			db_name[MAX_NAME];								// 数据库名
+		uint32			db_port;
+		uint16			db_maxconn;										// 数据库最大连接
+	} ENGINE_DB_CONFIG;
 
 	class ServerConfig : public Singleton<ServerConfig>
 	{
@@ -71,6 +73,7 @@ namespace KBEngine
 		~ServerConfig();
 	
 		bool loadConfig(std::string fileName);
+		bool loadDBConfig(std::string fileName);
 	
 		INLINE ENGINE_COMPONENT_INFO& getCellApp(void);
 		INLINE ENGINE_COMPONENT_INFO& getBaseApp(void);
@@ -78,35 +81,11 @@ namespace KBEngine
 		INLINE ENGINE_COMPONENT_INFO& getLoginApp(void);
 		INLINE ENGINE_COMPONENT_INFO& getCellAppMgr(void);
 		INLINE ENGINE_COMPONENT_INFO& getBaseAppMgr(void);
-		INLINE ENGINE_COMPONENT_INFO& getKBMachine(void);
-		INLINE ENGINE_COMPONENT_INFO& getBots(void);
-		INLINE ENGINE_COMPONENT_INFO& getMessagelog(void);
-		INLINE ENGINE_COMPONENT_INFO& getBilling(void);
-
 		INLINE ENGINE_COMPONENT_INFO& getComponent(COMPONENT_TYPE componentType);
  	
 		INLINE ENGINE_COMPONENT_INFO& getConfig();
-
- 		void updateInfos(bool isPrint, COMPONENT_TYPE componentType, COMPONENT_ID componentID, 
- 					const Address& internalAddr, const Address& externalAddr);
- 	
-		void updateExternalAddress(char* buf);
-
-		INLINE int16 gameUpdateHertz(void)const;
-	
-		INLINE const char* billingSystemAccountType()const;
-		INLINE const char* billingSystemChargeType()const;
-
-		INLINE const char* billingSystemThirdpartyAccountServiceAddr()const;
-		INLINE uint16 billingSystemThirdpartyAccountServicePort()const;
-
-		INLINE const char* billingSystemThirdpartyChargeServiceAddr()const;
-		INLINE uint16 billingSystemThirdpartyChargeServicePort()const;
-
-		INLINE uint16 billingSystemThirdpartyServiceCBPort()const;
-
-		uint32 tcp_SOMAXCONN(COMPONENT_TYPE componentType);
-
+		INLINE ENGINE_DB_CONFIG&	  getDBconfig();
+ 		
 	private:
 		ENGINE_COMPONENT_INFO _cellAppInfo;
 		ENGINE_COMPONENT_INFO _baseAppInfo;
@@ -114,10 +93,9 @@ namespace KBEngine
 		ENGINE_COMPONENT_INFO _loginAppInfo;
 		ENGINE_COMPONENT_INFO _cellAppMgrInfo;
 		ENGINE_COMPONENT_INFO _baseAppMgrInfo;
-		ENGINE_COMPONENT_INFO _kbMachineInfo;
-		ENGINE_COMPONENT_INFO _botsInfo;
-		ENGINE_COMPONENT_INFO _messagelogInfo;
-		ENGINE_COMPONENT_INFO _billingInfo;
+
+
+		ENGINE_DB_CONFIG	  _dbconfig;
 	
 	};
 
