@@ -1,0 +1,283 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>10.0.20506</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{09530E67-B3AF-07DA-3AF6-9FD6A33F1C33}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AssemblyName>Assembly-CSharp</AssemblyName>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{E097FAD1-6243-4DAD-9C02-E9B9EFC3FFC1};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
+    <CompilerResponseFile></CompilerResponseFile>
+    <UnityProjectType>Game:1</UnityProjectType>
+    <UnityBuildTarget>Android:13</UnityBuildTarget>
+    <UnityVersion>5.5.0f3</UnityVersion>
+    <RootNamespace></RootNamespace>
+    <LangVersion Condition=" '$(VisualStudioVersion)' != '10.0' ">4</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>Temp\UnityVS_bin\Debug\</OutputPath>
+    <IntermediateOutputPath>Temp\UnityVS_obj\Debug\</IntermediateOutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DefineConstants>DEBUG;TRACE;UNITY_5_3_OR_NEWER;UNITY_5_4_OR_NEWER;UNITY_5_5_OR_NEWER;UNITY_5_5_0;UNITY_5_5;UNITY_5;UNITY_ANALYTICS;ENABLE_AUDIO;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_GENERICS;ENABLE_MICROPHONE;ENABLE_MULTIPLE_DISPLAYS;ENABLE_PHYSICS;ENABLE_SPRITERENDERER_FLIPPING;ENABLE_SPRITES;ENABLE_TERRAIN;ENABLE_RAKNET;ENABLE_UNET;ENABLE_LZMA;ENABLE_UNITYEVENTS;ENABLE_WEBCAM;ENABLE_WWW;ENABLE_CLOUD_SERVICES_COLLAB;ENABLE_CLOUD_SERVICES_ADS;ENABLE_CLOUD_HUB;ENABLE_CLOUD_PROJECT_ID;ENABLE_CLOUD_SERVICES_UNET;ENABLE_CLOUD_SERVICES_BUILD;ENABLE_CLOUD_LICENSE;ENABLE_EDITOR_METRICS;ENABLE_EDITOR_METRICS_CACHING;INCLUDE_DYNAMIC_GI;INCLUDE_GI;PLATFORM_SUPPORTS_MONO;INCLUDE_PUBNUB;ENABLE_PLAYMODE_TESTS_RUNNER;ENABLE_SCRIPTING_NEW_CSHARP_COMPILER;UNITY_ANDROID;ENABLE_SUBSTANCE;UNITY_ANDROID_API;ENABLE_EGL;ENABLE_NETWORK;ENABLE_RUNTIME_GI;ENABLE_CRUNCH_TEXTURE_COMPRESSION;ENABLE_UNITYWEBREQUEST;ENABLE_CLOUD_SERVICES;ENABLE_CLOUD_SERVICES_ANALYTICS;ENABLE_CLOUD_SERVICES_PURCHASING;ENABLE_CLOUD_SERVICES_CRASH_REPORTING;PLATFORM_SUPPORTS_ADS_ID;UNITY_CAN_SHOW_SPLASH_SCREEN;ENABLE_VIDEO;ENABLE_VR;ENABLE_UNITYADS_RUNTIME;UNITY_UNITYADS_API;ENABLE_MONO;ENABLE_PROFILER;DEBUG;TRACE;UNITY_ASSERTIONS;UNITY_EDITOR;UNITY_EDITOR_64;UNITY_EDITOR_WIN;UNITY_TEAM_LICENSE;ENABLE_VSTU</DefineConstants>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>Temp\UnityVS_bin\Release\</OutputPath>
+    <IntermediateOutputPath>Temp\UnityVS_obj\Release\</IntermediateOutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DefineConstants>TRACE;UNITY_5_3_OR_NEWER;UNITY_5_4_OR_NEWER;UNITY_5_5_OR_NEWER;UNITY_5_5_0;UNITY_5_5;UNITY_5;UNITY_ANALYTICS;ENABLE_AUDIO;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_GENERICS;ENABLE_MICROPHONE;ENABLE_MULTIPLE_DISPLAYS;ENABLE_PHYSICS;ENABLE_SPRITERENDERER_FLIPPING;ENABLE_SPRITES;ENABLE_TERRAIN;ENABLE_RAKNET;ENABLE_UNET;ENABLE_LZMA;ENABLE_UNITYEVENTS;ENABLE_WEBCAM;ENABLE_WWW;ENABLE_CLOUD_SERVICES_COLLAB;ENABLE_CLOUD_SERVICES_ADS;ENABLE_CLOUD_HUB;ENABLE_CLOUD_PROJECT_ID;ENABLE_CLOUD_SERVICES_UNET;ENABLE_CLOUD_SERVICES_BUILD;ENABLE_CLOUD_LICENSE;ENABLE_EDITOR_METRICS;ENABLE_EDITOR_METRICS_CACHING;INCLUDE_DYNAMIC_GI;INCLUDE_GI;PLATFORM_SUPPORTS_MONO;INCLUDE_PUBNUB;ENABLE_PLAYMODE_TESTS_RUNNER;ENABLE_SCRIPTING_NEW_CSHARP_COMPILER;UNITY_ANDROID;ENABLE_SUBSTANCE;UNITY_ANDROID_API;ENABLE_EGL;ENABLE_NETWORK;ENABLE_RUNTIME_GI;ENABLE_CRUNCH_TEXTURE_COMPRESSION;ENABLE_UNITYWEBREQUEST;ENABLE_CLOUD_SERVICES;ENABLE_CLOUD_SERVICES_ANALYTICS;ENABLE_CLOUD_SERVICES_PURCHASING;ENABLE_CLOUD_SERVICES_CRASH_REPORTING;PLATFORM_SUPPORTS_ADS_ID;UNITY_CAN_SHOW_SPLASH_SCREEN;ENABLE_VIDEO;ENABLE_VR;ENABLE_UNITYADS_RUNTIME;UNITY_UNITYADS_API;ENABLE_MONO;ENABLE_PROFILER;DEBUG;TRACE;UNITY_ASSERTIONS;UNITY_EDITOR;UNITY_EDITOR_64;UNITY_EDITOR_WIN;UNITY_TEAM_LICENSE;ENABLE_VSTU</DefineConstants>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="mscorlib" />
+    <Reference Include="System" />
+    <Reference Include="System.XML" />
+    <Reference Include="System.Core" />
+    <Reference Include="Boo.Lang" />
+    <Reference Include="UnityScript.Lang" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="UnityEngine">
+      <HintPath>Library\UnityAssemblies\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>Library\UnityAssemblies\UnityEngine.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.Networking">
+      <HintPath>Library\UnityAssemblies\UnityEngine.Networking.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.PlaymodeTestsRunner">
+      <HintPath>Library\UnityAssemblies\UnityEngine.PlaymodeTestsRunner.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.Analytics">
+      <HintPath>Library\UnityAssemblies\UnityEngine.Analytics.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.HoloLens">
+      <HintPath>Library\UnityAssemblies\UnityEngine.HoloLens.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.VR">
+      <HintPath>Library\UnityAssemblies\UnityEngine.VR.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEditor">
+      <HintPath>Library\UnityAssemblies\UnityEditor.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="War of World.CSharp.Plugins.csproj">
+      <Project>{872A7AF4-2A78-E3D0-2A0A-D5B83AB351B0}</Project>
+      <Name>War of World.CSharp.Plugins</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Assets\Scripts\Advertising\TanksAdvertController.cs" />
+    <Compile Include="Assets\Scripts\Analytics\AnalyticsHelper.cs" />
+    <Compile Include="Assets\Scripts\Analytics\HeatmapsHelper.cs" />
+    <Compile Include="Assets\Scripts\Audio\MusicManager.cs" />
+    <Compile Include="Assets\Scripts\Audio\UIAudioManager.cs" />
+    <Compile Include="Assets\Scripts\Audio\UIButtonAudio.cs" />
+    <Compile Include="Assets\Scripts\Camera\CameraFollow.cs" />
+    <Compile Include="Assets\Scripts\Camera\CameraRigRotationInit.cs" />
+    <Compile Include="Assets\Scripts\Camera\CameraSnapshot.cs" />
+    <Compile Include="Assets\Scripts\Camera\ScreenShakeController.cs" />
+    <Compile Include="Assets\Scripts\Data\DailyUnlockManager.cs" />
+    <Compile Include="Assets\Scripts\Data\DataStore.cs" />
+    <Compile Include="Assets\Scripts\Data\EncryptedJsonSaver.cs" />
+    <Compile Include="Assets\Scripts\Data\IDataSaver.cs" />
+    <Compile Include="Assets\Scripts\Data\JsonSaver.cs" />
+    <Compile Include="Assets\Scripts\Data\PlayerDataManager.cs" />
+    <Compile Include="Assets\Scripts\Data\SpecialProjectileLibrary.cs" />
+    <Compile Include="Assets\Scripts\Data\TankDecorationLibrary.cs" />
+    <Compile Include="Assets\Scripts\Data\TankLibrary.cs" />
+    <Compile Include="Assets\Scripts\Effects\DamageOutlineFlash.cs" />
+    <Compile Include="Assets\Scripts\Effects\Effect.cs" />
+    <Compile Include="Assets\Scripts\Effects\MineTimer.cs" />
+    <Compile Include="Assets\Scripts\Effects\PlumeSpawner.cs" />
+    <Compile Include="Assets\Scripts\Effects\ThemedEffectsLibrary.cs" />
+    <Compile Include="Assets\Scripts\Explosions\DebrisSettings.cs" />
+    <Compile Include="Assets\Scripts\Explosions\ExplosionSettings.cs" />
+    <Compile Include="Assets\Scripts\Hazards\LevelHazard.cs" />
+    <Compile Include="Assets\Scripts\Hazards\MineController.cs" />
+    <Compile Include="Assets\Scripts\IAP\CurrencyContent.cs" />
+    <Compile Include="Assets\Scripts\IAP\IAPContent.cs" />
+    <Compile Include="Assets\Scripts\IAP\IAPItem.cs" />
+    <Compile Include="Assets\Scripts\IAP\IAPManager.cs" />
+    <Compile Include="Assets\Scripts\Managers\ExplosionManager.cs" />
+    <Compile Include="Assets\Scripts\Managers\GameManager.cs" />
+    <Compile Include="Assets\Scripts\Managers\GameSettings.cs" />
+    <Compile Include="Assets\Scripts\Managers\NetworkManager.cs" />
+    <Compile Include="Assets\Scripts\Managers\QualitySettingsManager.cs" />
+    <Compile Include="Assets\Scripts\Managers\RespawningTank.cs" />
+    <Compile Include="Assets\Scripts\Managers\TankManager.cs" />
+    <Compile Include="Assets\Scripts\Map\MapDetails.cs" />
+    <Compile Include="Assets\Scripts\Map\MapEffectsGroup.cs" />
+    <Compile Include="Assets\Scripts\Map\MapList.cs" />
+    <Compile Include="Assets\Scripts\Map\MapListBase.cs" />
+    <Compile Include="Assets\Scripts\Map\SinglePlayerMapDetails.cs" />
+    <Compile Include="Assets\Scripts\Map\SinglePlayerMapList.cs" />
+    <Compile Include="Assets\Scripts\Map\SpawnManager.cs" />
+    <Compile Include="Assets\Scripts\Map\SpawnPoint.cs" />
+    <Compile Include="Assets\Scripts\Network\NetworkPlayer.cs" />
+    <Compile Include="Assets\Scripts\Powerups\CrateSpawner.cs" />
+    <Compile Include="Assets\Scripts\Powerups\CurrencyPickup.cs" />
+    <Compile Include="Assets\Scripts\Powerups\HotdropLight.cs" />
+    <Compile Include="Assets\Scripts\Powerups\NitroPickup.cs" />
+    <Compile Include="Assets\Scripts\Powerups\PickupBase.cs" />
+    <Compile Include="Assets\Scripts\Powerups\ProjectilePickup.cs" />
+    <Compile Include="Assets\Scripts\Powerups\ShieldPickup.cs" />
+    <Compile Include="Assets\Scripts\Powerups\TankSeeker.cs" />
+    <Compile Include="Assets\Scripts\Rules\FreeForAll.cs" />
+    <Compile Include="Assets\Scripts\Rules\KillLogPhrases.cs" />
+    <Compile Include="Assets\Scripts\Rules\LastManStanding.cs" />
+    <Compile Include="Assets\Scripts\Rules\ModeDetails.cs" />
+    <Compile Include="Assets\Scripts\Rules\ModeList.cs" />
+    <Compile Include="Assets\Scripts\Rules\RulesProcessor.cs" />
+    <Compile Include="Assets\Scripts\Rules\ShootingRangeRulesProcessor.cs" />
+    <Compile Include="Assets\Scripts\Rules\SinglePlayer\Objectives\Chase.cs" />
+    <Compile Include="Assets\Scripts\Rules\SinglePlayer\Objectives\ChaseAndDestroy.cs" />
+    <Compile Include="Assets\Scripts\Rules\SinglePlayer\Objectives\Collection.cs" />
+    <Compile Include="Assets\Scripts\Rules\SinglePlayer\Objectives\DontTakeDamage.cs" />
+    <Compile Include="Assets\Scripts\Rules\SinglePlayer\Objectives\Escort.cs" />
+    <Compile Include="Assets\Scripts\Rules\SinglePlayer\Objectives\EscortUntilTargetDies.cs" />
+    <Compile Include="Assets\Scripts\Rules\SinglePlayer\Objectives\GetToLocation.cs" />
+    <Compile Include="Assets\Scripts\Rules\SinglePlayer\Objectives\KillLimit.cs" />
+    <Compile Include="Assets\Scripts\Rules\SinglePlayer\Objectives\KillTarget.cs" />
+    <Compile Include="Assets\Scripts\Rules\SinglePlayer\Objectives\NpcKillLimit.cs" />
+    <Compile Include="Assets\Scripts\Rules\SinglePlayer\Objectives\Objective.cs" />
+    <Compile Include="Assets\Scripts\Rules\SinglePlayer\Objectives\TargetNpcKillLimit.cs" />
+    <Compile Include="Assets\Scripts\Rules\SinglePlayer\Objectives\TimedFailure.cs" />
+    <Compile Include="Assets\Scripts\Rules\SinglePlayer\Objectives\TimedSuccess.cs" />
+    <Compile Include="Assets\Scripts\Rules\SinglePlayer\OfflineRulesProcessor.cs" />
+    <Compile Include="Assets\Scripts\Rules\SinglePlayer\SinglePlayerRulesProcessor.cs" />
+    <Compile Include="Assets\Scripts\Rules\Team.cs" />
+    <Compile Include="Assets\Scripts\Rules\TeamDeathmatch.cs" />
+    <Compile Include="Assets\Scripts\Shell\FiringLogic.cs" />
+    <Compile Include="Assets\Scripts\Shell\PhysicsAffected.cs" />
+    <Compile Include="Assets\Scripts\Shell\Shell.cs" />
+    <Compile Include="Assets\Scripts\Single Player\Collectible.cs" />
+    <Compile Include="Assets\Scripts\Single Player\Crate.cs" />
+    <Compile Include="Assets\Scripts\Single Player\CrateManager.cs" />
+    <Compile Include="Assets\Scripts\Single Player\Navigator.cs" />
+    <Compile Include="Assets\Scripts\Single Player\Npc.cs" />
+    <Compile Include="Assets\Scripts\Single Player\ObjectiveArrowBehaviour.cs" />
+    <Compile Include="Assets\Scripts\Single Player\TargetNpc.cs" />
+    <Compile Include="Assets\Scripts\Single Player\TargetZone.cs" />
+    <Compile Include="Assets\Scripts\Single Player\Turret.cs" />
+    <Compile Include="Assets\Scripts\Single Player\Waypoint.cs" />
+    <Compile Include="Assets\Scripts\Tank\Decoration.cs" />
+    <Compile Include="Assets\Scripts\Tank\IDamageObject.cs" />
+    <Compile Include="Assets\Scripts\Tank\SpringDetach.cs" />
+    <Compile Include="Assets\Scripts\Tank\TankDisplay.cs" />
+    <Compile Include="Assets\Scripts\Tank\TankHealth.cs" />
+    <Compile Include="Assets\Scripts\Tank\TankInputModule.cs" />
+    <Compile Include="Assets\Scripts\Tank\TankKeyboardInput.cs" />
+    <Compile Include="Assets\Scripts\Tank\TankMovement.cs" />
+    <Compile Include="Assets\Scripts\Tank\TankShooting.cs" />
+    <Compile Include="Assets\Scripts\Tank\TankTouchInput.cs" />
+    <Compile Include="Assets\Scripts\UI\AdvertUnlockModal.cs" />
+    <Compile Include="Assets\Scripts\UI\AndroidBackQuit.cs" />
+    <Compile Include="Assets\Scripts\UI\AnnouncerModal.cs" />
+    <Compile Include="Assets\Scripts\UI\BackButton.cs" />
+    <Compile Include="Assets\Scripts\UI\BackButtonBlocker.cs" />
+    <Compile Include="Assets\Scripts\UI\BuyModal.cs" />
+    <Compile Include="Assets\Scripts\UI\CreateGame.cs" />
+    <Compile Include="Assets\Scripts\UI\CurrencyPanel.cs" />
+    <Compile Include="Assets\Scripts\UI\DiscretePointSlider.cs" />
+    <Compile Include="Assets\Scripts\UI\EndGameCountDown.cs" />
+    <Compile Include="Assets\Scripts\UI\EndGameModal.cs" />
+    <Compile Include="Assets\Scripts\UI\FadingGroup.cs" />
+    <Compile Include="Assets\Scripts\UI\HUDController.cs" />
+    <Compile Include="Assets\Scripts\UI\HUDMultiplayerScore.cs" />
+    <Compile Include="Assets\Scripts\UI\HUDSinglePlayer.cs" />
+    <Compile Include="Assets\Scripts\UI\IColorProvider.cs" />
+    <Compile Include="Assets\Scripts\UI\InGameLeaderboardModal.cs" />
+    <Compile Include="Assets\Scripts\UI\InGameNotification.cs" />
+    <Compile Include="Assets\Scripts\UI\InGameNotificationManager.cs" />
+    <Compile Include="Assets\Scripts\UI\InGameOptionsMenu.cs" />
+    <Compile Include="Assets\Scripts\UI\InstructionSwap.cs" />
+    <Compile Include="Assets\Scripts\UI\LabelScaling.cs" />
+    <Compile Include="Assets\Scripts\UI\LeaderboardElement.cs" />
+    <Compile Include="Assets\Scripts\UI\LeaderboardUI.cs" />
+    <Compile Include="Assets\Scripts\UI\LeaderboardUIElement.cs" />
+    <Compile Include="Assets\Scripts\UI\LevelSelect.cs" />
+    <Compile Include="Assets\Scripts\UI\LoadingModal.cs" />
+    <Compile Include="Assets\Scripts\UI\LobbyCustomization.cs" />
+    <Compile Include="Assets\Scripts\UI\LobbyGameDetails.cs" />
+    <Compile Include="Assets\Scripts\UI\LobbyInfoPanel.cs" />
+    <Compile Include="Assets\Scripts\UI\LobbyPanel.cs" />
+    <Compile Include="Assets\Scripts\UI\LobbyPlayer.cs" />
+    <Compile Include="Assets\Scripts\UI\LobbyPlayerList.cs" />
+    <Compile Include="Assets\Scripts\UI\LobbyServerEntry.cs" />
+    <Compile Include="Assets\Scripts\UI\LobbyServerList.cs" />
+    <Compile Include="Assets\Scripts\UI\MainMenuUI.cs" />
+    <Compile Include="Assets\Scripts\UI\MapSelect.cs" />
+    <Compile Include="Assets\Scripts\UI\Modal.cs" />
+    <Compile Include="Assets\Scripts\UI\ModeSelect.cs" />
+    <Compile Include="Assets\Scripts\UI\MultiplayerEndGameModal.cs" />
+    <Compile Include="Assets\Scripts\UI\NamePanel.cs" />
+    <Compile Include="Assets\Scripts\UI\NumberDisplay.cs" />
+    <Compile Include="Assets\Scripts\UI\ObjectiveUI.cs" />
+    <Compile Include="Assets\Scripts\UI\OfflineEndGameModal.cs" />
+    <Compile Include="Assets\Scripts\UI\PauseButton.cs" />
+    <Compile Include="Assets\Scripts\UI\PlatformSpecificText.cs" />
+    <Compile Include="Assets\Scripts\UI\PlayerColorProvider.cs" />
+    <Compile Include="Assets\Scripts\UI\PulsingInputBox.cs" />
+    <Compile Include="Assets\Scripts\UI\PulsingUIGroup.cs" />
+    <Compile Include="Assets\Scripts\UI\RenderTextureConsumer.cs" />
+    <Compile Include="Assets\Scripts\UI\RouletteModal.cs" />
+    <Compile Include="Assets\Scripts\UI\Select.cs" />
+    <Compile Include="Assets\Scripts\UI\SettingsModal.cs" />
+    <Compile Include="Assets\Scripts\UI\SharingModal.cs" />
+    <Compile Include="Assets\Scripts\UI\ShootingRangeEndGameModal.cs" />
+    <Compile Include="Assets\Scripts\UI\ShopItem.cs" />
+    <Compile Include="Assets\Scripts\UI\ShopScreen.cs" />
+    <Compile Include="Assets\Scripts\UI\SimpleSplashScreen.cs" />
+    <Compile Include="Assets\Scripts\UI\SinglePlayerCompleteModal.cs" />
+    <Compile Include="Assets\Scripts\UI\SinglePlayerCompleteModalAchievement.cs" />
+    <Compile Include="Assets\Scripts\UI\SinglePlayerStartGameModal.cs" />
+    <Compile Include="Assets\Scripts\UI\Skin.cs" />
+    <Compile Include="Assets\Scripts\UI\SkinColour.cs" />
+    <Compile Include="Assets\Scripts\UI\SkinColourSelector.cs" />
+    <Compile Include="Assets\Scripts\UI\SkinSelect.cs" />
+    <Compile Include="Assets\Scripts\UI\StartGameModal.cs" />
+    <Compile Include="Assets\Scripts\UI\TankCustomizationModal.cs" />
+    <Compile Include="Assets\Scripts\UI\TankDragPreview.cs" />
+    <Compile Include="Assets\Scripts\UI\TankRotator.cs" />
+    <Compile Include="Assets\Scripts\UI\TankSelector.cs" />
+    <Compile Include="Assets\Scripts\UI\TeamColorProvider.cs" />
+    <Compile Include="Assets\Scripts\UI\ThumbnailAnimator.cs" />
+    <Compile Include="Assets\Scripts\UI\TimedModal.cs" />
+    <Compile Include="Assets\Scripts\UI\UIDirectionControl.cs" />
+    <Compile Include="Assets\Scripts\UI\UiShake.cs" />
+    <Compile Include="Assets\Scripts\Utilities\GameObjectExtensions.cs" />
+    <Compile Include="Assets\Scripts\Utilities\IListExtensions.cs" />
+    <Compile Include="Assets\Scripts\Utilities\MathUtilities.cs" />
+    <Compile Include="Assets\Scripts\Utilities\MobileDisable.cs" />
+    <Compile Include="Assets\Scripts\Utilities\MobileUtilities.cs" />
+    <Compile Include="Assets\Scripts\Utilities\PersistentSingleton.cs" />
+    <Compile Include="Assets\Scripts\Utilities\Singleton.cs" />
+    <Compile Include="Assets\Scripts\Utilities\StringBuilding.cs" />
+    <Compile Include="Assets\Scripts\Utilities\Vector2Extensions.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Assets\Shaders\BlendedShadowcaster.shader" />
+    <None Include="Assets\Shaders\HalfLambert.shader" />
+    <None Include="Assets\Shaders\HalfLambertPowerup.shader" />
+    <None Include="Assets\Shaders\OutlineAndShadow.shader" />
+    <None Include="Assets\Shaders\Particle Premultiply Blend Colour OneSided.shader" />
+    <None Include="Assets\Shaders\Particle Premultiply Blend Colour.shader" />
+    <None Include="Assets\Shaders\VlitWithShadows.shader" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2013\UnityVS.CSharp.targets" />
+</Project>
