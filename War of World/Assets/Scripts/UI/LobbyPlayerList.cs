@@ -33,7 +33,6 @@ namespace Tanks.UI
 			{
 				m_NetManager.playerJoined += PlayerJoined;
 				m_NetManager.playerLeft += PlayerLeft;
-				m_NetManager.serverPlayersReadied += PlayersReadied;
 			}
 		}
 
@@ -44,7 +43,6 @@ namespace Tanks.UI
 			{
 				m_NetManager.playerJoined -= PlayerJoined;
 				m_NetManager.playerLeft -= PlayerLeft;
-				m_NetManager.serverPlayersReadied -= PlayersReadied;
 			}
 		}
 		
@@ -72,12 +70,6 @@ namespace Tanks.UI
 		protected virtual void PlayerLeft(TanksNetworkPlayer player)
 		{
 			Debug.LogFormat("Player left {0}", player.name);
-		}
-
-		//When players are all ready progress
-		protected virtual void PlayersReadied()
-		{
-			m_NetManager.ProgressToGameScene();
 		}
 	}
 }

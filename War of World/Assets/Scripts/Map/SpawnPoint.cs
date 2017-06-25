@@ -48,7 +48,6 @@ namespace Tanks.Map
 			if (tankHealth != null)
 			{
 				m_NumberOfTanksInZone++;
-				tankHealth.currentSpawnPoint = this;
 			}
 		}
 
@@ -63,7 +62,6 @@ namespace Tanks.Map
 			if (tankHealth != null)
 			{
 				Decrement();
-				tankHealth.NullifySpawnPoint(this);
 			}
 		}
 

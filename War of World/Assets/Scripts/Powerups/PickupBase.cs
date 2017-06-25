@@ -1,35 +1,32 @@
 ﻿using UnityEngine;
-using UnityEngine.Networking;
 using Tanks.TankControllers;
 using Tanks.Explosions;
+
+
+
+
+
 
 namespace Tanks.Pickups
 {
     [RequireComponent(typeof(Rigidbody))]
-    [RequireComponent(typeof(NetworkIdentity))]
-    [RequireComponent(typeof(NetworkTransform))]
 
 	//This class acts as a base for all powerup pickups, defining all common behaviours.
-    public abstract class PickupBase : NetworkBehaviour , IDamageObject
+    public abstract class PickupBase : MonoBehaviour, IDamageObject
     {
         //The name of this pickup.
-		[SerializeField]
 		protected string m_PickupName;
 
 		//The explosion definition for when this pickup is destroyed by player fire.
-		[SerializeField]
         protected ExplosionSettings m_DeathExplosion;
 
 		//The minimum damage that must be dealt to the pickup in one shot before it considers itself hit.
-		[SerializeField]
         protected float m_MinDamage = 45;
 
 		//The effect prefab to spawn when the pickup is collected.
-		[SerializeField]
 		protected GameObject m_CollectionEffect;
 
 		//Delay before the attached TankSeeker is set to active.
-		[SerializeField]
 		protected float m_AttractorActivationDelay = 1.2f;
 
 		//Internal cache for the layer of objects that are able to trigger pickup.
@@ -56,7 +53,6 @@ namespace Tanks.Pickups
             isAlive = true;
         }
 
-        [ServerCallback]
         protected virtual void Start()
         {
             m_Attractor = GetComponent<TankSeeker>();
@@ -68,23 +64,8 @@ namespace Tanks.Pickups
 
 			//Add this powerup to the GameManager so that it can be destroyed between rounds if needed.
             GameManager.s_Instance.AddPowerup(this);
-
-			//Autospawn this object to clients when init is complete.
-            NetworkServer.Spawn(gameObject);
         }
 
-        public override void OnNetworkDestroy()
-        {
-            if (isServer)
-            {
-                //Remove this object's reference from the GameManager, since it's quite happily dead.
-				GameManager.s_Instance.RemovePowerup(this);
-            }
-
-            base.OnNetworkDestroy();
-        }
-
-        [ServerCallback]
         protected virtual void Update()
         {
             //Tick down the collider enable count, and enable the collection collider when depleted.
@@ -116,13 +97,6 @@ namespace Tanks.Pickups
                 {
                     Instantiate(m_CollectionEffect, transform.position + Vector3.up, Quaternion.LookRotation(Vector3.up));
                 }
-
-				//If this is the server, fire powerup collection logic and networkdestroy this object.
-                if (isServer)
-                {
-                    OnPickupCollected(other.gameObject);
-                    NetworkServer.Destroy(gameObject);
-                }
             }
         }
 
@@ -141,7 +115,7 @@ namespace Tanks.Pickups
                 ExplosionManager.s_Instance.SpawnExplosion(transform.position, transform.up, gameObject, m_DestroyingPlayer, m_DeathExplosion, false);
             }
 
-            NetworkServer.Destroy(gameObject);
+            GameObject.Destroy(gameObject);
         }
 
         public void SetDamagedBy(int playerNumber, string explosionId)

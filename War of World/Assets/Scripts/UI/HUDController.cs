@@ -457,16 +457,6 @@ namespace Tanks.UI
 			m_Shooting = m_TankManager.shooting;
 			m_Movement = m_TankManager.movement;
 
-			m_Shooting.ammoQtyChanged += UpdateAmmo;
-			m_Shooting.overrideShellChanged += UpdateShellInfo;
-
-			m_Health.healthChanged += UpdateHealth;
-			m_Health.shieldChanged += UpdateShield;
-			m_Health.playerDeath += OnPlayerDeath;
-			m_Health.playerReset += OnPlayerRespawn;
-
-			m_Movement.nitroChanged += UpdateNitro;
-
 			m_TankManager.onPickupCollected += OnPickupTextChanged;
 			m_TankManager.onCurrencyChanged += UpdatePickUpCurrency;
 
@@ -476,25 +466,6 @@ namespace Tanks.UI
 		//We unsubscribe all listeners from the player's tank when this object is destroyed
 		protected override void OnDestroy()
 		{
-			if (m_Shooting != null)
-			{
-				m_Shooting.ammoQtyChanged -= UpdateAmmo;
-				m_Shooting.overrideShellChanged -= UpdateShellInfo;
-			}
-
-			if (m_Health != null)
-			{
-				m_Health.healthChanged -= UpdateHealth;
-				m_Health.shieldChanged -= UpdateShield;
-				m_Health.playerDeath -= OnPlayerDeath;
-				m_Health.playerReset -= OnPlayerRespawn;
-			}
-
-			if (m_Movement != null)
-			{
-				m_Movement.nitroChanged -= UpdateNitro;
-			}
-
 			if (m_TankManager != null)
 			{
 				m_TankManager.onPickupCollected -= OnPickupTextChanged;

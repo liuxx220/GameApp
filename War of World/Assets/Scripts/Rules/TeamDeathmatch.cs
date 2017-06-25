@@ -91,11 +91,7 @@ namespace Tanks.Rules
 		/// </summary>
 		protected override void SetupColorProvider()
 		{
-			if (m_ColorProvider == null)
-			{
-				m_ColorProvider = new TeamColorProvider();
-				((TeamColorProvider)m_ColorProvider).SetupColors(GetColors());
-			}
+			
 		}
 
 		/// <summary>
@@ -105,19 +101,7 @@ namespace Tanks.Rules
 		/// <param name="killed">Tank that was killed</param>
 		protected virtual void IncrementTeamScore(TankManager killer, TankManager killed)
 		{
-			Color key = killer.playerColor;
-			if (m_TeamDictionary.ContainsKey(key))
-			{
-				if (key != killed.playerColor)
-				{
-					m_TeamDictionary[key].IncrementScore();
-					if (m_TeamDictionary[key].score >= m_KillLimit)
-					{
-						m_MatchOver = true;
-						m_WinningTeam = m_TeamDictionary[key];
-					}
-				}
-			}
+			
 		}
 
 		/// <summary>
@@ -137,7 +121,7 @@ namespace Tanks.Rules
 		public override void TankDies(TankManager tank)
 		{
 			base.TankDies(tank);
-			m_GameManager.RespawnTank(tank.playerNumber);
+			//m_GameManager.RespawnTank(tank.playerNumber);
 		}
 
 		/// <summary>
@@ -154,18 +138,7 @@ namespace Tanks.Rules
 
 			int tankNumber = GameManager.s_Tanks.Count;
 
-			//Iterate through all remaining tanks and aggregate how many tanks we have left for each team colour.
-			for (int i = 0; i < tankNumber; i++)
-			{
-				for (int j = 0; j < teamColours.Length; j++)
-				{
-					if (GameManager.s_Tanks[i].playerColor == teamColours[j])
-					{
-						colourCount[j]++;
-					}
-				}
-			}
-
+			
 			//Check our colour counts.
 			int validTeamCount = 0;
 
@@ -175,12 +148,6 @@ namespace Tanks.Rules
 				{
 					validTeamCount++;
 				}
-			}
-
-			//If we only have one valid team, treat it as if everyone has bailed and end the game.
-			if (validTeamCount == 1)
-			{
-				m_GameManager.HandleEveryoneBailed();
 			}
 		}
 
@@ -239,17 +206,6 @@ namespace Tanks.Rules
 		/// <param name="killed">Tank that was killed</param>
 		public override void HandleKillerScore(TankManager killer, TankManager killed)
 		{
-			//if you kill your own team mate or yourself you should lose points (personal kill count, not team kill count)
-			if (killer.playerColor == killed.playerColor)
-			{
-				killer.DecrementScore();
-			}
-			//otherwise you should get points
-			else
-			{
-				killer.IncrementScore();
-			}
-
 			IncrementTeamScore(killer, killed);
 
 			RegenerateHudScoreList();
@@ -268,7 +224,7 @@ namespace Tanks.Rules
 				scoreList[i] = m_TeamDictionary[colorList[i]].score;
 			}
 
-			m_GameManager.UpdateHudScore(colorList, scoreList);
+			//m_GameManager.UpdateHudScore(colorList, scoreList);
 		}
 
 		/// <summary>
@@ -278,13 +234,8 @@ namespace Tanks.Rules
 		/// <param name="tankIndex">Tank index.</param>
 		public override int GetRank(int tankIndex)
 		{
-			//if your tank color is the same as the winning team color then you are on the winning team and then your rank is one
-			if (GameManager.s_Tanks[tankIndex].playerColor == m_WinningTeam.teamColor)
-			{
-				return 1;
-			}
-
-			return 2;
+			
+			return 1;
 		}
 
 		/// <summary>

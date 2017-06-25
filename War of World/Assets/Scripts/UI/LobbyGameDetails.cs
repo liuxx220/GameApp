@@ -100,32 +100,14 @@ namespace Tanks.UI
 		protected override void AssignByIndex()
 		{
 			GameSettings.s_Instance.SetMapIndex(m_CurrentIndex);
-
-			for (int i = 0; i < TanksNetworkManager.s_Instance.connectedPlayers.Count; i++)
-			{
-				TanksNetworkManager.s_Instance.connectedPlayers[i].RpcSetGameSettings(m_CurrentIndex, m_Settings.modeIndex);
-			}
 		}
 
 		protected virtual void OnEnable()
 		{
-			//Enable or disable map selection buttons based on whether this is the host or not.
-			for (int i = 0; i < m_MapButtons.Length; i++)
-			{
-				m_MapButtons[i].SetActive(TanksNetworkManager.s_IsServer);
-			}
-
+			
 			if (m_NetManager == null)
 			{
 				m_NetManager = TanksNetworkManager.s_Instance;
-			}
-
-			if (m_NetManager != null)
-			{
-				m_NetManager.clientDisconnected += OnDisconnect;
-				m_NetManager.clientError += OnError;
-				m_NetManager.serverError += OnError;
-				m_NetManager.matchDropped += OnDrop;
 			}
 		}
 
@@ -133,58 +115,7 @@ namespace Tanks.UI
 		{
 			if (m_NetManager != null)
 			{
-				m_NetManager.clientDisconnected -= OnDisconnect;
-				m_NetManager.clientError -= OnError;
-				m_NetManager.serverError -= OnError;
-				m_NetManager.matchDropped -= OnDrop;
-			}
-		}
-
-		protected virtual void OnError(NetworkConnection conn, int errorCode)
-		{
-			MainMenuUI menuUi = MainMenuUI.s_Instance;
-
-			if (menuUi != null)
-			{
-				menuUi.ShowDefaultPanel();
-				menuUi.ShowInfoPopup("A connection error occurred", null);
-			}
-
-			if (m_NetManager != null)
-			{
-				m_NetManager.Disconnect();
-			}
-		}
-
-		protected virtual void OnDisconnect(NetworkConnection conn)
-		{
-			MainMenuUI menuUi = MainMenuUI.s_Instance;
-
-			if (menuUi != null)
-			{
-				menuUi.ShowDefaultPanel();
-				menuUi.ShowInfoPopup("Disconnected from server", null);
-			}
-
-			if (m_NetManager != null)
-			{
-				m_NetManager.Disconnect();
-			}
-		}
-
-		protected virtual void OnDrop()
-		{
-			MainMenuUI menuUi = MainMenuUI.s_Instance;
-
-			if (menuUi != null)
-			{
-				menuUi.ShowDefaultPanel();
-				menuUi.ShowInfoPopup("Disconnected from server", null);
-			}
-
-			if (m_NetManager != null)
-			{
-				m_NetManager.Disconnect();
+				
 			}
 		}
 

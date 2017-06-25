@@ -3,6 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using Tanks.Utilities;
 using System.Linq;
+using Tanks.TankControllers;
+
+
+
+
+
+
 
 namespace Tanks.Map
 {
@@ -11,6 +18,10 @@ namespace Tanks.Map
 	/// </summary>
 	public class SpawnManager : Singleton<SpawnManager>
 	{
+
+        public GameObject enemy;
+        public float spawnTime = 3f;
+
 		private List<SpawnPoint> spawnPoints = new List<SpawnPoint>();
 
 		protected override void Awake()
@@ -22,6 +33,7 @@ namespace Tanks.Map
 		private void Start()
 		{
 			LazyLoadSpawnPoints();
+            InvokeRepeating("Spawn", spawnTime, spawnTime);
 		}
 
 		/// <summary>
@@ -85,5 +97,15 @@ namespace Tanks.Map
 				spawnPoints[i].Cleanup();
 			}
 		}
+
+
+        void Spawn()
+        {
+            // Find a random index between zero and one less than the number of spawn points.
+            int spawnPointIndex = Random.Range(0, spawnPoints.Count);
+
+            // Create an instance of the enemy prefab at the randomly selected spawn point's position and rotation.
+            Instantiate(enemy, spawnPoints[spawnPointIndex].transform.position, spawnPoints[spawnPointIndex].transform.rotation);
+        }
 	}
 }

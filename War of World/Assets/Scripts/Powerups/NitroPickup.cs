@@ -21,8 +21,7 @@ namespace Tanks.Pickups
 
 		protected override void OnPickupCollected(GameObject targetTank)
 		{
-			targetTank.transform.GetComponentInParent<TankMovement>().SetMovementPowerupVariables(m_EffectiveDistance,m_SpeedBoostRatio,m_TurnBoostRatio);
-
+			
 			base.OnPickupCollected(targetTank);
 		}
 	}

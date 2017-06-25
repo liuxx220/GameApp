@@ -40,7 +40,7 @@ namespace Tanks.Rules
 		public override void TankDies(TankManager tank)
 		{
 			base.TankDies(tank);
-			m_GameManager.RespawnTank(tank.playerNumber);
+			//m_GameManager.RespawnTank(tank.playerNumber);
 		}
 
 		/// <summary>

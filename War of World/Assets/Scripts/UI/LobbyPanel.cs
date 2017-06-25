@@ -24,7 +24,6 @@ namespace Tanks.UI
 
 		private void Back()
 		{
-			m_NetManager.Disconnect();
 			m_MenuUi.ShowDefaultPanel();
 		}
 	}

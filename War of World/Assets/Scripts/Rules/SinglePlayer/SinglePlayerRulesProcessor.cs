@@ -257,7 +257,7 @@ namespace Tanks.Rules.SinglePlayer
             
 			if (m_GameManager != null)
 			{
-				m_GameManager.SetupSinglePlayerHud();
+				//m_GameManager.SetupSinglePlayerHud();
 				m_HasSetupHud = true;
 			}
 		}

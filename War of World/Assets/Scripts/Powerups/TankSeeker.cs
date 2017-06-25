@@ -1,22 +1,25 @@
 ﻿using UnityEngine;
-using UnityEngine.Networking;
+
+
+
+
+
+
+
 
 namespace Tanks.Pickups
 {
 	//This class can be attached to any given network-linked rigidbody to have it automatically attract itself towards the nearest tank.
 	//Its primary purpose is to allow drop pods to be attracted to nearby tanks.
-	public class TankSeeker : NetworkBehaviour 
+    public class TankSeeker : MonoBehaviour 
 	{
 		//The minimum speed at which this object should move.
-		[SerializeField]
 		protected float m_MinMovementRate = 2f;
 
 		//The maximum speed at which this object should move.
-		[SerializeField]
 		protected float m_MaxMovementRate = 10f;
 
 		//The radius under which the attractive force will start. A square distance is also calculated for efficiency.
-		[SerializeField]
 		protected float m_MaxAttractionRadius = 6f;
 
 		//Internal variable to store total range of speed values.
@@ -39,7 +42,6 @@ namespace Tanks.Pickups
 			m_CanBeAttracted = isAttracted;
 		}
 
-		[ServerCallback]
 		protected virtual void Start()
 		{
 			m_RigidBody = GetComponent<Rigidbody>();
@@ -47,7 +49,6 @@ namespace Tanks.Pickups
 			m_MovementRateDifference = m_MaxMovementRate - m_MinMovementRate;
 		}
 
-		[ServerCallback]
 		protected virtual void Update()
 		{
 			if(!m_CanBeAttracted)

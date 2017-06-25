@@ -12,17 +12,17 @@ namespace Tanks
 	/// </summary>
 	public class GameSettings : PersistentSingleton<GameSettings>
 	{
-		public event Action<MapDetails> mapChanged;
-		public event Action<ModeDetails> modeChanged;
+		public event Action<MapDetails>     mapChanged;
+		public event Action<ModeDetails>    modeChanged;
 
 		[SerializeField]
-		protected MapList m_MapList;
+		protected MapList                   m_MapList;
 
 		[SerializeField]
-		protected SinglePlayerMapList m_SinglePlayerMapList;
+		protected SinglePlayerMapList       m_SinglePlayerMapList;
 
 		[SerializeField]
-		protected ModeList m_ModeList;
+		protected ModeList                  m_ModeList;
 
 		public MapDetails map
 		{
@@ -66,8 +66,8 @@ namespace Tanks
 		/// <param name="index">Index.</param>
 		public void SetMapIndex(int index)
 		{
-			map = m_MapList[index];
-			mapIndex = index;
+			map         = m_MapList[index];
+			mapIndex    = index;
 
 			if (mapChanged != null)
 			{
@@ -131,8 +131,6 @@ namespace Tanks
 			{
 				modeChanged(mode);
 			}
-
-			mode.rulesProcessor.GetColorProvider().Reset();
 			scoreTarget = mode.rulesProcessor.scoreTarget;
 		}
 	}

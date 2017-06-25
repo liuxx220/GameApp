@@ -1,9 +1,15 @@
 using System;
 using UnityEngine;
 using UnityEngine.Events;
-using Tanks.Networking;
-using TanksNetworkPlayer = Tanks.Networking.NetworkPlayer;
 using Tanks.Utilities;
+
+
+
+
+
+
+
+
 
 namespace Tanks.UI
 {
@@ -21,7 +27,7 @@ namespace Tanks.UI
 	{
 		#region Static config
 
-		public static MenuPage s_ReturnPage;
+		public static MenuPage s_ReturnPage = MenuPage.Home;
 
 		#endregion
 
@@ -30,29 +36,15 @@ namespace Tanks.UI
 		[SerializeField]
 		protected CanvasGroup m_DefaultPanel;
 		[SerializeField]
-		protected CanvasGroup m_CreateGamePanel;
-		[SerializeField]
-		protected CanvasGroup m_LobbyPanel;
-		[SerializeField]
 		protected CanvasGroup m_SinglePlayerPanel;
 		[SerializeField]
-		protected CanvasGroup m_ServerListPanel;
-		[SerializeField]
-		protected CanvasGroup m_CustomizePanel;
-		[SerializeField]
 		protected LobbyInfoPanel m_InfoPanel;
-		[SerializeField]
-		protected TankCustomizationModal m_CustomiseModal;
 		[SerializeField]
 		protected LobbyPlayerList m_PlayerList;
 		[SerializeField]
 		protected SettingsModal m_SettingsModal;
 		[SerializeField]
-		protected SharingModal m_SharingModal;
-
-		[SerializeField]
 		protected GameObject m_QuitButton;
-
 		private CanvasGroup m_CurrentPanel;
 
 		private Action m_WaitTask;
@@ -109,8 +101,17 @@ namespace Tanks.UI
 				modal.FadeOut();
 			}
 
-            ShowSingleplayerPanel();
+            switch( s_ReturnPage )
+            {
+                case MenuPage.Home:
+                    ShowDefaultPanel();
+                    break;
 
+                case MenuPage.SinglePlayer:
+                    ShowSingleplayerPanel();
+                    break;
+
+            }
 		}
 		
 		//Convenience function for showing panels
@@ -131,41 +132,6 @@ namespace Tanks.UI
 		public void ShowDefaultPanel()
 		{
 			ShowPanel(m_DefaultPanel);
-		}
-
-		public void ShowLobbyPanel()
-		{
-			ShowPanel(m_LobbyPanel);
-		}
-
-		public void ShowLobbyPanelForConnection()
-		{
-			ShowPanel(m_LobbyPanel);
-			NetworkManager.s_Instance.gameModeUpdated -= ShowLobbyPanelForConnection;
-			HideInfoPopup();
-		}
-
-		public void ShowServerListPanel()
-		{
-			ShowPanel(m_ServerListPanel);
-		}
-
-		public void ShowSettingsModal()
-		{
-			m_SettingsModal.Show();
-		}
-
-		public void ShowCustomizePanel()
-		{
-			ShowPanel(m_CustomizePanel);
-		}
-
-		public void ShowTankSelectModal(TanksNetworkPlayer player)
-		{
-			if (m_CustomiseModal != null)
-			{
-				m_CustomiseModal.Open(player);
-			}
 		}
 
 		/// <summary>
@@ -189,25 +155,6 @@ namespace Tanks.UI
 			}
 		}
 
-		public void ShowConnectingModal(bool reconnectMatchmakingClient)
-		{
-			ShowInfoPopup("Connecting...", () =>
-				{
-					if (NetworkManager.s_InstanceExists)
-					{
-						if (reconnectMatchmakingClient)
-						{
-							NetworkManager.s_Instance.Disconnect();
-							NetworkManager.s_Instance.StartMatchingmakingClient();
-						}
-						else
-						{
-							NetworkManager.s_Instance.Disconnect();
-						}
-					}
-				});
-		}
-
 		public void HideInfoPopup()
 		{
 			if (m_InfoPanel != null)
@@ -216,42 +163,9 @@ namespace Tanks.UI
 			}
 		}
 
-		/// <summary>
-		/// Wait for network to disconnect before performing an action
-		/// </summary>
-		public void DoIfNetworkReady(Action task)
-		{
-			if (task == null)
-			{
-				throw new ArgumentNullException("task");
-			}
-
-			NetworkManager netManager = NetworkManager.s_Instance;
-
-			if (netManager.isNetworkActive)
-			{
-				m_WaitTask = task;
-
-				LoadingModal modal = LoadingModal.s_Instance;
-				if (modal != null)
-				{
-					modal.FadeIn();
-				}
-
-				m_ReadyToFireTask = false;
-				netManager.clientStopped += OnClientStopped;
-			}
-			else
-			{
-				task();
-			}
-		}
-		
 		//Event listener
 		private void OnClientStopped()
 		{
-			NetworkManager netManager = NetworkManager.s_Instance;
-			netManager.clientStopped -= OnClientStopped;
 			m_ReadyToFireTask = true;
 		}
 
@@ -260,49 +174,31 @@ namespace Tanks.UI
 			ShowPanel(m_SinglePlayerPanel);
 		}
 
-		private void GoToSingleplayerPanel()
-		{
-			ShowSingleplayerPanel();
-			NetworkManager.s_Instance.StartSinglePlayerMode(null);
-		}
-
-		private void GoToFindGamePanel()
-		{
-			ShowServerListPanel();
-			NetworkManager.s_Instance.StartMatchingmakingClient();
-		}
-
-		private void GoToCreateGamePanel()
-		{
-			ShowPanel(m_CreateGamePanel);
-		}
-
 		#endregion
 
 
 		#region Button events
 
-		public void OnCustomiseClicked()
-		{
-			DoIfNetworkReady(ShowCustomizePanel);
-		}
+        public void OnSingleplayerClicked()
+        {
+            ShowSingleplayerPanel();
+        }
 
-		public void OnCreateGameClicked()
-		{
-			DoIfNetworkReady(GoToCreateGamePanel);
-		}
+        public void OnLoadGameClicked()
+        {
+            
+        }
 
-		public void OnSinglePlayerClicked()
-		{
-			// Set network into SP mode
-			DoIfNetworkReady(GoToSingleplayerPanel);
-		}
+        public void OnSaveGameClicked()
+        {
 
-		public void OnFindGameClicked()
-		{
-			// Set network into matchmaking search mode
-			DoIfNetworkReady(GoToFindGamePanel);
-		}
+        }
+
+        public void OnShowSettingsModal()
+        {
+            m_SettingsModal.Show();
+        }
+
 
 		public void OnQuitGameClicked()
 		{

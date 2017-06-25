@@ -32,7 +32,7 @@ namespace Tanks.Rules.SinglePlayer.Objectives
 		{
 			if (m_PlayerHealth != null)
 			{
-				m_PlayerHealth.healthChanged -= PlayerHealthChanged;
+				
 			}
 		}
 
@@ -63,7 +63,6 @@ namespace Tanks.Rules.SinglePlayer.Objectives
 					if (m_PlayerHealth != null)
 					{
 						m_HasSetupCallback = true;
-						m_PlayerHealth.healthChanged += PlayerHealthChanged;
 					}
 				}
 			}

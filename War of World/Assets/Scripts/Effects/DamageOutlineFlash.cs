@@ -37,14 +37,7 @@ namespace Tanks.Effects
 
 		private void Awake()
 		{
-			if (m_BorderRenderers.Length > 0)
-			{
-				//Get the first renderer in the list and its shared material reference. As all borders should share the same outline material, this reference is sufficient.
-				m_BorderBaseMaterial = m_BorderRenderers[0].sharedMaterial;
-
-				//Get the material's default border size.
-				m_BorderBaseThickness = m_BorderBaseMaterial.GetFloat("_OutlineWidth");
-			}
+			
 		}
 
 		private void Update()

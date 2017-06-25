@@ -26,8 +26,7 @@ namespace Tanks.Pickups
 
 		protected override void OnPickupCollected(GameObject targetTank)
 		{
-			targetTank.transform.GetComponentInParent<TankShooting>().SetSpecialAmmo(m_ProjectileLibraryIndex,m_AmmoToAdd,m_PickupName);
-
+	
 			base.OnPickupCollected(targetTank);
 		}
 	}

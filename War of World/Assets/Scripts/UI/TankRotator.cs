@@ -64,7 +64,7 @@ namespace Tanks.UI
 			//Check if the last selected tank is still valid for selection. If not, reset to default.
 			int testIndex = PlayerDataManager.s_Instance.selectedTank;
 
-			TankTypeDefinition tankData = TankLibrary.s_Instance.GetTankDataForIndex(testIndex);
+			TankTypeDefinition tankData = TankLibrary.s_Instance.GetTankDataForIndex(1);
 
 			if (!PlayerDataManager.s_Instance.IsTankUnlocked(testIndex) && !DailyUnlockManager.s_Instance.IsItemTempUnlocked(tankData.id))
 			{
@@ -73,7 +73,7 @@ namespace Tanks.UI
 			}
 			
 			//Loads correct tank
-			LoadModelForTankIndex(testIndex);
+			LoadModelForTankIndex(1);
 		}
 
 		private void Update()

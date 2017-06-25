@@ -37,8 +37,6 @@ namespace Tanks.Rules
 			get{ return m_MatchOver; }
 		}
 
-		//The color provider - this is used in the lobby to provide different color selection implementation based on the game mode (i.e. individual versus team-based modes)
-		protected IColorProvider m_ColorProvider;
 
 		//The score target - how many points (kills or team kills) before the game is won
 		public virtual int scoreTarget
@@ -112,12 +110,12 @@ namespace Tanks.Rules
 		}
 
 		/// <summary>
-		/// Handles the death of a tank
+		/// ¥¶¿ÌÃπøÀÀ¿Õˆ
 		/// </summary>
 		/// <param name="tank">Tank.</param>
 		public virtual void TankDies(TankManager tank)
 		{
-			m_GameManager.HandleKill(tank);
+			// m_GameManager.HandleKill(tank);
 		}
 
 		/// <summary>
@@ -175,7 +173,7 @@ namespace Tanks.Rules
 			for (int i = 0; i < tankCount; ++i)
 			{
 				TankManager currentTank = matchTanks[i];
-				LeaderboardElement leaderboardElement = new LeaderboardElement(currentTank.playerName, currentTank.playerColor, currentTank.score);
+				LeaderboardElement leaderboardElement = new LeaderboardElement(currentTank.playerName, Color.gray, currentTank.score);
 				leaderboardElements.Add(leaderboardElement);
 			}
 
@@ -194,25 +192,13 @@ namespace Tanks.Rules
 			return player2.score - player1.score;
 		}
 
-		/// <summary>
-		/// Gets the color provider.
-		/// </summary>
-		/// <returns>The color provider.</returns>
-		public IColorProvider GetColorProvider()
-		{
-			SetupColorProvider();
-			return m_ColorProvider;
-		}
 
 		/// <summary>
 		/// Setups the color provider.
 		/// </summary>
 		protected virtual void SetupColorProvider()
 		{
-			if (m_ColorProvider == null)
-			{
-				m_ColorProvider = new PlayerColorProvider();
-			}
+	
 		}
 
 		/// <summary>
@@ -248,11 +234,11 @@ namespace Tanks.Rules
 
 			for (int i = 0; i < totalTanks; i++)
 			{
-				colorList[i] = GameManager.s_Tanks[i].playerColor;
+				colorList[i] = Color.white;
 				scoreList[i] = GameManager.s_Tanks[i].score;
 			}
 
-			m_GameManager.UpdateHudScore(colorList, scoreList);
+			//m_GameManager.UpdateHudScore(colorList, scoreList);
 		}
 
 		/// <summary>

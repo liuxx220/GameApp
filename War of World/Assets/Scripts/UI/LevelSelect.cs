@@ -8,6 +8,11 @@ using Tanks.Rules.SinglePlayer;
 using Tanks.Rules;
 using Tanks.Rules.SinglePlayer.Objectives;
 
+
+
+
+
+
 namespace Tanks.UI
 {
 	/// <summary>
@@ -17,45 +22,45 @@ namespace Tanks.UI
 	{
 		//Reference to ScriptableObject containing single player map list data.
 		[SerializeField]
-		protected SinglePlayerMapList m_MapList;
+		protected SinglePlayerMapList       m_MapList;
 
 		//Default image to display if map has no preview.
 		[SerializeField]
-		protected Sprite m_NullImage;
+		protected Sprite                    m_NullImage;
 
 		//Background image for the screen.
 		[SerializeField]
-		protected Image m_BgImage;
+		protected Image                     m_BgImage;
 
 		//Background tint colours for when snow or desert maps are selected.
 		[SerializeField]
-		protected Color m_SnowBgColour, m_DesertBgColour;
+		protected Color                     m_SnowBgColour, m_DesertBgColour;
 
 		//Text object references for map descriptions and unlock-related information.
 		[SerializeField]
-		protected Text m_LevelName, m_Description, m_MedalCount, m_MedalRequirementText;
+		protected Text                      m_LevelName, m_Description, m_MedalCount, m_MedalRequirementText;
 
 		//Reference to start button on screen.
 		[SerializeField]
-		protected Button m_StartGame;
+		protected Button                    m_StartGame;
 
 		//Image for map preview.
 		[SerializeField]
-		protected Image m_MapPreview;
+		protected Image                     m_MapPreview;
 
 		//Parent transform to attach achievement badges to.
 		[SerializeField]
-		protected Transform m_AchievementsParent;
+		protected Transform                 m_AchievementsParent;
 
 		//Prefab references for medal graphics, and reference to locked screen overlay.
 		[SerializeField]
-		protected GameObject m_PrimaryAchievedPrefab, m_AchievedPrefab, m_UnachievedPrefab, m_LockOverlay;
+		protected GameObject                m_PrimaryAchievedPrefab, m_AchievedPrefab, m_UnachievedPrefab, m_LockOverlay;
 
 		private const string LOCKED_NAME = "LOCKED", LOCKED_RATING = "???", LOCKED_DESCRIPTION = "This level is locked - get {0} medals to unlock.", DEBUG_LEVEL = "SPTestScene1";
 
 		//Internal references to netManager and menu controller.
-		private NetworkManager m_NetManager;
-		private MainMenuUI m_MenuUi;
+        private NetworkManager      m_NetManager;
+		private MainMenuUI          m_MenuUi;
     
 		//Total number of medals earned.
 		private int m_TotalMedalCount = 0;
@@ -68,8 +73,8 @@ namespace Tanks.UI
 		protected virtual void OnEnable()
 		{
 			//Get fresh references to controllers
-			m_NetManager = NetworkManager.s_Instance;
-			m_MenuUi = MainMenuUI.s_Instance;
+            m_NetManager    = NetworkManager.s_Instance;
+			m_MenuUi        = MainMenuUI.s_Instance;
 
 			//Get current medals earned from player data and assign to the counter on screen.
 			m_TotalMedalCount = PlayerDataManager.s_Instance.GetTotalMedalCount();
@@ -77,13 +82,10 @@ namespace Tanks.UI
 		
 			if (PlayerDataManager.s_Instance.lastLevelSelected < 0)
 			{
-				//If our last level selected is -1, scan for the first unlocked level without medals earned.
-				//(This will be on first run and when returning from a completed mission).
 				m_CurrentIndex = GetFirstUnplayedLevelIndex();
 			}
 			else
 			{
-				//Otherwise set the current index to the last mission we had selected.
 				m_CurrentIndex = PlayerDataManager.s_Instance.lastLevelSelected;
 			}
 
@@ -254,7 +256,6 @@ namespace Tanks.UI
 		//Assigned to back button. Ends SP server session and leaves the SinglePlayer menu.
 		public void OnBackClick()
 		{
-			m_NetManager.Disconnect();
 			m_MenuUi.ShowDefaultPanel();
 		}
 
@@ -269,8 +270,7 @@ namespace Tanks.UI
 			
 			GameSettings settings = GameSettings.s_Instance;
 			settings.SetupSinglePlayer(m_CurrentIndex, new ModeDetails(details.name, details.description, details.rulesProcessor));
-
-			m_NetManager.ProgressToGameScene();
+            m_NetManager.ProgressToGameScene();
 		}
 
 		//Assigned to lock button. Shows an explanatory popup.

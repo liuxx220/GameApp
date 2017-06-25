@@ -13,8 +13,7 @@ namespace Tanks.Pickups
 
 		protected override void OnPickupCollected(GameObject targetTank)
 		{
-			targetTank.transform.GetComponentInParent<TankHealth>().SetShieldLevel(m_ShieldHp);
-
+			
 			base.OnPickupCollected(targetTank);
 		}
 	}

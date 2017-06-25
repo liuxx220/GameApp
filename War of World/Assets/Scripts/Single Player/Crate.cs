@@ -100,12 +100,6 @@ namespace Tanks.SinglePlayer
 			spawnedPrefab.Detach();
 			spawnedPrefab.transform.position = transform.position + Vector3.up;
 			spawnedPrefab.SetMaterial(cratePrize.availableMaterials[decorationMaterialIndex]);
-
-			if (ExplosionManager.s_InstanceExists)
-			{
-				ExplosionManager.s_Instance.SpawnExplosion(transform.position, Vector3.up, null, -1, m_ExplosionDefinition, false);
-			}
-
 			base.OnDied();
 		}
 	}

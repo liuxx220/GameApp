@@ -10,26 +10,18 @@ namespace Tanks.UI
 	public class LobbyServerList : MonoBehaviour
 	{
 		//Number of games per page
-		[SerializeField]
 		private int m_PageSize = 6;
 
 		//Editor configurable time
-		[SerializeField]
 		private float m_ListAutoRefreshTime = 60f;
 		private float m_NextRefreshTime;
 		
 		//Reference to paging buttons
-		[SerializeField]
 		protected Button m_NextButton, m_PreviousButton;
-		
-		[SerializeField]
 		protected Text m_PageNumber;
 
-		[SerializeField]
 		protected RectTransform m_ServerListRect;
-		[SerializeField]
 		protected GameObject m_ServerEntryPrefab;
-		[SerializeField]
 		protected GameObject m_NoServerFound;
 
 		//Page tracking
@@ -67,15 +59,6 @@ namespace Tanks.UI
 			m_NoServerFound.SetActive(false);
 
 			m_NextRefreshTime = Time.time;
-
-			//Subscribe to network events
-			if (m_NetManager != null)
-			{
-				m_NetManager.clientDisconnected += OnDisconnect;
-				m_NetManager.clientError += OnError;
-				m_NetManager.serverError += OnError;
-				m_NetManager.matchDropped += OnDrop;
-			}
 		}
 
 		protected void ClearUi()
@@ -83,63 +66,6 @@ namespace Tanks.UI
 			foreach (Transform t in m_ServerListRect)
 			{
 				Destroy(t.gameObject);
-			}
-		}
-
-		protected virtual void OnDisable()
-		{
-			//Unsubscribe from network events
-			if (m_NetManager != null)
-			{
-				m_NetManager.clientDisconnected -= OnDisconnect;
-				m_NetManager.clientError -= OnError;
-				m_NetManager.serverError -= OnError;
-				m_NetManager.matchDropped -= OnDrop;
-			}
-		}
-		
-		//Network event
-		protected virtual void OnError(UnityEngine.Networking.NetworkConnection conn, int errorCode)
-		{
-			if (m_MenuUi != null)
-			{
-				m_MenuUi.ShowDefaultPanel();
-				m_MenuUi.ShowInfoPopup("A connection error occurred", null);
-			}
-
-			if (m_NetManager != null)
-			{
-				m_NetManager.Disconnect();
-			}
-		}
-		
-		//Network event
-		protected virtual void OnDisconnect(UnityEngine.Networking.NetworkConnection conn)
-		{
-			if (m_MenuUi != null)
-			{
-				m_MenuUi.ShowDefaultPanel();
-				m_MenuUi.ShowInfoPopup("Disconnected from server", null);
-			}
-
-			if (m_NetManager != null)
-			{
-				m_NetManager.Disconnect();
-			}
-		}
-		
-		//Network event
-		protected virtual void OnDrop()
-		{
-			if (m_MenuUi != null)
-			{
-				m_MenuUi.ShowDefaultPanel();
-				m_MenuUi.ShowInfoPopup("Disconnected from server", null);
-			}
-
-			if (m_NetManager != null)
-			{
-				m_NetManager.Disconnect();
 			}
 		}
 
@@ -157,7 +83,6 @@ namespace Tanks.UI
 		//On click of back button
 		public void OnBackClick()
 		{
-			m_NetManager.Disconnect();
 			m_MenuUi.ShowDefaultPanel();
 		}
 		
@@ -236,14 +161,7 @@ namespace Tanks.UI
 		//Handle requests
 		public void RequestPage(int page)
 		{
-			if (m_NetManager != null && m_NetManager.matchMaker != null)
-			{
-				m_NextButton.interactable = false;
-				m_PreviousButton.interactable = false;
-
-				Debug.Log("Requesting match list");
-				m_NetManager.matchMaker.ListMatches(page, m_PageSize, string.Empty, false, 0, 0, OnGuiMatchList);
-			}
+			
 		}
 
 		//We just set the autorefresh time to RIGHT NOW when this button is pushed, triggering all the refresh logic in the next Update tick.

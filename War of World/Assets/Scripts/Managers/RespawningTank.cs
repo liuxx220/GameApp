@@ -12,13 +12,10 @@ namespace Tanks
 	public class RespawningTank : MonoBehaviour
 	{
 		//Delays for certain events occuring - this allows time transitions
-		[SerializeField]
 		protected float m_ShowLeaderboardDelay = 1f, m_SpawnDelay = 3.5f, m_SpawnReactivateDelay = 0.5f;
-		[SerializeField]
 		protected float m_PrespawnDelay = 2f;
 
 		//Message showed on leaderboard
-		[SerializeField]
 		protected string m_DiedMessage = "YOU DIED!";
 
 		//Timer state values
@@ -49,7 +46,6 @@ namespace Tanks
 			this.m_Tank = tank;
 			this.m_GameManager = gameManager;
 			this.m_SpawnPoint = spawnPoint;
-			tank.movement.SetAudioSourceActive(false);
 			if (showLeaderboard)
 			{
 				SetTimer(m_ShowLeaderboardDelay, ShowLeaderboard);
@@ -66,7 +62,6 @@ namespace Tanks
 		/// </summary>
 		protected void ShowLeaderboard()
 		{
-			m_GameManager.ShowLeaderboard(m_Tank, m_DiedMessage);
 			SetTimer(m_SpawnDelay, SpawnAtRandomPoint);
 		}
 
@@ -93,7 +88,6 @@ namespace Tanks
 		protected void ReactivateTank()
 		{
 			m_Tank.RespawnReactivate();
-			m_GameManager.ClearLeaderboard(m_Tank);
 			Destroy(gameObject);
 		}
 
@@ -118,7 +112,7 @@ namespace Tanks
 				if (m_CountDownTimer <= 0)
 				{
 					m_IsTiming = false;
-					if (m_FinishedTimerEvent != null && !m_GameManager.hasEveryoneBailed)
+					if (m_FinishedTimerEvent != null )
 					{
 						m_FinishedTimerEvent.Invoke();
 					}
@@ -133,11 +127,6 @@ namespace Tanks
 		/// <param name="elapsedEvent">Elapsed event</param>
 		protected void SetTimer(float time, Action elapsedEvent)
 		{
-			if (m_GameManager.hasEveryoneBailed)
-			{
-				return;
-			}
-
 			m_CountDownTimer = time;
 			m_FinishedTimerEvent = elapsedEvent;
 			m_IsTiming = true;

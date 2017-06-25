@@ -24,30 +24,24 @@ namespace Tanks.Pickups
 	}
 
 	//This server-only class is responsible for spawning powerup pods at set intervals on multiplayer maps.
-	public class CrateSpawner : NetworkBehaviour
+    public class CrateSpawner : MonoBehaviour
 	{
 		//Reference to the ScriptableObject defining the explosion when powerups spawn.
-		[SerializeField]
 		protected ExplosionSettings m_SpawnExplosion;
 
 		//The radius around the centre of the map in which powerups will be spawned.
-		[SerializeField]
 		protected float m_DropRadius = 40f;
 
 		//The interval between powerup drops.
-		[SerializeField]
 		protected float m_DropInterval = 30f;
 
 		//The radius of the spherecast to determine whether a candidate drop area is clear or not.
-		[SerializeField]
 		protected float m_SpherecastRadius = 3f;
 
 		//The prefab to spawn to indicate an incoming drop, and a temporary reference variable so we can early-out it if necessary.
-		[SerializeField]
 		protected GameObject m_HotdropEffectPrefab;
 
 		//A list of powerup definition objects that will be spawned.
-		[SerializeField]
 		protected PowerupDefinition[] m_PowerupsToSpawn;
 
 		//Flag to set whether this spawner is active or not.
@@ -72,14 +66,13 @@ namespace Tanks.Pickups
 		private int m_GroundLayer;
 		private int m_TankLayer;
 
-		[ServerCallback]
 		private void Start()
 		{
 			//Add a reference to the GameManager to allow it to enable and disable this spawner as necessary.
 			GameManager.s_Instance.AddCrateSpawner(this);
 
-			m_GroundLayer = LayerMask.NameToLayer("Ground");
-			m_TankLayer = LayerMask.NameToLayer("Players");
+			m_GroundLayer   = LayerMask.NameToLayer("Ground");
+			m_TankLayer     = LayerMask.NameToLayer("Players");
 
 			//Aggregate all the drop weightings of the items in our powerup list for selection.
 			for (int i = 0; i < m_PowerupsToSpawn.Length; i++)
@@ -88,7 +81,6 @@ namespace Tanks.Pickups
 			}
 		}
 
-		[ServerCallback]
 		private void Update()
 		{
 			if (m_IsSpawnerActive)

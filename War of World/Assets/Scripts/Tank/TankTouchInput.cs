@@ -70,7 +70,7 @@ namespace Tanks.TankControllers
 		}
 
 
-		public override void OnStartAuthority()
+		public void OnStartAuthority()
 		{
 			if (MobileUtilities.IsOnMobile())
 			{
@@ -96,10 +96,6 @@ namespace Tanks.TankControllers
 
 		protected override void Update()
 		{
-			if (!hasAuthority)
-			{
-				return;
-			}
 
 			ProcessTouches();
 
@@ -300,7 +296,7 @@ namespace Tanks.TankControllers
 					// If there's no touch input, tank should look at desired move dir
 					if (m_FiringTouch == null)
 					{
-						m_Shooting.SetLookDirection(moveDir);
+						//m_Shooting.SetLookDirection(moveDir);
 					}
 
 					if (m_MovementIndicator != null)

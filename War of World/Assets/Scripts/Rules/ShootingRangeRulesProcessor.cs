@@ -100,7 +100,6 @@ namespace Tanks.Rules.SinglePlayer
 			    TanksNetworkPlayer.s_LocalPlayer.tank != null)
 			{
 				TankManager localTank = TanksNetworkPlayer.s_LocalPlayer.tank;
-				localTank.health.invulnerable = true;
 			}
 
 			if (CrateManager.s_InstanceExists)
@@ -126,7 +125,6 @@ namespace Tanks.Rules.SinglePlayer
 
 		public override void Bail()
 		{
-			NetworkManager.s_Instance.Disconnect();
 			base.Bail();
 		}
 
@@ -142,8 +140,6 @@ namespace Tanks.Rules.SinglePlayer
 			int decorationIndex = TankDecorationLibrary.s_Instance.GetIndexForDecoration(m_EarnedDecoration);
 			PlayerDataManager.s_Instance.SetDecorationUnlocked(decorationIndex);
 			PlayerDataManager.s_Instance.SetDecorationColourUnlocked(decorationIndex, m_DecorationMaterialId);
-
-			NetworkManager.s_Instance.Disconnect();
 			base.CompleteGame();
 		}
 		#endregion

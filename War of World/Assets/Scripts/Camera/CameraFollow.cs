@@ -41,7 +41,7 @@ namespace Tanks.CameraControl
 			for (int i = 0; i < tanksList.Count; i++)
 			{
 				TankManager tank = tanksList[i];
-				if (tank != null && tank.hasAuthority)
+				if (tank != null )
 				{
 					m_TankToFollowTransform = tank.transform;
 					m_TankToFollowMovement = tank.movement;

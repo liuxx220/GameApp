@@ -15,7 +15,6 @@ namespace Tanks.UI
 		/// </summary>
 		public void OKButton()
 		{
-			m_CallingPlayer.CmdChangeTank(m_CurrentIndex);
 			if (PlayerDataManager.s_InstanceExists)
 			{
 				PlayerDataManager.s_Instance.selectedTank = m_CurrentIndex;

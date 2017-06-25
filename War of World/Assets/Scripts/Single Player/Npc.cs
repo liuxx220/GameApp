@@ -12,91 +12,103 @@ namespace Tanks.SinglePlayer
 	/// <summary>
 	/// Npc base class that registers death with single player rules processor
 	/// </summary>
-	public class Npc : MonoBehaviour, IDamageObject
+	public class Npc : MonoBehaviour
 	{
-		[SerializeField]
 		protected float m_MaximumHealth = 50;
-		private float m_CurrentHealth;
-		private bool m_IsDead = false;
+		private float   m_CurrentHealth;
+		private bool    m_IsDead = false;
 
-		[SerializeField]
-		protected Slider m_HealthSlider;
+        public GameObject hitObject;
+        public GameObject deathObject;
+        public AudioClip deathClip;                 
+        public float timeBetweenAttacks = 0.5f;
+        public int attackDamage = 2;
 
-		[SerializeField]
-		protected Transform m_HealthSliderCanvas;
+        Transform       player;
+        TankHealth      playerHealth;
+        Animator        anim;
+        AudioSource     enemyAudio;                     
+        ParticleSystem  hitParticles;
+        ParticleSystem  deathParticles;   
+        CapsuleCollider capsuleCollider;           
+        UnityEngine.AI.NavMeshAgent navagent;
 
-		[SerializeField]
-		protected GameObject[] m_Meshes;
 
-		[SerializeField]
-		protected ExplosionSettings m_ExplosionDefinition;
-
+        bool playerInRange;
+        float timer;
 		public bool isAlive { get { return !m_IsDead; } }
-
-		protected Collider m_MyCollider;
-
-		private OfflineRulesProcessor m_RuleProcessor;
-
-		private DamageOutlineFlash m_DamageFlash;
-
+		
 		void Awake()
 		{
-			m_DamageFlash = GetComponent<DamageOutlineFlash>();
+            m_CurrentHealth = m_MaximumHealth;
+            player          = GameObject.FindGameObjectWithTag("Player").transform;
+            playerHealth    = player.GetComponent<TankHealth>();
+            navagent        = GetComponent<UnityEngine.AI.NavMeshAgent>();
+            anim            = GetComponent<Animator>();
+            enemyAudio      = GetComponent<AudioSource>();
+            hitParticles    = hitObject.GetComponentInChildren<ParticleSystem>();
+            hitParticles    = deathObject.GetComponentInChildren<ParticleSystem>();
+            capsuleCollider = GetComponent<CapsuleCollider>();
 		}
+
+        void OnTriggerEnter(Collider other)
+        {
+            // If the entering collider is the player...
+            if (other.gameObject == player)
+            {
+                // ... the player is in range.
+                playerInRange = true;
+            }
+        }
+
+
+        void OnTriggerExit(Collider other)
+        {
+            // If the exiting collider is the player...
+            if (other.gameObject == player)
+            {
+                // ... the player is no longer in range.
+                playerInRange = false;
+            }
+        }
+
 
 		void Update()
 		{
-			if (m_HealthSliderCanvas != null)
-			{
-				Vector3 screenPoint = Camera.main.WorldToScreenPoint(m_HealthSliderCanvas.transform.position);
-				screenPoint.z = 0f;
+            timer += Time.deltaTime;
+            // If the timer exceeds the time between attacks, the player is in range and this enemy is alive...
+            if (timer >= timeBetweenAttacks && playerInRange && m_CurrentHealth > 0)
+            {
+                // ... attack.
+                Attack();
+            }
 
-				m_HealthSliderCanvas.transform.LookAt(Camera.main.ScreenToWorldPoint(screenPoint));
-			}
-		}
 
-		// Use this for initialization
-		void Start()
-		{
-			m_CurrentHealth = m_MaximumHealth;
-			m_MyCollider = GetComponent<Collider>();
-			LazyLoadRuleProcessor();
-		}
-
-		private void SetMeshesActive(bool isActive)
-		{
-			int length = m_Meshes.Length;
-			for (int i = 0; i < length; i++)
-			{
-				m_Meshes[i].SetActive(isActive);
-			}
-		}
-
-		private void LazyLoadRuleProcessor()
-		{
-			if (m_RuleProcessor != null ||
-			    GameManager.s_Instance == null)
-			{
-				return;
-			}
-
-			m_RuleProcessor = GameManager.s_Instance.rulesProcessor as OfflineRulesProcessor;
+            if (m_CurrentHealth > 0 && playerHealth.currentHealth > 0)
+            {
+                navagent.SetDestination(player.position);
+            }
+            else
+            {
+                navagent.enabled = false;
+            }
 		}
 
 		protected virtual void OnDied()
 		{
-			LazyLoadRuleProcessor();
-			if (m_RuleProcessor != null)
-			{
-				m_RuleProcessor.DestroyNpc(this);
-			}
+            // The enemy is dead.
+            m_IsDead = true;
 
-			if (m_ExplosionDefinition != null)
-			{
-				ExplosionManager.s_Instance.SpawnExplosion(transform.position, Vector3.up, null, 9999, m_ExplosionDefinition, false);
-			}
+            // Turn the collider into a trigger so shots can pass through it.
+            capsuleCollider.isTrigger = true;
 
-			Destroy(gameObject);
+            // Tell the animator that the enemy is dead.
+            anim.SetTrigger("Dead");
+
+            // Change the audio clip of the audio source to the death clip and play it (this will stop the hurt clip playing).
+            enemyAudio.clip = deathClip;
+            enemyAudio.Play();
+			Destroy(gameObject, 2f);
 		}
 
 		public Vector3 GetPosition()
@@ -104,32 +116,39 @@ namespace Tanks.SinglePlayer
 			return transform.position;
 		}
 
-		public void Damage(float damage)
-		{
-			m_CurrentHealth -= damage;
+        void Attack()
+        {
+            // Reset the timer.
+            timer = 0f;
 
-			if (m_HealthSlider != null)
-			{
-				m_HealthSlider.value = m_CurrentHealth / m_MaximumHealth;
-			}
+            // If the player has health to lose...
+            if (playerHealth.currentHealth > 0)
+            {
+                // ... damage the player.
+                playerHealth.TakeDamage(attackDamage);
+            }
+        }
 
-			if (m_DamageFlash != null)
-			{
-				//if(lastDamagedBy == GameManager.s_Instance.GetLocalPlayerID())
-				{
-					m_DamageFlash.StartDamageFlash();
-				}
-			}
+        public void TakeDamage(int amount, Vector3 hitPoint)
+        {
+            if (m_IsDead)
+                return;
 
-			if (!m_IsDead && (m_CurrentHealth <= 0f))
-			{
-				OnDied();
-			}
-		}
+            enemyAudio.Play();
+            m_CurrentHealth -= amount;
+            hitParticles.transform.position = hitPoint;
+            hitParticles.Play();
 
-		public void SetDamagedBy(int playerNumber, string explosionId)
-		{
-			// Doesn't need to do anything here
-		}
+            if (m_CurrentHealth <= 0)
+            {
+                OnDied();
+            }
+        }
+
+
+        public void StartSinking()
+        {
+           // 爲東中有事件保留
+        }
 	}
 }

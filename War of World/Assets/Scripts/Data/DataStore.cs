@@ -60,7 +60,7 @@ namespace Tanks.Data
 	{
 		private static readonly string s_DefaultName = "Player";
 
-		public int selectedTank;
+		public int selectedTank = 0;
 		public int selectedDecoration;
 		public int currency;
 		public bool[] unlockedTanks;

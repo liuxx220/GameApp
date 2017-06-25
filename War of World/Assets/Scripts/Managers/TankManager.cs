@@ -7,6 +7,14 @@ using Tanks.Analytics;
 using TanksNetworkPlayer = Tanks.Networking.NetworkPlayer;
 using TanksNetworkManager = Tanks.Networking.NetworkManager;
 
+
+
+
+
+
+
+
+
 namespace Tanks.TankControllers
 {
 	/// <summary>
@@ -18,23 +26,16 @@ namespace Tanks.TankControllers
 	[RequireComponent(typeof(TankMovement))]
 	[RequireComponent(typeof(TankShooting))]
 	[RequireComponent(typeof(TankHealth))]
-	public class TankManager : NetworkBehaviour
+    public class TankManager : MonoBehaviour
 	{
 		#region Fields
 
 		//Current spawn point used
 		private Transform m_AssignedSpawnPoint;
 
-		//Synced player ID, -1 means it has not changed yet (as the lowest valid player id is 0)
-		[SyncVar(hook = "OnPlayerIdChanged")]
+
 		protected int m_PlayerId = -1;
-
-		//Synced score
-		[SyncVar]
 		protected int m_Score = 0;
-
-		//Synced rank, used at the end of the game to calculate the player's award
-		[SyncVar(hook = "OnRankChanged")]
 		protected int m_Rank = -1;
 
 		#endregion
@@ -83,17 +84,6 @@ namespace Tanks.TankControllers
 			protected set;
 		}
 
-		public TankDisplay display
-		{
-			get;
-			protected set;
-		}
-
-		public Color playerColor
-		{
-			get { return player.color; }
-		}
-
 		public string playerName
 		{
 			get { return player.playerName; }
@@ -139,39 +129,13 @@ namespace Tanks.TankControllers
 			private set;
 		}
 
-		//Sync currency for a specific round
-		[SyncVar(hook = "OnRoundCurrencyChanged")]
-		protected int m_RoundCurrencyCollected = 0;
-
-		public int roundCurrencyCollected
-		{
-			get
-			{
-				return m_RoundCurrencyCollected;
-			}
-		}
-
-		//Synced currency for end of game
-		[SyncVar(hook = "OnAwardCurrencyChanged")]
-		protected int m_AwardCurrency = 0;
-
-		public int awardCurrency
-		{
-			get
-			{
-				return m_AwardCurrency;
-			}
-		}
-
 		#endregion
 
 
 		#region Methods
 
-		public override void OnStartClient()
+		public void OnStartClient()
 		{
-			base.OnStartClient();
-
 			if (!initialized && m_PlayerId >= 0)
 			{
 				Initialize();
@@ -200,57 +164,23 @@ namespace Tanks.TankControllers
 			playerTankType = TankLibrary.s_Instance.GetTankDataForIndex(player.tankType);
 
 			// Create visual tank
-			GameObject tankDisplay = (GameObject)Instantiate(playerTankType.displayPrefab, transform.position, transform.rotation);
-			tankDisplay.transform.SetParent(transform, true);
+            player.transform.position = transform.position;
+            player.transform.rotation = transform.rotation;
+            player.transform.SetParent(transform, true);
 
-			// Analytics messages on server
-			if (isServer)
-			{
-				AnalyticsHelper.PlayerUsedTankInGame(playerTankType.id);
 
-				TankDecorationDefinition itemData = TankDecorationLibrary.s_Instance.GetDecorationForIndex(player.tankDecoration);
-				if (itemData.id != "none")
-				{
-					AnalyticsHelper.PlayerUsedDecorationInGame(itemData.id);
-				}
-			}
-
-			// Get references to the components.
-			display = tankDisplay.GetComponent<TankDisplay>();
 			movement = GetComponent<TankMovement>();
 			shooting = GetComponent<TankShooting>();
 			health = GetComponent<TankHealth>();
 
-			// Initialize components
 			movement.Init(this);
-			shooting.Init(this);
-			health.Init(this);
-			display.Init(this);
 
 			GameManager.AddTank(this);
-
-			if (player.hasAuthority)
-			{
-				DisableShooting();
-				player.CmdSetReady();
-			}
-		}
-
-		public override void OnNetworkDestroy()
-		{
-			base.OnNetworkDestroy();
-			if (player != null)
-			{
-				player.tank = null;
-			}
-
-			GameManager.s_Instance.RemoveTank(this);
 		}
 
 		public void DisableShooting()
 		{
 			shooting.enabled = false;
-			shooting.canShoot = false;
 		}
 
 		// Used during the phases of the game where the player shouldn't be able to control their tank.
@@ -258,7 +188,6 @@ namespace Tanks.TankControllers
 		{
 			movement.DisableMovement();
 			shooting.enabled = false;
-			shooting.canShoot = false;
 		}
 
 		// Used during the phases of the game where the player should be able to control their tank.
@@ -266,8 +195,6 @@ namespace Tanks.TankControllers
 		{
 			movement.EnableMovement();
 			shooting.enabled = true;
-			shooting.canShoot = true;
-			display.ReEnableTrackParticles();
 		}
 
 		/// <summary>
@@ -295,12 +222,7 @@ namespace Tanks.TankControllers
 		public void Reset(Transform spawnPoint)
 		{
 			movement.SetDefaults();
-			shooting.SetDefaults();
-			health.SetDefaults();
-			display.enabled = true;
 			MoveToSpawnLocation(spawnPoint);
-			display.SetVisibleObjectsActive(true);
-			display.SetTankDecoration(player.tankDecoration, player.tankDecorationMaterial, true);
 		}
 
 		/// <summary>
@@ -308,8 +230,7 @@ namespace Tanks.TankControllers
 		/// </summary>
 		public void Prespawn()
 		{
-			health.SetDefaults();
-			display.SetVisibleObjectsActive(false);
+			
 		}
 
 		/// <summary>
@@ -324,14 +245,11 @@ namespace Tanks.TankControllers
 				return;
 			}
 
-			health.SetDefaults(); 
 			movement.Rigidbody.position = position;
 			movement.transform.position = position;
 
 			movement.Rigidbody.rotation = rotation;
 			movement.transform.rotation = rotation;
-			
-			display.SetVisibleObjectsActive(false);
 		}
 
 		/// <summary>
@@ -343,12 +261,7 @@ namespace Tanks.TankControllers
 			{
 				return;
 			}
-
-			display.SetVisibleObjectsActive(true);
 			movement.SetDefaults();
-			movement.SetAudioSourceActive(true);
-			shooting.SetDefaults();
-			display.SetTankDecoration(player.tankDecoration, player.tankDecorationMaterial, false);
 		}
 
 		/// <summary>
@@ -372,40 +285,10 @@ namespace Tanks.TankControllers
 		/// </summary>
 		public void AssignMoneyToPlayerData()
 		{
-			if (!hasAuthority)
-			{
-				return;
-			}
-			int currency = m_RoundCurrencyCollected + m_AwardCurrency;
 
-			Debug.Log("Assigning " + currency + " Gears to player " + playerName);
-			PlayerDataManager.s_Instance.AddCurrency(currency);
-			m_RoundCurrencyCollected = 0;
 		}
 
 		#region SYNCVAR HOOKS
-
-		//sync var hooks that call their corresponding events
-		private void OnRoundCurrencyChanged(int currency)
-		{
-			m_RoundCurrencyCollected = currency;
-
-			if (onCurrencyChanged != null)
-			{
-				onCurrencyChanged(currency);
-			}
-		}
-
-		private void OnAwardCurrencyChanged(int currency)
-		{
-			m_AwardCurrency = currency;
-
-			if (awardCurrencyChanged != null)
-			{
-				awardCurrencyChanged();
-			}
-		}
-
 		private void OnRankChanged(int rank)
 		{
 			this.m_Rank = rank;
@@ -429,8 +312,6 @@ namespace Tanks.TankControllers
 		}
 
 		#region Networking
-
-		[ClientRpc]
 		private void RpcOnPickupCollected(string pickupName)
 		{
 			if (onPickupCollected != null)
@@ -439,31 +320,28 @@ namespace Tanks.TankControllers
 			}
 		}
 
-		[Server]
 		public void SetRank(int rank)
 		{
 			this.m_Rank = rank;
 		}
 
-		[Server]
+
 		public void AddPickupName(string pickupName)
 		{
 			RpcOnPickupCollected(pickupName);
 		}
 
-		[Server]
+
 		public void AddPickupCurrency(int addCurrency)
 		{
-			m_RoundCurrencyCollected += addCurrency;
+			
 		}
 
-		[Server]
 		public void SetAwardCurrency(int currency)
 		{
-			m_AwardCurrency = currency;
+			
 		}
 
-		[Server]
 		public void SetPlayerId(int id)
 		{
 			m_PlayerId = id;

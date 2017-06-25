@@ -9,7 +9,7 @@ namespace Tanks.TankControllers
 	/// </summary>
 	[RequireComponent(typeof(TankShooting))]
 	[RequireComponent(typeof(TankMovement))]
-	public abstract class TankInputModule : NetworkBehaviour
+    public abstract class TankInputModule : MonoBehaviour
 	{
 		protected TankShooting m_Shooting;
 		protected TankMovement m_Movement;
@@ -43,11 +43,6 @@ namespace Tanks.TankControllers
 
 		protected virtual void Update()
 		{
-			if (!hasAuthority)
-			{
-				return;
-			}
-
 			bool isActive = DoMovementInput();
 			isActive |= DoFiringInput();
 
@@ -81,17 +76,16 @@ namespace Tanks.TankControllers
 
 		protected void SetDesiredFirePosition(Vector3 target)
 		{
-			m_Shooting.SetDesiredFirePosition(target);
+			//m_Shooting.SetDesiredFirePosition(target);
 		}
 
-		protected void SetFireIsHeld(bool fireHeld)
+		public void SetFireIsHeld(bool fireHeld)
 		{
 			m_Shooting.SetFireIsHeld(fireHeld);
 		}
 
 		protected void OnDisable()
 		{
-			SetDesiredMovementDirection(Vector2.zero);
 			SetFireIsHeld(false);
 		}
 

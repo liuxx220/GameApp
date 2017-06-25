@@ -82,13 +82,7 @@ namespace Tanks.UI
 			m_LocalTank.awardCurrencyChanged += AwardTheCurrencyAndUnsubscribe;
 
 			m_Leaderboard.Setup(rules.GetLeaderboardElements());
-			
-			//If this is the server then the player rank is correct and the currency can be awarded immediately
-			if (NetworkManager.s_IsServer)
-			{
-				AwardTheCurrency();
-			}
-			
+
 			//if the local rank is still invalid then subscribe to event
 			if (m_LocalTank.rank < 1)
 			{
@@ -110,7 +104,7 @@ namespace Tanks.UI
 			if (!m_HasAwardedCurrency)
 			{
 				m_TotalCurrency = PlayerDataManager.s_Instance.currency;
-				m_GameManager.AssignMoney();
+				//m_GameManager.AssignMoney();
 				m_HasAwardedCurrency = true;
 			}
 		}

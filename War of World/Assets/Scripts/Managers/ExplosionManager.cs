@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.Networking;
 using Tanks.Shells;
 using Tanks.CameraControl;
 using Tanks.Data;
@@ -8,12 +7,11 @@ using Tanks.TankControllers;
 
 namespace Tanks.Explosions
 {
-	public class ExplosionManager : NetworkBehaviour
+    public class ExplosionManager : MonoBehaviour
 	{
 		/// <summary>
 		/// Screen shake duration for explosions
 		/// </summary>
-		[SerializeField]
 		protected float m_ExplosionScreenShakeDuration = 0.3f;
 
 		/// <summary>
@@ -130,11 +128,6 @@ namespace Tanks.Explosions
 			{
 				CreateVisualExplosion(explosionPosition, explosionNormal, explosionConfig.explosionClass);
 			}
-			else if (isServer)
-			{
-				RpcVisualExplosion(explosionPosition, explosionNormal, explosionConfig.explosionClass);
-			}
-
 			DoLogicalExplosion(explosionPosition, explosionNormal, ignoreObject, damageOwnerId, explosionConfig);
 		}
 
@@ -164,38 +157,10 @@ namespace Tanks.Explosions
 				// Calculate the distance from the shell to the target.
 				float explosionDistance = explosionToTarget.magnitude;
 
-				// Server deals damage to objects
-				if (isServer)
-				{
-					// Find the DamageObject script associated with the rigidbody.
-					IDamageObject targetHealth = struckCollider.GetComponentInParent<IDamageObject>();
-
-					// If there is one, deal it damage
-					if (targetHealth != null &&
-					    targetHealth.isAlive &&
-					    explosionDistance < explosionConfig.explosionRadius)
-					{
-						// Calculate the proportion of the maximum distance (the explosionRadius) the target is away.
-						float normalizedDistance = Mathf.Clamp01((explosionConfig.explosionRadius - explosionDistance) / explosionConfig.explosionRadius);
-
-						// Calculate damage as this proportion of the maximum possible damage.
-						float damage = normalizedDistance * explosionConfig.damage;
-
-						// Deal this damage to the tank.
-						targetHealth.SetDamagedBy(damageOwnerId, explosionConfig.id);
-						targetHealth.Damage(damage);
-					}
-				}
-
+				
 				// Apply force onto PhysicsAffected objects, for anything we have authority on, or anything that's client only
 				PhysicsAffected physicsObject = struckCollider.GetComponentInParent<PhysicsAffected>();
-				NetworkIdentity identity = struckCollider.GetComponentInParent<NetworkIdentity>();
-
-				if (physicsObject != null && physicsObject.enabled && explosionDistance < explosionConfig.physicsRadius &&
-				    (identity == null || identity.hasAuthority))
-				{
-					physicsObject.ApplyForce(explosionConfig.physicsForce, explosionPosition, explosionConfig.physicsRadius);
-				}
+				
 			}
 
 			DoShakeForExplosion(explosionPosition, explosionConfig);
@@ -249,7 +214,6 @@ namespace Tanks.Explosions
 		/// <summary>
 		/// Make a pretty explosion on clients
 		/// </summary>
-		[ClientRpc]
 		private void RpcVisualExplosion(Vector3 explosionPosition, Vector3 explosionNormal, ExplosionClass explosionClass)
 		{
 			CreateVisualExplosion(explosionPosition, explosionNormal, explosionClass);

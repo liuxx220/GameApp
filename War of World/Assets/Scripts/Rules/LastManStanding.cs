@@ -113,7 +113,7 @@ namespace Tanks.Rules
 
 			if (!m_MatchOver)
 			{
-				m_GameManager.ServerResetAllTanks();
+				//m_GameManager.ServerResetAllTanks();
 			}
 		}
 

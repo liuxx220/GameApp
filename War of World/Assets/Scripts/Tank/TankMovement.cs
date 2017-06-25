@@ -1,451 +1,313 @@
 ﻿using UnityEngine;
-using UnityEngine.Networking;
 using System;
-using Random = UnityEngine.Random;
-using Tanks.CameraControl;
+
+
+
+
+
 
 namespace Tanks.TankControllers
 {
 	//This class is responsible for the movement of the tank and related animation/audio.
-	public class TankMovement : NetworkBehaviour
+    public class TankMovement : MonoBehaviour
 	{
-		//Enum to define how the tank is moving towards its desired direction.
-		public enum MovementMode
-		{
-			Forward = 1,
-			Backward = -1
-		}
+        //Enum to define how the tank is moving towards its desired direction.
+        public enum MovementMode
+        {
+            Forward = 1,
+            Backward = -1
+        }
 
-		//Variables for the server to set this tank's speed and turn rate from the TankLibrary and cascade them to clients when spawning the tank.
-		[SyncVar]
-		private float m_OriginalSpeed = 0f;
-		[SyncVar]
-		private float m_OriginalTurnRate = 0f;
+        private float m_OriginalSpeed = 0f;
+        private float m_OriginalTurnRate = 0f;
+        private float m_Speed = 12f;
 
-		[SyncVar]
-		// How fast the tank moves forward and back. We sync this stat from server to prevent local cheatery.
-		private float m_Speed = 12f;
+        public float speed
+        {
+            get
+            {
+                return m_Speed;
+            }
+        }
+        private float m_TurnSpeed = 180f;
 
-		public float speed
-		{
-			get
-			{
-				return m_Speed;
-			}
-		}
+        Animator anim;  
+        private Rigidbody m_Rigidbody;
 
-		[SyncVar]
-		// How fast the tank turns in degrees per second. We sync this stat from server to prevent local cheatery.
-		private float m_TurnSpeed = 180f;
+        public Rigidbody Rigidbody
+        {
+            get
+            {
+                return m_Rigidbody;
+            }
+        }
 
-		// Reference to the audio source used to play engine sounds. NB: different to the shooting audio source.
-		[SerializeField]
-		protected AudioSource m_MovementAudio;
+        [SerializeField]
+        protected float m_NitroShakeMagnitude;
 
-		// Audio to play when the tank isn't moving.
-		[SerializeField]
-		protected AudioClip m_EngineIdling;
+        private Vector2 m_DesiredDirection;
 
-		// Audio to play when the tank is moving.
-		[SerializeField]
-		protected AudioClip m_EngineDriving;
+        //The remaining distance for which Nitro will remain active. Server-driven.
+        private float m_PowerupDistance;
 
-		[SerializeField]
-		protected AudioClip m_EngineStartDriving;
+        [SerializeField]
+        protected float m_MaxPowerupDistance = 50f;
 
-		[SerializeField]
-		protected AudioClip m_NitroDriving;
+        private int m_BoostShakeId;
 
-		// Reference used to move the tank.
-		private Rigidbody m_Rigidbody;
+        //The tank's position last tick.
+        private Vector3 m_LastPosition;
 
-		public Rigidbody Rigidbody
-		{
-			get
-			{
-				return m_Rigidbody;
-			}
-		}
+        private MovementMode m_CurrentMovementMode;
 
-		//Reference to the display prefab for the tank.
-		private TankDisplay m_TankDisplay;
+        public MovementMode currentMovementMode
+        {
+            get
+            {
+                return m_CurrentMovementMode;
+            }
+        }
 
-		//The amount to shake the tank mesh when nitro is active.
-		[SerializeField]
-		protected float m_NitroShakeMagnitude;
+        //Whether the tank was undergoing movement input last tick.
+        private bool m_HadMovementInput;
 
-		//The direction that the player wants to move in.
-		private Vector2 m_DesiredDirection;
+        //The final velocity of the tank.
+        public Vector3 velocity
+        {
+            get;
+            protected set;
+        }
 
-		[SyncVar(hook = "OnBoostChange")]
-		//The remaining distance for which Nitro will remain active. Server-driven.
-		private float m_PowerupDistance;
-
-		[SerializeField]
-		protected float m_MaxPowerupDistance = 50f;
-
-		private int m_BoostShakeId;
-
-		//The tank's position last tick.
-		private Vector3 m_LastPosition;
-
-		private MovementMode m_CurrentMovementMode;
-
-		public MovementMode currentMovementMode
-		{
-			get
-			{
-				return m_CurrentMovementMode;
-			}
-		}
-
-		//Whether the tank was undergoing movement input last tick.
-		private bool m_HadMovementInput;
-
-		//The final velocity of the tank.
-		public Vector3 velocity
-		{
-			get;
-			protected set;
-		}
-
-		//Whether the tank is moving.
+        //Whether the tank is moving.
         public bool isMoving
-		{
-			get
-			{
-				return m_DesiredDirection.sqrMagnitude > 0.01f;
-			}
-		}
+        {
+            get
+            {
+                return m_DesiredDirection.sqrMagnitude > 0.01f;
+            }
+        }
 
-		//Public event that fires when nitro value is changed. Used by the HUD for update.
-		public event Action<float> nitroChanged;
-
-		//Accepts a TankManager reference to pull in all necessary data and references.
-		public void Init(TankManager manager)
-		{
-			enabled = false;
-			m_TankDisplay = manager.display;
-			m_OriginalSpeed = manager.playerTankType.speed;
-			m_OriginalTurnRate = manager.playerTankType.turnRate;
-
-			SetDefaults();
-		}
-
-		//Called by the active tank input manager to set the movement direction of the tank.
-		public void SetDesiredMovementDirection(Vector2 moveDir)
-		{
-			m_DesiredDirection = moveDir;
-			m_HadMovementInput = true;
-			if (m_DesiredDirection.sqrMagnitude > 1)
-			{
-				m_DesiredDirection.Normalize();
-			}
-		}
-
-		private void Awake()
-		{
-			//Get our rigidbody, and init originalconstraints for enable/disable code.
-			LazyLoadRigidBody();
-			m_OriginalConstrains = m_Rigidbody.constraints;
-
-			m_CurrentMovementMode = MovementMode.Forward;
-			m_BoostShakeId = -1;
-		}
-
-		private void LazyLoadRigidBody()
-		{
-			if (m_Rigidbody != null)
-			{
-				return;
-			}
-
-			m_Rigidbody = GetComponent<Rigidbody>();
-		}
+        int     floorMask;                      // A layer mask so that a ray can be cast just at gameobjects on the floor layer.
+        float   camRayLength = 100f;   
 
 
-		private void Start()
-		{
-			m_LastPosition = transform.position;
-		}
+        //Accepts a TankManager reference to pull in all necessary data and references.
+        public void Init(TankManager manager)
+        {
+            enabled = false;
+            m_OriginalSpeed = manager.playerTankType.speed;
+            m_OriginalTurnRate = manager.playerTankType.turnRate;
 
-		private void Update()
-		{
-			if (hasAuthority)
-			{
-				if (!m_HadMovementInput || !isMoving)
-				{
-					m_DesiredDirection = Vector2.zero;
-				}
+            SetDefaults();
+        }
 
-				BoostShake();
+        //Called by the active tank input manager to set the movement direction of the tank.
+        public void SetDesiredMovementDirection(Vector2 moveDir)
+        {
+            m_DesiredDirection = moveDir;
+            m_HadMovementInput = true;
 
-				m_HadMovementInput = false;
-			}
+            if (m_DesiredDirection.sqrMagnitude > 1)
+            {
+                m_DesiredDirection.Normalize();
+            }
+        }
 
-			EngineAudio();
-		}
+        private void Awake()
+        {
+            //Get our rigidbody, and init originalconstraints for enable/disable code.
+            LazyLoadRigidBody();
 
-		private void EngineAudio()
-		{
-			//If speed is zero because our movement is disabled, ignore this method.
-			if(m_Speed == 0)
-			{
-				return;
-			}
+            m_OriginalConstrains = m_Rigidbody.constraints;
 
-			// If there is no movement (the tank is stationary)
-			if ((m_LastPosition - transform.position).sqrMagnitude <= Mathf.Epsilon)
-			{
-				//If the tank isn't playing the idling clip, flip it out for the idling clip.
-				if (m_MovementAudio.clip != m_EngineIdling)
-				{
-					m_MovementAudio.loop = true;
-					m_MovementAudio.clip = m_EngineIdling;
-					m_MovementAudio.Play();
-				}
-			}
-			else
-			{
-				// Otherwise if the tank is moving and the idling clip is currently playing, fire the StartDriving clip.
-				if (m_MovementAudio.clip == m_EngineIdling)
-				{
-					m_MovementAudio.clip = m_EngineStartDriving;
+            m_CurrentMovementMode = MovementMode.Forward;
+            m_BoostShakeId = -1;
+        }
 
-					//We don't want to loop this sound.
-					m_MovementAudio.loop = false;
-					m_MovementAudio.Play();
-				}
-				else
-				{
-					//We're moving, so if we're not under the infuence of Nitro or if the StartDriving clip is populated but no longer playing (because it's finished), switch to the standard EngineDriving clip.
-					if(((m_PowerupDistance <= 0) && (m_MovementAudio.clip == m_NitroDriving)) || ((m_MovementAudio.clip == m_EngineStartDriving) && (!m_MovementAudio.isPlaying)))
-					{
-						m_MovementAudio.loop = true;
+        private void LazyLoadRigidBody()
+        {
+            if (m_Rigidbody != null)
+            {
+                return;
+            }
 
-						m_MovementAudio.clip = m_EngineDriving;
-
-						m_MovementAudio.Play();
-					}
-
-					//If we're moving under the influence of Nitro, and we're not playing the Nitro clip, play the nitro sound.
-					else if((m_PowerupDistance > 0) && (m_MovementAudio.clip != m_NitroDriving))
-					{
-						m_MovementAudio.loop = true;
-
-						m_MovementAudio.clip = m_NitroDriving;
-
-						m_MovementAudio.Play();
-					}
-				}
-			}
-		}
-			
-		private void BoostShake()
-		{
-            // 关闭屏幕震动
-            return;
-			if (isMoving && m_PowerupDistance > 0)
-			{
-				if (m_BoostShakeId < 0)
-				{
-					// Screen shake go!
-					if (ScreenShakeController.s_InstanceExists)
-					{
-						ScreenShakeController shaker = ScreenShakeController.s_Instance;
-
-						// Scale magnitude 
-						m_BoostShakeId = shaker.DoPerpetualShake(Vector2.right, m_NitroShakeMagnitude);
-					}
-				}
-			}
-			else if (m_BoostShakeId >= 0)
-			{
-				if (ScreenShakeController.s_InstanceExists)
-				{
-					ScreenShakeController shaker = ScreenShakeController.s_Instance;
-
-					shaker.StopShake(m_BoostShakeId);
-					m_BoostShakeId = -1;
-				}
-			}
-		}
+            anim        = GetComponent<Animator>();
+            floorMask   = LayerMask.GetMask("Floor");
+            m_Rigidbody = GetComponent<Rigidbody>();
+        }
 
 
-		private void FixedUpdate()
-		{
-			//If we're on server, we need to decrement any nitro distance this tank covered over the previous frame, and revert our movement syncvars accordingly if we're out of go-juice.
-			if (isServer)
-			{
-				if (m_PowerupDistance > 0)
-				{
-					m_PowerupDistance -= velocity.sqrMagnitude;
+        private void Start()
+        {
+            m_LastPosition = transform.position;
+        }
 
-					if (m_PowerupDistance <= 0)
-					{
-						ResetMovementVariables();
-						m_PowerupDistance = 0;
-					}
-				}
-			}
+        private void Update()
+        {
+            {
+                if (!m_HadMovementInput || !isMoving)
+                {
+                    m_DesiredDirection = Vector2.zero;
+                }
 
-			velocity = transform.position - m_LastPosition;
-			m_LastPosition = transform.position;
+                m_HadMovementInput = false;
+            }
+        }
 
-			if (!hasAuthority)
-			{
-				return;
-			}
+        private void FixedUpdate()
+        {
+           
+            velocity = transform.position - m_LastPosition;
+            m_LastPosition = transform.position;
 
-			// Adjust the rigidbody's position and orientation in FixedUpdate.
-			if (isMoving)
-			{
-				Turn();
-				Move();
-			}
-		}
+            // Adjust the rigidbody's position and orientation in FixedUpdate.
+            Turn();
+            if (isMoving)
+            {
+                Move();
+            }
 
-
-		private void Move()
-		{
-			float moveDistance = m_DesiredDirection.magnitude * m_Speed * Time.deltaTime;
-
-			// Create a movement vector based on the input, speed and the time between frames, in the direction the tank is facing.
-			Vector3 movement = m_CurrentMovementMode == MovementMode.Backward ? -transform.forward : transform.forward;
-			movement *= moveDistance;
-
-			// Apply this movement to the rigidbody's position.
-			// Also immediately move our transform so that attached joints update this frame
-			m_Rigidbody.position = m_Rigidbody.position + movement;
-			transform.position = m_Rigidbody.position;
-		}
+            Animating();
+        }
 
 
-		private void Turn()
-		{
-			// Determine turn direction
-			float desiredAngle = 90 - Mathf.Atan2(m_DesiredDirection.y, m_DesiredDirection.x) * Mathf.Rad2Deg;
+        private void Move()
+        {
+            float moveDistance = m_DesiredDirection.magnitude * m_Speed * Time.deltaTime;
 
-			// Check whether it's shorter to move backwards here
-			Vector2 facing = new Vector2(transform.forward.x, transform.forward.z);
-			float facingDot = Vector2.Dot(facing, m_DesiredDirection);
+            // Create a movement vector based on the input, speed and the time between frames, in the direction the tank is facing.
+            Vector3 movement = m_CurrentMovementMode == MovementMode.Backward ? -transform.forward : transform.forward;
+            movement *= moveDistance;
 
-			// Only change if the desired direction is a significant change over our current one
-			if (m_CurrentMovementMode == MovementMode.Forward &&
-				facingDot < -0.5)
-			{
-				m_CurrentMovementMode = MovementMode.Backward;
-			}
-			if (m_CurrentMovementMode == MovementMode.Backward &&
-				facingDot > 0.5)
-			{
-				m_CurrentMovementMode = MovementMode.Forward;
-			}
-			// currentMovementMode =  >= 0 ? MovementMode.Forward : MovementMode.Backward;
-
-			if (m_CurrentMovementMode == MovementMode.Backward)
-			{
-				desiredAngle += 180;
-			}
-
-			// Determine the number of degrees to be turned based on the input, speed and time between frames.
-			float turn = m_TurnSpeed * Time.deltaTime;
-
-			// Make this into a rotation in the y axis.
-			Quaternion desiredRotation = Quaternion.Euler(0f, desiredAngle, 0f);
-
-			// Approach that direction
-			// Also immediately turn our transform so that attached joints update this frame
-			m_Rigidbody.rotation = Quaternion.RotateTowards(m_Rigidbody.rotation, desiredRotation, turn);
-			transform.rotation = m_Rigidbody.rotation;
-		}
+            // Apply this movement to the rigidbody's position.
+            // Also immediately move our transform so that attached joints update this frame
+            m_Rigidbody.position = m_Rigidbody.position + movement;
+            transform.position = m_Rigidbody.position;
+        }
 
 
-		// This function is called at the start of each round to make sure each tank is set up correctly.
-		public void SetDefaults()
-		{
-			enabled = true;
-			m_PowerupDistance = 0f;
-			ResetMovementVariables();
-			LazyLoadRigidBody();
+         
+        private void Turn()
+        {
+            // Create a ray from the mouse cursor on screen in the direction of the camera.
+            Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-			m_Rigidbody.velocity = Vector3.zero;
-			m_Rigidbody.angularVelocity = Vector3.zero;
+            // Create a RaycastHit variable to store information about what was hit by the ray.
+            RaycastHit floorHit;
 
-			m_DesiredDirection = Vector2.zero;
-			m_CurrentMovementMode = MovementMode.Forward;
-		}
+            // Perform the raycast and if it hits something on the floor layer...
+            if (Physics.Raycast(camRay, out floorHit, camRayLength, floorMask))
+            {
+                // Create a vector from the player to the point on the floor the raycast from the mouse hit.
+                Vector3 playerToMouse = floorHit.point - transform.position;
 
-		//Disable movement, and also disable our engine noise emitter.
-		public void DisableMovement()
-		{
-			m_Speed = 0;
-			m_MovementAudio.enabled = false;
-		}
+                // Ensure the vector is entirely along the floor plane.
+                playerToMouse.y = 0f;
 
-		//Reenable movement, and also the engine noise emitter.
-		public void EnableMovement()
-		{
-			m_Speed = m_OriginalSpeed;
-			m_MovementAudio.enabled = true;
-		}
+                // Create a quaternion (rotation) based on looking down the vector from the player to the mouse.
+                Quaternion newRotatation = Quaternion.LookRotation(playerToMouse);
+                m_Rigidbody.MoveRotation(newRotatation);
+                transform.rotation = m_Rigidbody.rotation;
 
-		//NOTE: This method will only be called from server-based instances of the Nitro pickup.
-		public void SetMovementPowerupVariables(float effectiveDistance, float speedBoostRatio, float turnBoostRatio)
-		{
-			//We don't want the boost powerup to stack its effects. So if we have no boost left, we set all variables. Otherwise, we just top up the effective distance again.
-			if (m_PowerupDistance == 0)
-			{
-				m_Speed = m_OriginalSpeed * speedBoostRatio;
-				m_TurnSpeed = m_OriginalTurnRate * turnBoostRatio;
-			}
+            }
+        }
 
-			m_PowerupDistance = Mathf.Clamp(m_PowerupDistance + effectiveDistance, 0f, m_MaxPowerupDistance);
-		}
 
-		//We freeze the rigibody when the control is disabled to avoid the tank drifting!
-		protected RigidbodyConstraints m_OriginalConstrains;
+        // This function is called at the start of each round to make sure each tank is set up correctly.
+        public void SetDefaults()
+        {
+            enabled = true;
+            m_PowerupDistance = 0f;
+            ResetMovementVariables();
+            LazyLoadRigidBody();
 
-		public void SetAudioSourceActive(bool isActive)
-		{
-			if (m_MovementAudio != null)
-			{
-				m_MovementAudio.enabled = isActive;
-			}
-		}
+            m_Rigidbody.velocity = Vector3.zero;
+            m_Rigidbody.angularVelocity = Vector3.zero;
 
-		//On disable, lock our rigidbody in position.
-		void OnDisable()
-		{
-			m_OriginalConstrains = m_Rigidbody.constraints;
-			m_Rigidbody.constraints = RigidbodyConstraints.FreezeAll;
-		}
+            m_DesiredDirection = Vector2.zero;
+            m_CurrentMovementMode = MovementMode.Forward;
+        }
 
-		//On enable, restore our rigidbody's range of movement.
-		void OnEnable()
-		{
-			m_Rigidbody.constraints = m_OriginalConstrains;
-		}
+        //Disable movement, and also disable our engine noise emitter.
+        public void DisableMovement()
+        {
+            m_Speed = 0;
+        }
 
-		//Reset our movement values to their original values for this tank. This is to reset Nitro effects.
-		void ResetMovementVariables()
-		{
-			m_Speed = m_OriginalSpeed;
-			m_TurnSpeed = m_OriginalTurnRate;
-		}
+        //Reenable movement, and also the engine noise emitter.
+        public void EnableMovement()
+        {
+            m_Speed = m_OriginalSpeed;
+        }
 
-		//This is hooked into the powerupDistance syncvar, and will fire whenever this value updates from server.
-		void OnBoostChange(float newPowerupDistance)
-		{
-			m_PowerupDistance = newPowerupDistance;
+        //NOTE: This method will only be called from server-based instances of the Nitro pickup.
+        public void SetMovementPowerupVariables(float effectiveDistance, float speedBoostRatio, float turnBoostRatio)
+        {
+            //We don't want the boost powerup to stack its effects. So if we have no boost left, we set all variables. Otherwise, we just top up the effective distance again.
+            if (m_PowerupDistance == 0)
+            {
+                m_Speed = m_OriginalSpeed * speedBoostRatio;
+                m_TurnSpeed = m_OriginalTurnRate * turnBoostRatio;
+            }
 
-			//We only want nitro particles to be enabled if we have nitro in the tank, and if the tank's not been frozen due to round end.
-			m_TankDisplay.SetNitroParticlesActive((newPowerupDistance > 0f) && (m_Speed > 0));
+            m_PowerupDistance = Mathf.Clamp(m_PowerupDistance + effectiveDistance, 0f, m_MaxPowerupDistance);
+        }
 
-			if (nitroChanged != null)
-			{
-				nitroChanged(m_PowerupDistance / m_MaxPowerupDistance);
-			}
-		}
+        //We freeze the rigibody when the control is disabled to avoid the tank drifting!
+        protected RigidbodyConstraints m_OriginalConstrains;
+
+
+        //On disable, lock our rigidbody in position.
+        void OnDisable()
+        {
+
+            EasyJoystick.On_JoystickMove    -= OnJoystickMove;
+            EasyJoystick.On_JoystickMoveEnd -= OnJoystickMoveEnd;
+            m_OriginalConstrains = m_Rigidbody.constraints;
+            m_Rigidbody.constraints = RigidbodyConstraints.FreezeAll;
+        }
+
+        //On enable, restore our rigidbody's range of movement.
+        void OnEnable()
+        {
+
+            EasyJoystick.On_JoystickMove    += OnJoystickMove;
+            EasyJoystick.On_JoystickMoveEnd += OnJoystickMoveEnd;
+            m_Rigidbody.constraints = m_OriginalConstrains;
+        }
+
+        //Reset our movement values to their original values for this tank. This is to reset Nitro effects.
+        void ResetMovementVariables()
+        {
+            m_Speed = m_OriginalSpeed;
+            m_TurnSpeed = m_OriginalTurnRate;
+        }
+
+ 
+        void Animating()
+        {
+            anim.SetBool("IsWalking", isMoving);
+        }
+
+        //移动摇杆结束
+        void OnJoystickMoveEnd(MovingJoystick move)
+        {
+            
+        }
+
+        //移动摇杆中
+        Vector2 moveDir = Vector2.zero;
+        void OnJoystickMove(MovingJoystick move)
+        {
+  
+            //获取摇杆中心偏移的坐标
+            moveDir.x = move.joystickAxis.x;
+            moveDir.y = move.joystickAxis.y;
+
+            //设置角色的朝向（朝向当前坐标+摇杆偏移量）  
+            transform.LookAt(new Vector3(transform.position.x + moveDir.x, transform.position.y, transform.position.z + moveDir.y));
+            //移动玩家的位置（按朝向位置移动）
+            SetDesiredMovementDirection( moveDir );
+        }
 	}
 }

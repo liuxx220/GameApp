@@ -104,10 +104,9 @@ namespace Tanks.UI
 			}
 			else
 			{
-				netManager.Disconnect();
 				netManager.ReturnToMenu(MenuPage.Home);
 
-				AnalyticsHelper.MultiplayerGamePlayerBailed(m_Settings.map.id, m_Settings.mode.id, GameManager.s_Tanks.Count, Mathf.RoundToInt(Time.timeSinceLevelLoad), gameManager.GetLocalPlayerPosition(), gameManager.localPlayer.playerTankType.id);
+				//AnalyticsHelper.MultiplayerGamePlayerBailed(m_Settings.map.id, m_Settings.mode.id, GameManager.s_Tanks.Count, Mathf.RoundToInt(Time.timeSinceLevelLoad), gameManager.GetLocalPlayerPosition(), gameManager.localPlayer.playerTankType.id);
 			}
 		}
 
