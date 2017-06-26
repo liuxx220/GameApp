@@ -152,10 +152,6 @@ namespace Tanks.Data
 				m_AudioMixer.SetFloat("SFXVolume", sfxVolume);
 				m_AudioMixer.SetFloat("MasterVolume", masterVolume);
 			}
-			else
-			{
-				Debug.LogError("Missing AudioMixer");
-			}
 		}
 
 		protected override void OnDestroy()

@@ -8,7 +8,7 @@ using System;
 
 namespace Tanks.TankControllers
 {
-	//This class is responsible for the movement of the tank and related animation/audio.
+
     public class TankMovement : MonoBehaviour
 	{
         //Enum to define how the tank is moving towards its desired direction.
@@ -18,9 +18,9 @@ namespace Tanks.TankControllers
             Backward = -1
         }
 
-        private float m_OriginalSpeed = 12f;
-        private float m_OriginalTurnRate = 180f;
-        private float m_Speed = 12f;
+        private float m_OriginalSpeed       = 12f;
+        private float m_OriginalTurnRate    = 180f;
+        private float m_Speed               = 12f;
 
         public float speed
         {
@@ -29,7 +29,7 @@ namespace Tanks.TankControllers
                 return m_Speed;
             }
         }
-        private float m_TurnSpeed = 180f;
+        private float m_TurnSpeed           = 180f;
 
         Animator anim;  
         private Rigidbody m_Rigidbody;
@@ -43,7 +43,6 @@ namespace Tanks.TankControllers
         }
 
         private Vector2 m_DesiredDirection;
-        //The tank's position last tick.
         private Vector3 m_LastPosition;
 
         private MovementMode m_CurrentMovementMode;
@@ -150,8 +149,8 @@ namespace Tanks.TankControllers
 
         private void Move()
         {
-            float moveDistance   = m_DesiredDirection.magnitude * m_Speed * Time.deltaTime;
-            Vector3 movement     = transform.forward;
+            float moveDistance = m_DesiredDirection.magnitude * m_Speed * Time.deltaTime;
+            Vector3 movement     = m_CurrentMovementMode == MovementMode.Backward ? -transform.forward : transform.forward;
             movement            *= moveDistance;
 
             m_Rigidbody.position = m_Rigidbody.position + movement;
@@ -204,9 +203,6 @@ namespace Tanks.TankControllers
         protected RigidbodyConstraints m_OriginalConstrains;
         void OnDisable()
         {
-
-            EasyJoystick.On_JoystickMove    -= OnJoystickMove;
-            EasyJoystick.On_JoystickMoveEnd -= OnJoystickMoveEnd;
             m_OriginalConstrains             = m_Rigidbody.constraints;
             m_Rigidbody.constraints          = RigidbodyConstraints.FreezeAll;
         }
@@ -214,9 +210,6 @@ namespace Tanks.TankControllers
         //On enable, restore our rigidbody's range of movement.
         void OnEnable()
         {
-
-            EasyJoystick.On_JoystickMove    += OnJoystickMove;
-            EasyJoystick.On_JoystickMoveEnd += OnJoystickMoveEnd;
             m_Rigidbody.constraints = m_OriginalConstrains;
         }
 
@@ -231,31 +224,6 @@ namespace Tanks.TankControllers
         void Animating()
         {
             anim.SetBool("IsWalking", isMoving);
-        }
-
-        //移动摇杆结束
-        void OnJoystickMoveEnd(MovingJoystick move)
-        {
-            m_bJoystickInput = false;
-            DisableMovement();
-            SetDesiredMovementDirection( Vector2.zero );
-        }
-
-        //移动摇杆中
-        Vector2 moveDir = Vector2.zero;
-        void OnJoystickMove(MovingJoystick move)
-        {
-            // 首先使能移动
-            EnableMovement();
-
-            //获取摇杆中心偏移的坐标
-            m_bJoystickInput = true;
-            moveDir.x = move.joystickAxis.x;
-            moveDir.y = move.joystickAxis.y;
-
-            //设置角色的朝向（朝向当前坐标+摇杆偏移量）  
-            transform.LookAt(new Vector3(transform.position.x + moveDir.x, transform.position.y, transform.position.z + moveDir.y));
-            SetDesiredMovementDirection( moveDir );
         }
 	}
 }

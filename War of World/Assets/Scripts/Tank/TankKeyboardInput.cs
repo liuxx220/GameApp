@@ -80,6 +80,12 @@ namespace Tanks.TankControllers
 				return true;
 			}
 
+
+            if ( !m_bJoystickInput )
+            {
+                DisableMovement();
+            }
+
 			return false;
 		}
 	}
