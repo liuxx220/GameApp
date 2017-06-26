@@ -131,7 +131,9 @@ namespace Tanks
 			{
 				modeChanged(mode);
 			}
-			scoreTarget = mode.rulesProcessor.scoreTarget;
+
+            if (mode.rulesProcessor != null )
+			    scoreTarget = mode.rulesProcessor.scoreTarget;
 		}
 	}
 }

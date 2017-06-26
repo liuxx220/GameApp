@@ -170,10 +170,6 @@ namespace Tanks
 
 			SetGameSettings();
 			
-			//Instantiate the rules processor
-			m_RulesProcessor = Instantiate<RulesProcessor>(m_GameSettings.mode.rulesProcessor);
-			m_RulesProcessor.SetGameManager(this);
-			
 			//Instantiate the explosion manager
 			if (m_ExplosionManagerPrefab != null)
 			{

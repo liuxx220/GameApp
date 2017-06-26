@@ -113,6 +113,7 @@ namespace Tanks.UI
 			}
 
 			//If the required medal quantity to unlock this mission haven't been collected, the level is indicated as being locked and is not selectable.
+            /*
 			if (details.medalCountRequired > m_TotalMedalCount)
 			{
 				SetLevelName(LOCKED_NAME);
@@ -122,16 +123,13 @@ namespace Tanks.UI
 				m_StartGame.interactable = false;
 				return;
 			}
-
+            */
 			//If not locked, populate all the level info on the screen.
 
 			m_LockOverlay.gameObject.SetActive(false);
 			SetLevelName(details.name);
 			m_Description.text = details.description;
 			m_StartGame.interactable = true;
-			Objective[] objectives = (details.rulesProcessor as SinglePlayerRulesProcessor).objectives;
-
-			SetAchievements(details.id, objectives);
 		}
 
 		private int GetFirstUnplayedLevelIndex()
@@ -263,17 +261,17 @@ namespace Tanks.UI
 		public void OnStartClick()
 		{
 			SinglePlayerMapDetails details = m_MapList[m_CurrentIndex];
-			if (details.medalCountRequired > m_TotalMedalCount)
+			/*  取消关卡限制
+            if (details.medalCountRequired > m_TotalMedalCount)
 			{
 				return;
 			}
-			
+			*/
 			GameSettings settings = GameSettings.s_Instance;
 			settings.SetupSinglePlayer(m_CurrentIndex, new ModeDetails(details.name, details.description, details.rulesProcessor));
             m_NetManager.ProgressToGameScene();
 		}
 
-		//Assigned to lock button. Shows an explanatory popup.
 		public void OnLockClicked()
 		{
 			MainMenuUI.s_Instance.ShowInfoPopup("Earn more medals to unlock this level.", null);
