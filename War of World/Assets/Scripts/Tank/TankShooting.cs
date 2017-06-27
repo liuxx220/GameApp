@@ -35,6 +35,7 @@ namespace Tanks.TankControllers
 
         private bool    m_FireInput;
         private bool    m_WasFireInput;
+        private Vector3 m_TargetFirePosition;
 
         public bool canShoot
         {
@@ -88,7 +89,6 @@ namespace Tanks.TankControllers
             timer = 0f;
 
             gunAudio.Play();
-
             gunLight.enabled = true;
 
             gunParticles.Stop();
@@ -97,8 +97,8 @@ namespace Tanks.TankControllers
             gunLine.enabled = true;
             gunLine.SetPosition(0, gunobject.transform.position);
 
-            shootRay.origin = gunobject.transform.position;
-            shootRay.direction = transform.forward;
+            shootRay.origin     = gunobject.transform.position;
+            shootRay.direction  = transform.forward;
 
             if (Physics.Raycast(shootRay, out shootHit, range, shootableMask))
             {
@@ -118,6 +118,14 @@ namespace Tanks.TankControllers
         public void SetFireIsHeld(bool fireHeld)
         {
             m_FireInput = fireHeld;
+        }
+
+        public void SetDesiredFirePosition( Vector3 target )
+        {
+            m_TargetFirePosition = target;
+            Vector3 toAimPos     = m_TargetFirePosition - transform.position;
+            toAimPos.Normalize();
+            transform.LookAt(toAimPos);  
         }
 	}
 }

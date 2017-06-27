@@ -58,6 +58,7 @@ namespace Tanks.TankControllers
         private bool m_bJoystickInput = false;
         private bool m_HadMovementInput;
 
+        UnityEngine.AI.NavMeshAgent navagent;
         //The final velocity of the tank.
         public Vector3 velocity
         {
@@ -93,9 +94,11 @@ namespace Tanks.TankControllers
         {
             m_DesiredDirection = moveDir;
             m_HadMovementInput = true;
+           
 
             if (m_DesiredDirection.sqrMagnitude > 1)
             {
+                m_IsFollow = false;
                 m_DesiredDirection.Normalize();
             }
         }
@@ -117,6 +120,7 @@ namespace Tanks.TankControllers
                 return;
             }
 
+            //navagent    = GetComponent<UnityEngine.AI.NavMeshAgent>();
             anim        = GetComponent<Animator>();
             floorMask   = LayerMask.GetMask("Floor");
             m_Rigidbody = GetComponent<Rigidbody>();
@@ -135,12 +139,15 @@ namespace Tanks.TankControllers
             velocity        = transform.position - m_LastPosition;
             m_LastPosition  = transform.position;
 
-            if ( !m_bJoystickInput )
-                Turn();
+            //Turn();
 
-            if (isMoving)
+            if (isMoving && !m_IsFollow )
             {
                 Move();
+            }
+            if (m_IsFollow )
+            {
+                MoveTarget();
             }
 
             Animating();
@@ -152,13 +159,38 @@ namespace Tanks.TankControllers
             float moveDistance = m_DesiredDirection.magnitude * m_Speed * Time.deltaTime;
             Vector3 movement     = m_CurrentMovementMode == MovementMode.Backward ? -transform.forward : transform.forward;
             movement            *= moveDistance;
-
+            movement.y           = 0f;
             m_Rigidbody.position = m_Rigidbody.position + movement;
             transform.position   = m_Rigidbody.position;
         }
 
 
+        private bool m_IsFollow = false;
+        private Vector3 m_targetpos;
+        private void MoveTarget()
+        {
+            if (navagent == null)
+                return;
+
+            if ((transform.position - m_targetpos).sqrMagnitude > 0.5f )
+            {
+                navagent.SetDestination(m_targetpos);
+            }
+            else
+            {
+                m_IsFollow = false;
+                navagent.enabled = false;
+            }
+        }
          
+        public void SetTargetPosition( Vector3 target )
+        {
+            m_targetpos = target;
+            //m_IsFollow  = true;
+            //navagent.enabled = true;
+        }
+
+
         private void Turn()
         {
             Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -223,7 +255,10 @@ namespace Tanks.TankControllers
  
         void Animating()
         {
-            anim.SetBool("IsWalking", isMoving);
+            if (m_IsFollow || isMoving )   
+                anim.SetBool("IsWalking", true);
+            else
+                anim.SetBool("IsWalking", false);
         }
 	}
 }

@@ -21,11 +21,10 @@ namespace Tanks.TankControllers
 			}
 
 			// Mouse pos
-			if (Input.mousePresent)
+            if (Input.mousePresent && !m_bJoystickInput )
 			{
 				bool mousePressed = Input.GetMouseButton(0);
-
-				if (isActiveModule || mousePressed)
+				if ( mousePressed)
 				{
 					Ray mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
 					float hitDist;
@@ -33,14 +32,19 @@ namespace Tanks.TankControllers
 					if (Physics.Raycast(mouseRay, out hit, float.PositiveInfinity, m_GroundLayerMask))
 					{
 						SetDesiredFirePosition(hit.point);
+                        SetFireIsHeld(mousePressed);
 					}
 					else if (m_FloorPlane.Raycast(mouseRay, out hitDist))
 					{
-						SetDesiredFirePosition(mouseRay.GetPoint(hitDist));
+                        SetMovementTarget(mouseRay.GetPoint(hitDist));
 					}
+                    
 				}
-				SetFireIsHeld(mousePressed);
-
+                else
+                {
+                    SetFireIsHeld(false);
+                }
+                
 				return mousePressed;
 			}
 
