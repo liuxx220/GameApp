@@ -21,7 +21,7 @@ namespace Tanks.TankControllers
 			}
 
 			// Mouse pos
-            if (Input.mousePresent && !m_bJoystickInput )
+            if (Input.mousePresent && !IsJoystickMoving() )
 			{
 				bool mousePressed = Input.GetMouseButton(0);
 				if ( mousePressed)
@@ -43,7 +43,6 @@ namespace Tanks.TankControllers
 
 		protected override bool DoMovementInput()
 		{
-            return true;
 			float y = Input.GetAxisRaw("Vertical");
 			float x = Input.GetAxisRaw("Horizontal");
 
@@ -71,7 +70,7 @@ namespace Tanks.TankControllers
 			}
 
 
-            if ( !m_bJoystickInput )
+            if (!IsJoystickMoving() )
             {
                 DisableMovement();
             }

@@ -19,6 +19,8 @@ namespace Tanks.TankControllers
 	{
         public GameObject gunobject;
         public GameObject fireDirection;
+        public GameObject fireGuide;
+
         public int      damagePerShot = 20;
         public float    timeBetweenBullets = 0.15f;
         public float    range = 100f;
@@ -129,7 +131,6 @@ namespace Tanks.TankControllers
             {
                 m_LastLookUpdate = Time.realtimeSinceStartup;
             }
-
             transform.rotation = Quaternion.AngleAxis(m_TurretHeading, Vector3.up);
         }
 

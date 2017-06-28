@@ -43,8 +43,6 @@ namespace Tanks.TankControllers
         }
 
         private Vector2 m_DesiredDirection;
-        private Vector3 m_LastPosition;
-
         private MovementMode m_CurrentMovementMode;
 
         public MovementMode currentMovementMode
@@ -127,20 +125,8 @@ namespace Tanks.TankControllers
         }
 
 
-        private void Start()
-        {
-            m_LastPosition = transform.position;
-        }
-
-
         private void FixedUpdate()
         {
-           
-            velocity        = transform.position - m_LastPosition;
-            m_LastPosition  = transform.position;
-
-            //Turn();
-
             if (isMoving && !m_IsFollow )
             {
                 Move();
@@ -156,9 +142,10 @@ namespace Tanks.TankControllers
 
         private void Move()
         {
-            float moveDistance = m_DesiredDirection.magnitude * m_Speed * Time.deltaTime;
-            Vector3 movement     = m_CurrentMovementMode == MovementMode.Backward ? -transform.forward : transform.forward;
-            movement            *= moveDistance;
+            float moveDistance   = m_DesiredDirection.magnitude * m_Speed * Time.deltaTime;
+            Vector3 movement     = m_DesiredDirection * moveDistance;
+            //Vector3 movement     = m_CurrentMovementMode == MovementMode.Backward ? -transform.forward : transform.forward;
+            //movement            *= moveDistance;
             movement.y           = 0f;
             m_Rigidbody.position = m_Rigidbody.position + movement;
             transform.position   = m_Rigidbody.position;
@@ -214,7 +201,6 @@ namespace Tanks.TankControllers
             LazyLoadRigidBody();
 
             m_Rigidbody.velocity        = Vector3.zero;
-            m_Rigidbody.angularVelocity = Vector3.zero;
             m_DesiredDirection          = Vector2.zero;
             m_CurrentMovementMode       = MovementMode.Forward;
         }

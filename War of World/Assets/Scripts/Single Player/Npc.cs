@@ -93,7 +93,8 @@ namespace Tanks.SinglePlayer
 
             else if (m_CurrentHealth > 0 && playerHealth.m_CurrentHealth > 0)
             {
-                navagent.SetDestination(player.position);
+                if (navagent.enabled )
+                    navagent.SetDestination(player.position);
             }
             else
             {
