@@ -14,7 +14,7 @@ namespace Tanks.Rules.SinglePlayer.Objectives
 		protected float m_HealthRatio = 1f;
 
 		protected bool m_HasSetupCallback = false;
-		protected TankHealth m_PlayerHealth;
+        protected NetworkPlayer m_PlayerHealth;
 
 		/// <summary>
 		/// Initialise as successful
@@ -52,19 +52,6 @@ namespace Tanks.Rules.SinglePlayer.Objectives
 			if (m_HasSetupCallback)
 			{
 				return;
-			}
-
-			if (this.m_RulesProcessor != null)
-			{
-				TankManager playerTank = this.m_RulesProcessor.playerTank;
-				if (playerTank != null)
-				{
-					m_PlayerHealth = playerTank.health;
-					if (m_PlayerHealth != null)
-					{
-						m_HasSetupCallback = true;
-					}
-				}
 			}
 		}
 

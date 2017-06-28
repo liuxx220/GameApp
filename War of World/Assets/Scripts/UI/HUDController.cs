@@ -21,7 +21,6 @@ namespace Tanks.UI
 		private TankManager m_TankManager;
 		private TankMovement m_Movement;
 		private TankShooting m_Shooting;
-		private TankHealth m_Health;
 
 		//The transform where score or objective overlays are to be anchored.
 		[Header("Score")]
@@ -453,7 +452,6 @@ namespace Tanks.UI
 		public void InitHudPlayer(TankManager playerTank)
 		{
 			m_TankManager = playerTank;
-			m_Health = m_TankManager.health;
 			m_Shooting = m_TankManager.shooting;
 			m_Movement = m_TankManager.movement;
 

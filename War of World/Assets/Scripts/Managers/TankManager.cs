@@ -23,9 +23,6 @@ namespace Tanks.TankControllers
 	/// and whether or not players have control of their tank in the
 	/// different phases of the game.
 	/// </summary>
-	[RequireComponent(typeof(TankMovement))]
-	[RequireComponent(typeof(TankShooting))]
-	[RequireComponent(typeof(TankHealth))]
     public class TankManager : MonoBehaviour
 	{
 		#region Fields
@@ -78,12 +75,6 @@ namespace Tanks.TankControllers
 			protected set;
 		}
 
-		public TankHealth health
-		{
-			get;
-			protected set;
-		}
-
 		public string playerName
 		{
 			get { return player.playerName; }
@@ -91,8 +82,6 @@ namespace Tanks.TankControllers
 
 		public int playerNumber
 		{
-//Return the local player ID instead
-//			get { return player.playerId; }
 			get { return m_PlayerId; }
 		}
 
@@ -171,8 +160,6 @@ namespace Tanks.TankControllers
 
 			movement = GetComponent<TankMovement>();
 			shooting = GetComponent<TankShooting>();
-			health = GetComponent<TankHealth>();
-
 			movement.Init(this);
 
 			GameManager.AddTank(this);

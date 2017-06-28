@@ -54,10 +54,6 @@ namespace Tanks
 		//This list is ordered descending by player score.
 		static public List<TankManager> s_Tanks = new List<TankManager>();
 
-		//The explosion manager prefab
-		protected ExplosionManager m_ExplosionManagerPrefab;
-
-
 		//End game modal references - set up in editor
 		protected EndGameModal m_DefaultSinglePlayerModal;
 
@@ -170,12 +166,6 @@ namespace Tanks
 
 			SetGameSettings();
 			
-			//Instantiate the explosion manager
-			if (m_ExplosionManagerPrefab != null)
-			{
-				ExplosionManager explosionManager = Instantiate<ExplosionManager>(m_ExplosionManagerPrefab);
-			}
-
 			if (m_GameSettings.isSinglePlayer)
 			{
 				//Single player level has started

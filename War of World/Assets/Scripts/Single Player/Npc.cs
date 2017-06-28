@@ -1,11 +1,19 @@
 ﻿using UnityEngine;
 using Tanks.Rules.SinglePlayer;
 using Tanks;
+using Tanks.Map;
 using Tanks.Effects;
 using Tanks.Data;
+using Tanks.Networking;
 using UnityEngine.UI;
 using Tanks.Explosions;
 using Tanks.TankControllers;
+using TanksNetworkPlayer = Tanks.Networking.NetworkPlayer;
+
+
+
+
+
 
 namespace Tanks.SinglePlayer
 {
@@ -14,23 +22,22 @@ namespace Tanks.SinglePlayer
 	/// </summary>
 	public class Npc : MonoBehaviour
 	{
-		protected float m_MaximumHealth = 50;
-		private float   m_CurrentHealth;
-		private bool    m_IsDead = false;
+		protected float     m_MaximumHealth = 50;
+		private float       m_CurrentHealth;
+		private bool        m_IsDead = false;
 
-        public GameObject hitObject;
-        public GameObject deathObject;
-        public AudioClip deathClip;                 
-        public float timeBetweenAttacks = 0.5f;
-        public int attackDamage = 2;
+        public GameObject   hitObject;
+        public GameObject   deathObject;
+        public AudioClip    deathClip;                 
+        public float        timeBetweenAttacks = 0.5f;
+        public int          attackDamage = 2;
 
-        Transform       player;
-        TankHealth      playerHealth;
-        Animator        anim;
-        AudioSource     enemyAudio;                     
-        ParticleSystem  hitParticles;
-        ParticleSystem  deathParticles;   
-        CapsuleCollider capsuleCollider;           
+        Transform           player;
+        TanksNetworkPlayer  playerHealth;
+        Animator            anim;
+        AudioSource         enemyAudio;                     
+        ParticleSystem      hitParticles;  
+        CapsuleCollider     capsuleCollider;           
         UnityEngine.AI.NavMeshAgent navagent;
 
 
@@ -42,21 +49,18 @@ namespace Tanks.SinglePlayer
 		{
             m_CurrentHealth = m_MaximumHealth;
             player          = GameObject.FindGameObjectWithTag("Player").transform;
-            playerHealth    = player.GetComponent<TankHealth>();
+            playerHealth    = player.GetComponent<TanksNetworkPlayer>();
             navagent        = GetComponent<UnityEngine.AI.NavMeshAgent>();
             anim            = GetComponent<Animator>();
             enemyAudio      = GetComponent<AudioSource>();
             hitParticles    = hitObject.GetComponentInChildren<ParticleSystem>();
-            hitParticles    = deathObject.GetComponentInChildren<ParticleSystem>();
             capsuleCollider = GetComponent<CapsuleCollider>();
 		}
 
         void OnTriggerEnter(Collider other)
         {
-            // If the entering collider is the player...
             if (other.gameObject == player)
             {
-                // ... the player is in range.
                 playerInRange = true;
             }
         }
@@ -64,10 +68,8 @@ namespace Tanks.SinglePlayer
 
         void OnTriggerExit(Collider other)
         {
-            // If the exiting collider is the player...
             if (other.gameObject == player)
             {
-                // ... the player is no longer in range.
                 playerInRange = false;
             }
         }
@@ -76,15 +78,20 @@ namespace Tanks.SinglePlayer
 		void Update()
 		{
             timer += Time.deltaTime;
-            // If the timer exceeds the time between attacks, the player is in range and this enemy is alive...
             if (timer >= timeBetweenAttacks && playerInRange && m_CurrentHealth > 0)
             {
                 // ... attack.
                 Attack();
             }
 
+            Vector3 dir = transform.position - player.position;
+            if( dir.magnitude <= 2.5f )
+            {
+                navagent.enabled = false;
+                return;
+            }
 
-            if (m_CurrentHealth > 0 && playerHealth.currentHealth > 0)
+            else if (m_CurrentHealth > 0 && playerHealth.m_CurrentHealth > 0)
             {
                 navagent.SetDestination(player.position);
             }
@@ -96,35 +103,21 @@ namespace Tanks.SinglePlayer
 
 		protected virtual void OnDied()
 		{
-            // The enemy is dead.
             m_IsDead = true;
-
-            // Turn the collider into a trigger so shots can pass through it.
             capsuleCollider.isTrigger = true;
 
-            // Tell the animator that the enemy is dead.
             anim.SetTrigger("Dead");
 
-            // Change the audio clip of the audio source to the death clip and play it (this will stop the hurt clip playing).
             enemyAudio.clip = deathClip;
             enemyAudio.Play();
-			Destroy(gameObject, 2f);
-		}
-
-		public Vector3 GetPosition()
-		{
-			return transform.position;
+            SpawnManager.s_Instance.DestoryEnemy(gameObject);
 		}
 
         void Attack()
         {
-            // Reset the timer.
             timer = 0f;
-
-            // If the player has health to lose...
-            if (playerHealth.currentHealth > 0)
+            if (playerHealth.m_CurrentHealth > 0)
             {
-                // ... damage the player.
                 playerHealth.TakeDamage(attackDamage);
             }
         }
@@ -144,7 +137,6 @@ namespace Tanks.SinglePlayer
                 OnDied();
             }
         }
-
 
         public void StartSinking()
         {

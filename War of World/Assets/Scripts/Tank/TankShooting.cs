@@ -18,6 +18,7 @@ namespace Tanks.TankControllers
     public class TankShooting : MonoBehaviour
 	{
         public GameObject gunobject;
+        public GameObject fireDirection;
         public int      damagePerShot = 20;
         public float    timeBetweenBullets = 0.15f;
         public float    range = 100f;
@@ -32,9 +33,10 @@ namespace Tanks.TankControllers
         Light           gunLight;
         float           effectsDisplayTime = 0.2f;
 
-
         private bool    m_FireInput;
-        private bool    m_WasFireInput;
+        
+        private float   m_LastLookUpdate;
+        private float   m_TurretHeading;
         private Vector3 m_TargetFirePosition;
 
         public bool canShoot
@@ -43,28 +45,21 @@ namespace Tanks.TankControllers
             set;
         }
 
-		//Local static reference to the local player's tank for input toggle purposes.
-		private static TankShooting s_localTank;
-
-		public static TankShooting s_LocalTank
-		{
-			get { return s_localTank; }
-		}
 
         void Awake()
         {
-            shootableMask = LayerMask.GetMask("Shootable");
-            gunParticles = gunobject.GetComponent<ParticleSystem>();
-            gunLine = gunobject.GetComponent<LineRenderer>();
-            gunAudio = gunobject.GetComponent<AudioSource>();
-            gunLight = gunobject.GetComponent<Light>();
+            shootableMask   = LayerMask.GetMask("Shootable");
+            gunParticles    = gunobject.GetComponent<ParticleSystem>();
+            gunLine         = gunobject.GetComponent<LineRenderer>();
+            gunAudio        = gunobject.GetComponent<AudioSource>();
+            gunLight        = gunobject.GetComponent<Light>();
+            fireDirection.SetActive(false);
         }
 
 
         void Update()
         {
             timer += Time.deltaTime;
-
             if (m_FireInput && timer >= timeBetweenBullets && Time.timeScale != 0)
             {
                 Shoot();
@@ -120,12 +115,24 @@ namespace Tanks.TankControllers
             m_FireInput = fireHeld;
         }
 
+
+        /// <summary>
+        /// 设置枪口的朝向，即角色的面相
+        /// </summary>
         public void SetDesiredFirePosition( Vector3 target )
         {
             m_TargetFirePosition = target;
             Vector3 toAimPos     = m_TargetFirePosition - transform.position;
-            toAimPos.Normalize();
-            transform.LookAt(toAimPos);  
+            m_TurretHeading      = 90 - Mathf.Atan2(toAimPos.z, toAimPos.x) * Mathf.Rad2Deg;
+
+            if (Time.realtimeSinceStartup - m_LastLookUpdate >= 0.1f )
+            {
+                m_LastLookUpdate = Time.realtimeSinceStartup;
+            }
+
+            transform.rotation = Quaternion.AngleAxis(m_TurretHeading, Vector3.up);
         }
+
+
 	}
 }

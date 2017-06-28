@@ -23,20 +23,8 @@ namespace Tanks.TankControllers
 		/// </summary>
 		public static event Action<bool> s_InputMethodChanged;
 
-		public static TankInputModule s_CurrentInputModule
-		{
-			get;
-			private set;
-		}
-
-		public bool isActiveModule
-		{
-			get { return s_CurrentInputModule == this; }
-		}
-
 		protected virtual void Awake()
 		{
-			OnBecomesInactive();
 			m_Shooting          = GetComponent<TankShooting>();
 			m_Movement          = GetComponent<TankMovement>();
 			m_FloorPlane        = new Plane(Vector3.up, 0);
@@ -51,6 +39,8 @@ namespace Tanks.TankControllers
             EasyJoystick.On_JoystickMove      += OnJoystickMove;
             EasyJoystick.On_JoystickMoveStart += OnJoystickMoveStart;
             EasyJoystick.On_JoystickMoveEnd   += OnJoystickMoveEnd;
+            EasyJoystick.On_JoystickTouchStart+= OnJoystickTouchStart;
+            EasyJoystick.On_JoystickTouchUp   += OnJoystickTouchEnd;
         }
 
 
@@ -60,31 +50,16 @@ namespace Tanks.TankControllers
             EasyJoystick.On_JoystickMove      -= OnJoystickMove;
             EasyJoystick.On_JoystickMoveStart -= OnJoystickMoveStart;
             EasyJoystick.On_JoystickMoveEnd   -= OnJoystickMoveEnd;
+            //EasyJoystick.On_JoystickTouchStart+= OnJoystickTouchStart;
+            //EasyJoystick.On_JoystickTouchUp   += OnJoystickTouchEnd;
         }
 
 		protected virtual void Update()
 		{
-			bool isActive   = DoMovementInput();
-			isActive        |= DoFiringInput();
-
-			if (isActive && !isActiveModule)
-			{
-				if (s_CurrentInputModule != null)
-				{
-					s_CurrentInputModule.OnBecomesInactive();
-				}
-				s_CurrentInputModule = this;
-				OnBecomesActive();
-			}
+			DoMovementInput();
+			DoFiringInput();
 		}
 
-		protected virtual void OnBecomesActive()
-		{
-		}
-
-		protected virtual void OnBecomesInactive()
-		{
-		}
 
 		protected abstract bool DoMovementInput();
 
@@ -104,7 +79,7 @@ namespace Tanks.TankControllers
 
 		protected void SetDesiredFirePosition(Vector3 target)
 		{
-			//m_Shooting.SetDesiredFirePosition(target);
+			m_Shooting.SetDesiredFirePosition(target);
 		}
 
 
@@ -127,29 +102,60 @@ namespace Tanks.TankControllers
 			}
 		}
 
+
+        private float fTouchAndUpTime = 0f;
+        protected void OnJoystickTouchStart(MovingJoystick move)
+        {
+            if (move.joystickName == "Right_Joystick")
+            {
+                fTouchAndUpTime = Time.realtimeSinceStartup;
+            }
+        }
+
+        protected void OnJoystickTouchEnd(MovingJoystick move)
+        {
+            if (move.joystickName == "Right_Joystick")
+            {
+                if( Time.realtimeSinceStartup - fTouchAndUpTime < 0.2f )
+                {
+                    SetFireIsHeld(true);
+                }
+            }
+        }
         /// <summary>
         /// 移动摇杆开始
         /// </summary>
         protected void OnJoystickMoveStart( MovingJoystick move )
         {
-            //move.joystick.
-        }
+            if( m_Shooting == null || m_Shooting.fireDirection == null )
+                return;
 
+            if (move.joystickName == "Right_Joystick")
+            {
+                m_Shooting.fireDirection.SetActive(true);
+            }
+
+            else if (move.joystickName == "Left_Joystick")
+            {
+                m_Shooting.fireDirection.SetActive(false);
+            }
+        }
 
 
         //移动摇杆结束
         protected void OnJoystickMoveEnd(MovingJoystick move)
         {
+            if (move.joystickName == "Right_Joystick")
+            {
+                m_Shooting.fireDirection.SetActive(false);
+                SetFireIsHeld(false);
+            }
+
             if (move.joystickName == "Left_Joystick")
             {
                 m_bJoystickInput = false;
                 DisableMovement();
                 SetDesiredMovementDirection(Vector2.zero);
-            }
-
-            if (move.joystickName == "Right_Joystick")
-            {
-                SetFireIsHeld(false);
             }
         }
 
@@ -157,7 +163,7 @@ namespace Tanks.TankControllers
         Vector2 moveDir = Vector2.zero;
         protected void OnJoystickMove(MovingJoystick move)
         {
-            if (move.joystickName == "Left_Joystick")
+            if (move.joystickName == "Left_Joystick" )
             {
                 //获取摇杆中心偏移的坐标
                 m_bJoystickInput = true;
@@ -169,14 +175,14 @@ namespace Tanks.TankControllers
                 SetDesiredMovementDirection(moveDir);
             }
 
-            if (move.joystickName == "Right_Joystick")
+            if (move.joystickName == "Right_Joystick" && !m_bJoystickInput )
             {
-                m_bJoystickInput = true;
+               
                 moveDir.x = move.joystickAxis.x;
                 moveDir.y = move.joystickAxis.y;
 
                 //设置角色的朝向（朝向当前坐标+摇杆偏移量）  
-                transform.LookAt(new Vector3(transform.position.x + moveDir.x, transform.position.y, transform.position.z + moveDir.y));
+                SetDesiredFirePosition(new Vector3(transform.position.x + moveDir.x, transform.position.y, transform.position.z + moveDir.y));
                 SetFireIsHeld(true);
             }
         }

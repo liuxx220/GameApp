@@ -13,6 +13,7 @@ using Tanks.Data;
 namespace Tanks.TankControllers
 {
 	//This class is responsible for handling tank health and damage
+    /*
     public class TankHealth : MonoBehaviour
 	{
         public int          startingHealth = 100;
@@ -93,4 +94,5 @@ namespace Tanks.TankControllers
             enemyAudio.Play();
         }
 	}
+    */
 }

@@ -133,31 +133,6 @@ namespace Tanks.UI
 		private void ToggleInput(bool isActive)
 		{
 			LazyLoadInputModules();
-            
-			if (m_InputModules == null)
-			{
-				return;
-			}
-			int length = m_InputModules.Length;
-			for (int i = 0; i < length; i++)
-			{
-				TankInputModule inputModule = m_InputModules[i];
-				if (inputModule != null)
-				{
-					inputModule.enabled = isActive;
-
-					if (isActive)
-					{
-						TankTouchInput touchInput = inputModule as TankTouchInput;
-
-						if (touchInput != null)
-						{
-							touchInput.InitDirectionAndSize();
-							touchInput.OnStartAuthority();
-						}
-					}
-				}
-			}
 		}
 
 		private void LazyLoadInputModules()
@@ -166,15 +141,6 @@ namespace Tanks.UI
 			{
 				return;
 			}
-            
-			TankShooting shooting = TankShooting.s_LocalTank;
-			if (shooting == null)
-			{
-				Debug.Log("Cannot find local tank - unable to toggle input!");
-				return;
-			}
-
-			m_InputModules = TankShooting.s_LocalTank.gameObject.GetComponentsInChildren<TankInputModule>();
 		}
 
 		//Change everyplay to suit current game settings.

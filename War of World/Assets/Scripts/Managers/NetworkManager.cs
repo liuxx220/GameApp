@@ -60,7 +60,7 @@ namespace Tanks.Networking
 		/// Prefab that is spawned for every connected player
 		/// </summary>
 		[SerializeField]
-		protected NetworkPlayer             m_NetworkPlayerPrefab;
+        protected GameObject                m_NetworkPlayerPrefab;
 
 		protected GameSettings              m_Settings;
 
@@ -173,8 +173,9 @@ namespace Tanks.Networking
 			m_Settings = GameSettings.s_Instance;
 
             // add player to client
-            NetworkPlayer newPlayer = Instantiate<NetworkPlayer>(m_NetworkPlayerPrefab);
-            DontDestroyOnLoad(newPlayer);
+            GameObject LocalPlayer  = Instantiate(m_NetworkPlayerPrefab);
+            NetworkPlayer newPlayer = LocalPlayer.GetComponent<NetworkPlayer>();
+            DontDestroyOnLoad(LocalPlayer);
             newPlayer.StartLocalPlayer();
 		}
 

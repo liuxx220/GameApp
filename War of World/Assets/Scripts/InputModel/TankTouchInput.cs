@@ -72,10 +72,7 @@ namespace Tanks.TankControllers
 
 		public void OnStartAuthority()
 		{
-			if (MobileUtilities.IsOnMobile())
-			{
-				OnBecomesActive();
-			}
+			
 		}
 
 		public void InitDirectionAndSize()
@@ -104,38 +101,6 @@ namespace Tanks.TankControllers
 			UpdateUi();
 		}
 
-
-		protected override void OnBecomesActive()
-		{
-			if (HUDController.s_InstanceExists)
-			{
-				HUDController.s_Instance.ShowVPad(m_HorizontalArea, m_VerticalArea);
-			}
-
-			if (m_MovementIndicator != null)
-			{
-				m_MovementIndicator.SetActive(true);
-			}
-
-			OnInputMethodChanged(true);
-		}
-
-
-		protected override void OnBecomesInactive()
-		{
-			if (HUDController.s_InstanceExists)
-			{
-				HUDController.s_Instance.HideVPad();
-			}
-
-			if (m_MovementIndicator != null)
-			{
-				m_MovementIndicator.SetActive(false);
-			}
-
-			m_MovementTouchId = -1;
-			m_FiringTouchId = -1;
-		}
 
 		/// <summary>
 		/// Update UI elements

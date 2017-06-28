@@ -19,10 +19,11 @@ namespace Tanks.Map
 	public class SpawnManager : Singleton<SpawnManager>
 	{
 
-        public GameObject enemy;
-        public float spawnTime = 3f;
+        public GameObject           enemy;
+        public float                spawnTime = 3f;
+		private List<SpawnPoint>    spawnPoints = new List<SpawnPoint>();
+        private List<GameObject>    mapObjectList = new List<GameObject>();
 
-		private List<SpawnPoint> spawnPoints = new List<SpawnPoint>();
 
 		protected override void Awake()
 		{
@@ -57,22 +58,15 @@ namespace Tanks.Map
 		public int GetRandomEmptySpawnPointIndex()
 		{
 			LazyLoadSpawnPoints();
-			//Check for empty zones
 			List<SpawnPoint> emptySpawnPoints = spawnPoints.Where(sp => sp.isEmptyZone).ToList();
-			
-			//If no zones are empty, which is impossible if the setup is correct, then return the first spawnpoint in the list
-			if (emptySpawnPoints.Count == 0)
+            if (emptySpawnPoints.Count == 0)
 			{
 				return 0;
 			}
 			
 			//Get random empty spawn point
 			SpawnPoint emptySpawnPoint = emptySpawnPoints[Random.Range(0, emptySpawnPoints.Count)];
-			
-			//Mark it as dirty
 			emptySpawnPoint.SetDirty();
-			
-			//return the index of this spawn point
 			return spawnPoints.IndexOf(emptySpawnPoint);
 		}
 
@@ -99,13 +93,44 @@ namespace Tanks.Map
 		}
 
 
+        /// -------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// 找到附近最近的敌人
+        /// </summary>
+        /// -------------------------------------------------------------------------------------------------
+        public Transform GetLastestEnemy( Vector3 player )
+        {
+            Vector3 dir     = Vector3.zero;
+            Transform tform = null;
+            float fMaxDist  = float.MaxValue;
+            for (int i = 0; i < mapObjectList.Count; i++ )
+            {
+                dir = player - mapObjectList[i].transform.position;
+                if( dir.sqrMagnitude < fMaxDist )
+                {
+                    fMaxDist = dir.sqrMagnitude;
+                    tform = mapObjectList[i].transform;
+                }
+            }
+            return tform;
+        }
+
         void Spawn()
         {
-            // Find a random index between zero and one less than the number of spawn points.
             int spawnPointIndex = Random.Range(0, spawnPoints.Count);
+            GameObject pEnemy = Instantiate(enemy, spawnPoints[spawnPointIndex].transform.position, spawnPoints[spawnPointIndex].transform.rotation);
+            mapObjectList.Add(pEnemy);
+        }
 
-            // Create an instance of the enemy prefab at the randomly selected spawn point's position and rotation.
-            Instantiate(enemy, spawnPoints[spawnPointIndex].transform.position, spawnPoints[spawnPointIndex].transform.rotation);
+
+        public bool DestoryEnemy( GameObject pEnemy )
+        {
+            bool ret = mapObjectList.Remove(pEnemy);
+            if( ret )
+            {
+                GameObject.Destroy(pEnemy, 2f);
+            }
+            return ret;
         }
 	}
 }

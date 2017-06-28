@@ -28,36 +28,22 @@ namespace Tanks.TankControllers
 				{
 					Ray mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
 					float hitDist;
-					RaycastHit hit;
-					if (Physics.Raycast(mouseRay, out hit, float.PositiveInfinity, m_GroundLayerMask))
+				    if (m_FloorPlane.Raycast(mouseRay, out hitDist))
 					{
-						SetDesiredFirePosition(hit.point);
-                        SetFireIsHeld(mousePressed);
-					}
-					else if (m_FloorPlane.Raycast(mouseRay, out hitDist))
-					{
-                        SetMovementTarget(mouseRay.GetPoint(hitDist));
+                        //SetMovementTarget(mouseRay.GetPoint(hitDist));
 					}
                     
 				}
-                else
-                {
-                    SetFireIsHeld(false);
-                }
-                
 				return mousePressed;
 			}
 
 			return false;
 		}
 
-		protected override void OnBecomesActive()
-		{
-			OnInputMethodChanged(false);
-		}
 
 		protected override bool DoMovementInput()
 		{
+            return true;
 			float y = Input.GetAxisRaw("Vertical");
 			float x = Input.GetAxisRaw("Horizontal");
 
