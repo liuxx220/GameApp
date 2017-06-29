@@ -30,10 +30,7 @@ namespace Tanks.Rules.SinglePlayer.Objectives
 		/// </summary>
 		protected void OnDestroy()
 		{
-			if (m_PlayerHealth != null)
-			{
-				
-			}
+
 		}
 
 		/// <summary>

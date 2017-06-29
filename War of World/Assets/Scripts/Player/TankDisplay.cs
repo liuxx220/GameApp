@@ -13,10 +13,6 @@ namespace Tanks.TankControllers
 		[SerializeField]
 		protected GameObject m_TankRendererParent;
 
-		// Stored reference to TankManager
-		private TankManager m_TankManager;
-
-
 		// Collection of all attached decorations
 		private List<Decoration> m_AttachedDecorations;
 
@@ -37,7 +33,6 @@ namespace Tanks.TankControllers
 
 		public void Init(TankManager tankManager)
 		{
-			this.m_TankManager = tankManager;
 			SetTankColor(Color.white);
 		}
 

@@ -29,7 +29,7 @@ namespace Tanks.TankControllers
                 return m_Speed;
             }
         }
-        private float m_TurnSpeed           = 180f;
+  
 
         Animator anim;  
         private Rigidbody m_Rigidbody;
@@ -54,7 +54,6 @@ namespace Tanks.TankControllers
         }
 
         private bool m_bJoystickInput = false;
-        private bool m_HadMovementInput;
 
         UnityEngine.AI.NavMeshAgent navagent;
         //The final velocity of the tank.
@@ -91,9 +90,7 @@ namespace Tanks.TankControllers
         public void SetDesiredMovementDirection(Vector3 moveDir)
         {
             m_DesiredDirection = moveDir;
-            m_HadMovementInput = true;
            
-
             if (m_DesiredDirection.sqrMagnitude > 1)
             {
                 m_IsFollow = false;
@@ -235,7 +232,6 @@ namespace Tanks.TankControllers
         void ResetMovementVariables()
         {
             m_Speed = m_OriginalSpeed;
-            m_TurnSpeed = m_OriginalTurnRate;
         }
 
  

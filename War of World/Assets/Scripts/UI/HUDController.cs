@@ -20,8 +20,7 @@ namespace Tanks.UI
 		//Internal references to tank control scripts for update purposes.
 		private TankManager m_TankManager;
 		private TankMovement m_Movement;
-		private TankShooting m_Shooting;
-
+		
 		//The transform where score or objective overlays are to be anchored.
 		[Header("Score")]
 		[SerializeField]
@@ -444,7 +443,6 @@ namespace Tanks.UI
 		public void InitHudPlayer(TankManager playerTank)
 		{
 			m_TankManager = playerTank;
-			m_Shooting = m_TankManager.shooting;
 			m_Movement = m_TankManager.movement;
 
 			m_TankManager.onPickupCollected += OnPickupTextChanged;

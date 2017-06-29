@@ -6,8 +6,6 @@ using Tanks.Data;
 using Tanks.Rules;
 using Tanks.UI;
 using Tanks.Map;
-using Tanks.Hazards;
-using Tanks.Explosions;
 using Tanks.Analytics;
 using Tanks.Rules.SinglePlayer;
 using Tanks.Networking;
@@ -73,32 +71,22 @@ namespace Tanks
         //The rules processor being used
         private RulesProcessor              m_RulesProcessor;
 
-        public RulesProcessor rulesProcessor
+        public RulesProcessor               rulesProcessor
         {
             get { return m_RulesProcessor; }
         }
 
         //The end game modal that is actually used
-        protected EndGameModal m_EndGameModal;
+        protected EndGameModal              m_EndGameModal;
 
         //Number of players in game
-        private int m_NumberOfPlayers = 0;
+        private int                         m_NumberOfPlayers = 0;
 
 
         //The modal displayed at the beginning of the game
-        protected StartGameModal m_StartGameModal;
+        protected StartGameModal            m_StartGameModal;
 
-        //Dictionary used for reconciling score and color
-        protected Dictionary<Color, int> m_ColorScoreDictionary = new Dictionary<Color, int>();
-
-        public Dictionary<Color, int> colorScoreDictionary
-        {
-            get
-            {
-                return m_ColorScoreDictionary;
-            }
-        }
-
+       
         /// <summary>
         /// Unity message: Awake
         /// </summary>
@@ -116,11 +104,6 @@ namespace Tanks
             s_Tanks.Clear();
         }
 
-        //Cache the game setting
-        private void SetGameSettings()
-        {
-            m_GameSettings = GameSettings.s_Instance;
-        }
 
         /// <summary>
         /// Unity message: Start
@@ -129,15 +112,17 @@ namespace Tanks
         void Start()
         {
             //Set the state to startup
-            m_State = GameState.StartUp;
+            m_State         = GameState.StartUp;
+            m_GameSettings  = GameSettings.s_Instance;
 
-            SetGameSettings();
-
+            /*
+             * 出示华战场规则数据
+            m_RulesProcessor = Instantiate<RulesProcessor>(m_GameSettings.mode.rulesProcessor);
+            m_RulesProcessor.SetGameManager(this);
+			*/
             if (m_GameSettings.isSinglePlayer)
             {
-                //Single player level has started
                 AnalyticsHelper.SinglePlayerLevelStarted(m_GameSettings.map.id);
-                //Set up single player modal
                 SetupSinglePlayerModals();
             }
         }
@@ -162,7 +147,6 @@ namespace Tanks
                 m_StartGameModal.gameObject.SetActive(false);
                 m_StartGameModal.Setup(offlineRulesProcessor);
                 m_StartGameModal.Show();
-                //The loading screen must always be the last sibling
                 m_LoadingScreen.transform.SetAsLastSibling();
             }
         }
@@ -207,10 +191,7 @@ namespace Tanks
         /// <param name="tank">Tank.</param>
         public void RemoveTank(TankManager tank)
         {
-            Debug.Log("Removing tank");
-
             int tankIndex = s_Tanks.IndexOf(tank);
-
             if (tankIndex >= 0)
             {
                 s_Tanks.RemoveAt(tankIndex);
@@ -249,8 +230,7 @@ namespace Tanks
 
 
         /// <summary>
-        /// Unity message: Update
-        /// Runs only on server
+        /// 更新战场的状态机
         /// </summary>
         protected void Update()
         {
@@ -303,6 +283,9 @@ namespace Tanks
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         protected void SinglePlayerLoadedEvent()
         {
             m_State = GameState.Preplay;
@@ -338,7 +321,6 @@ namespace Tanks
         /// </summary>
         protected void Playing()
         {
-            //We want to activate hazards the second we enter the gameplay loop, no earlier (to prevent bizarre premature hazard triggering due to rubberbanding on laggy connections).
             if (!m_HazardsActive)
             {
                 m_HazardsActive = true;
@@ -356,7 +338,6 @@ namespace Tanks
         protected void RoundEnd()
         {
             m_RulesProcessor.HandleRoundEnd();
-
             if (m_RulesProcessor.matchOver)
             {
                 SetTimedTransition(GameState.EndGame, 1f);
@@ -367,30 +348,12 @@ namespace Tanks
             }
         }
 
+
         /// <summary>
         /// EndGame state function
         /// </summary>
         protected void EndGame()
         {
-            // If there is a game winner, wait for certain amount or all player confirmed to start a game again
-            if (!m_GameSettings.isSinglePlayer)
-            {
-                //Cache the length of the list
-                int count = s_Tanks.Count;
-                //iterate
-                for (int i = 0; i < count; i++)
-                {
-                    //Cache tank element
-                    TankManager tank = s_Tanks[i];
-                    //Set the rank - this will be the same for all non-team based games
-                    int rank = m_RulesProcessor.GetRank(i);
-                    tank.SetRank(rank);
-                    //Add currency - NB! this is based on rank
-                    tank.SetAwardCurrency(m_RulesProcessor.GetAwardAmount(rank));
-                }
-            }
-            
-
             if (m_GameSettings.isSinglePlayer)
             {
                 if (m_RulesProcessor.hasWinner)
@@ -416,10 +379,8 @@ namespace Tanks
         }
 
         /// <summary>
-        /// Sets the timed transition
+        /// s设置下一个要切换的状态和过度时间
         /// </summary>
-        /// <param name="nextState">Next state</param>
-        /// <param name="transitionTime">Transition time</param>
         protected void SetTimedTransition(GameState nextState, float transitionTime)
         {
             this.m_NextState = nextState;
@@ -428,23 +389,14 @@ namespace Tanks
         }
 
         /// <summary>
-        /// Starts the round
+        /// 开始新一轮回合战斗
         /// </summary>
         private void RoundStarting()
         {
             //we notify all clients that the round is starting
             m_RulesProcessor.StartRound();
-            CleanupPowerups();
             m_HazardsActive = false;
             SetTimedTransition(GameState.Playing, 2f);
-        }
-
-        /// <summary>
-        /// Cleanups the powerups
-        /// </summary>
-        private void CleanupPowerups()
-        {
-
         }
     }
 }

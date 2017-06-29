@@ -58,7 +58,6 @@ namespace Tanks.Data
 	[Serializable]
 	public class DataStore : ISerializationCallbackReceiver
 	{
-		private static readonly string s_DefaultName = "Player";
 
 		public int selectedTank = 0;
 		public int selectedDecoration;

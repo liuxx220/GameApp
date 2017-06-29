@@ -156,11 +156,6 @@ namespace Tanks.Explosions
 
 				// Calculate the distance from the shell to the target.
 				float explosionDistance = explosionToTarget.magnitude;
-
-				
-				// Apply force onto PhysicsAffected objects, for anything we have authority on, or anything that's client only
-				PhysicsAffected physicsObject = struckCollider.GetComponentInParent<PhysicsAffected>();
-				
 			}
 
 			DoShakeForExplosion(explosionPosition, explosionConfig);

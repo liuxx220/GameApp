@@ -37,7 +37,6 @@ namespace Tanks.TankControllers
 
         private bool    m_FireInput;
 
-        private float   m_fRotationSpeed = 360.0f;  // √ø√Î360∂»
         private float   m_curLookatDeg;
         private float   m_TurretHeading;
         
