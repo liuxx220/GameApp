@@ -64,7 +64,7 @@ namespace Tanks.UI
 		}
 
 		//Make the Skin have knowledge of its index and definition
-		public void SetupSkin(int index, TankDecorationDefinition definition)
+		public void SetupSkin(int index)
 		{
 			this.m_Index = index;
 		}

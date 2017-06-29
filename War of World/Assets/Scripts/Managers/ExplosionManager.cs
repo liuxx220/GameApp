@@ -58,7 +58,7 @@ namespace Tanks.Explosions
 
 		protected virtual void Start()
 		{
-			m_EffectsGroup = ThemedEffectsLibrary.s_Instance.GetEffectsGroupForMap();
+			//m_EffectsGroup = ThemedEffectsLibrary.s_Instance.GetEffectsGroupForMap();
 		}
 
 

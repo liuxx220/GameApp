@@ -3,33 +3,39 @@ using UnityEngine;
 using Tanks.TankControllers;
 using Tanks.UI;
 
+
+
+
+
+
 namespace Tanks.Rules
 {
+
 	/// <summary>
 	/// Rules processor - a base class for all game modes including single player and multiplayer
 	/// </summary>
 	public class RulesProcessor : MonoBehaviour
 	{
 		//The transition time from once the game ends until the game exits
-		public static float s_EndGameTime = 10f;
+		public static float         s_EndGameTime = 10f;
 
 		//The scene in the menu to return to
 		[SerializeField]
-		protected MenuPage m_ReturnPage;
+		protected MenuPage          m_ReturnPage;
 
-		public MenuPage returnPage
+		public MenuPage             returnPage
 		{
 			get { return m_ReturnPage; }
 		}
 
 		//Reference to the game manager
-		protected GameManager m_GameManager;
+		protected GameManager       m_GameManager;
 
 		//Winning tank - null if no winner
-		protected TankManager m_Winner;
+		protected TankManager       m_Winner;
 
 		//Is the match over
-		protected bool m_MatchOver = false;
+		protected bool              m_MatchOver = false;
 
 		//If the match is over
 		public bool matchOver
@@ -115,7 +121,7 @@ namespace Tanks.Rules
 		/// <param name="tank">Tank.</param>
 		public virtual void TankDies(TankManager tank)
 		{
-			// m_GameManager.HandleKill(tank);
+			
 		}
 
 		/// <summary>
@@ -125,6 +131,7 @@ namespace Tanks.Rules
 		/// <param name="killed">Tank that was killed</param>
 		public virtual void HandleKillerScore(TankManager killer, TankManager killed)
 		{
+
 		}
 
 		/// <summary>

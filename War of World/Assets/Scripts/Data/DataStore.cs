@@ -78,34 +78,34 @@ namespace Tanks.Data
 		public DataStore()
 		{
 			// Init decoration size
-			TankDecorationLibrary decorationLib = TankDecorationLibrary.s_Instance;
+            //TankDecorationLibrary decorationLib = TankDecorationLibrary.s_Instance;
 
-			if (decorationLib != null)
-			{
-				int numDecorations = decorationLib.GetNumberOfDefinitions();
-				decorations = new DecorationData[numDecorations];
-				for (int i = 0; i < numDecorations; ++i)
-				{
-					decorations[i] = new DecorationData();
-				}
-			}
+            //if (decorationLib != null)
+            //{
+            //    int numDecorations = decorationLib.GetNumberOfDefinitions();
+            //    decorations = new DecorationData[numDecorations];
+            //    for (int i = 0; i < numDecorations; ++i)
+            //    {
+            //        decorations[i] = new DecorationData();
+            //    }
+            //}
 	
-			// Init unlocked tanks
-			TankLibrary tankLib = TankLibrary.s_Instance;
-			if (tankLib != null)
-			{
-				unlockedTanks = new bool[tankLib.GetNumberOfDefinitions()];
-			}
-			else
-			{
-				Debug.LogError("No tank library. Failed to init unlocked tanks");
-			}
+            //// Init unlocked tanks
+            //TankLibrary tankLib = TankLibrary.s_Instance;
+            //if (tankLib != null)
+            //{
+            //    unlockedTanks = new bool[tankLib.GetNumberOfDefinitions()];
+            //}
+            //else
+            //{
+            //    Debug.LogError("No tank library. Failed to init unlocked tanks");
+            //}
 
-			unlockedMultiplayerMaps = new List<string>();
-			m_LevelsDictionary = new Dictionary<string, LevelData>();
-			levels = new List<LevelData>();
-			settingsData = new SettingsData();
-			playerName = s_DefaultName;
+            //unlockedMultiplayerMaps = new List<string>();
+            //m_LevelsDictionary = new Dictionary<string, LevelData>();
+            //levels = new List<LevelData>();
+            //settingsData = new SettingsData();
+            //playerName = s_DefaultName;
 		}
 
 		/// <summary>

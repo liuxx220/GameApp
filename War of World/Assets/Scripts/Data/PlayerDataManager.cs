@@ -307,9 +307,7 @@ namespace Tanks.Data
 		//Returns the number of materials that remain locked for a given decoration.
 		public int GetNumberOfLockedColours(int decorationIndex)
 		{
-			int colourQuantity = TankDecorationLibrary.s_Instance.GetMaterialQuantityForIndex(decorationIndex);
-
-			return colourQuantity - GetNumberOfUnlockedColours(decorationIndex);
+			return 0;
 		}
 
 		//Returns data for the latest level entered.
@@ -348,22 +346,6 @@ namespace Tanks.Data
 		public bool DecorationHasLockedColours(int decorationIndex)
 		{
 			return (GetNumberOfLockedColours(decorationIndex) > 0);
-		}
-
-		//Returns whether all decorations have been unlocked by the player, i.e. whether all materials for all decorations have been set as unlocked.
-		public bool AreAllDecorationsUnlocked()
-		{
-			int definitionCount = TankDecorationLibrary.s_Instance.GetNumberOfDefinitions();
-
-			for (int i = 0; i < definitionCount; i++)
-			{
-				if (DecorationHasLockedColours(i))
-				{
-					return false;
-				}
-			}
-
-			return true;
 		}
 
 		//Sets whether a multiplayer map is unlocked or not. Defaults to unlocking.

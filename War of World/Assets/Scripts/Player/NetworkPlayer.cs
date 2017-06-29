@@ -132,7 +132,6 @@ namespace Tanks.Networking
                 m_NetManager = TanksNetworkManager.s_Instance;
             }
 
-			Debug.Log("Client Network Player start");
             m_NetManager.RegisterNetworkPlayer(this);
 		}
 

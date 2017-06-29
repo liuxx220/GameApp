@@ -77,20 +77,6 @@ namespace Tanks.UI
 			//ensure the rules processor knows about the rules processor
 			rules.SetGameManager(m_GameManager);
 			SetRulesProcessor(rules);
-
-			m_LocalTank = m_GameManager.localPlayer;
-			m_LocalTank.awardCurrencyChanged += AwardTheCurrencyAndUnsubscribe;
-
-			m_Leaderboard.Setup(rules.GetLeaderboardElements());
-
-			//if the local rank is still invalid then subscribe to event
-			if (m_LocalTank.rank < 1)
-			{
-				m_LocalTank.rankChanged += SetupAwardDisplay;
-				m_UsedEvent = true;
-			}
-			//otherwise just run the event
-			else
 			{
 				SetupAwardDisplay();
 			}	

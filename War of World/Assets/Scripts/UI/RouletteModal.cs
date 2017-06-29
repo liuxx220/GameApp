@@ -165,17 +165,7 @@ namespace Tanks.UI
 		//Used for temporarily unlocking an item
 		private void UnlockTempItem()
 		{
-			TankDecorationDefinition prizeItem = TankDecorationLibrary.s_Instance.GetDecorationForIndex(m_PrizeIndex);
-
-			//If no colour index was specified for this item unlock, we select one at random.
-			if (m_PrizeColourIndex < 0)
-			{
-				m_PrizeColourIndex = Random.Range(0, prizeItem.availableMaterials.Length);
-			}
-
-			DailyUnlockManager.s_Instance.SetDailyUnlock(prizeItem.id, m_PrizeColourIndex);
-
-			ApplyChangesAndClose();
+			
 		}
 	}
 }
