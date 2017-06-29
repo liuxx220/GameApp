@@ -6,7 +6,6 @@ public class EveryplayAnimatedThumbnailOnGUI : MonoBehaviour
 {
     public Texture defaultTexture;
     public Rect pixelInset = new Rect(10, 10, 256, 196);
-    private EveryplayThumbnailPool thumbnailPool;
     private int currentIndex;
     private bool transitionInProgress;
     private float blend;
@@ -22,16 +21,7 @@ public class EveryplayAnimatedThumbnailOnGUI : MonoBehaviour
 
     void Start()
     {
-        thumbnailPool = (EveryplayThumbnailPool) FindObjectOfType(typeof(EveryplayThumbnailPool));
 
-        if (thumbnailPool)
-        {
-            ResetThumbnail();
-        }
-        else
-        {
-            Debug.Log("Everyplay thumbnail pool not found or no material was defined!");
-        }
     }
 
     void OnDestroy()
@@ -79,43 +69,8 @@ public class EveryplayAnimatedThumbnailOnGUI : MonoBehaviour
 
     void Update()
     {
-        if (thumbnailPool && !transitionInProgress)
-        {
-            if (thumbnailPool.availableThumbnailCount > 0)
-            {
-                // Don't animate the first frame
-                if (currentIndex < 0)
-                {
-                    currentIndex = 0;
-                    bottomTextureScale = thumbnailPool.thumbnailScale;
-                    bottomTexture = thumbnailPool.thumbnailTextures[currentIndex];
-                }
-                // Animate
-                else if (thumbnailPool.availableThumbnailCount > 1)
-                {
-                    if ((Time.frameCount % 50) == 0)
-                    {
-                        currentIndex++;
-
-                        if (currentIndex >= thumbnailPool.availableThumbnailCount)
-                        {
-                            currentIndex = 0;
-                        }
-
-                        topTextureScale = thumbnailPool.thumbnailScale;
-                        topTexture = thumbnailPool.thumbnailTextures[currentIndex];
-
-                        transitionInProgress = true;
-
-                        StartCoroutine("CrossfadeTransition");
-                    }
-                }
-            }
-            else if (currentIndex >= 0)
-            {
-                ResetThumbnail();
-            }
-        }
+        
+     
     }
 
     void OnGUI()

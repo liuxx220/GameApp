@@ -119,43 +119,7 @@ namespace Tanks.UI
 
 		public void LoadDecorationForIndex(int definitionIndex, int materialIndex)
 		{
-			//While attempting to load the decoration, we determine whether it's still a valid unlock. 
-			//This is due to our ad-to-temp-unlock system - any previously-selected items may have lapsed since we last updated.
-
-			int requestedMaterial = -1;
-
-			//Is the requested colour still valid for selection? If so, choose that one.
-			if (PlayerDataManager.s_Instance.IsColourUnlockedForDecoration(definitionIndex, materialIndex) || (DailyUnlockManager.s_Instance.GetTempUnlockedColour() == materialIndex))
-			{
-				requestedMaterial = materialIndex;
-			}
-			//Otherwise we iterate through unlocked colours for this decoration to find the first valid one.
-			else
-			{
-				int materialQuantity = TankDecorationLibrary.s_Instance.GetMaterialQuantityForIndex(definitionIndex);
-
-				for (int i = 0; i < materialQuantity; i++)
-				{
-					if (PlayerDataManager.s_Instance.IsColourUnlockedForDecoration(definitionIndex, i) || (DailyUnlockManager.s_Instance.GetTempUnlockedColour() == i))
-					{
-						PlayerDataManager.s_Instance.SetSelectedMaterialForDecoration(definitionIndex, i);
-						requestedMaterial = i;
-						break;
-					}
-				}
-
-				//if we've got this far with no positive material, it means that this decoration has no valid unlocked colours and therefore isn't selectable at all. Reset both decoration and colour to the default.
-				if (requestedMaterial < 0)
-				{
-					PlayerDataManager.s_Instance.selectedDecoration = 0;
-					PlayerDataManager.s_Instance.SetSelectedMaterialForDecoration(definitionIndex, 0);
-
-					definitionIndex = 0;
-					requestedMaterial = -1;
-				}
-			}
-
-			m_CurrentTankDisplay.SetTankDecoration(definitionIndex, requestedMaterial);
+			
 		}
 	
 		//Handles changing the current tank
@@ -177,13 +141,6 @@ namespace Tanks.UI
 
 			m_CurrentTankDisplay = newTankMesh.GetComponent<TankDisplay>();
 			m_CurrentTankDisplay.HideShadow();
-
-			PlayerDataManager dataManager = PlayerDataManager.s_Instance;
-			if (dataManager != null)
-			{
-				int decorationIndex = dataManager.selectedDecoration;
-				LoadDecorationForIndex(decorationIndex, dataManager.GetSelectedMaterialForDecoration(decorationIndex));
-			}
 		}
 
 		//Resizes camera based on bounds of tank and decoration

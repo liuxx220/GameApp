@@ -398,14 +398,6 @@ namespace Tanks.UI
 			}
 		}
 
-		//This method is subscribed to the player's tank's ammo type change event, and switches the ammo icon on the HUD when fired
-		private void UpdateShellInfo(int newShell)
-		{
-			ProjectileDefinition projectileDefinition = SpecialProjectileLibrary.s_Instance.GetProjectileDataForIndex(newShell);
-			m_AmmoIcon.sprite = projectileDefinition.weaponIcon;
-			m_AmmoIcon.color = projectileDefinition.weaponColor;
-			m_RadialAmmoCount.color = projectileDefinition.weaponColor;
-		}
 
 		//This method is subscribed to the player's tank's currency change event, and plays the relevant sound when fired
 		private void UpdatePickUpCurrency(int currency)

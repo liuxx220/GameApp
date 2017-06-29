@@ -56,7 +56,6 @@ namespace Tanks.UI
 				dataManager.playerName = m_PlayerNameInput.text;
 				dataManager.selectedTank = m_CurrentIndex;
 				dataManager.selectedDecoration = m_CurrentDecoration;
-				dataManager.SetSelectedMaterialForDecoration(m_CurrentDecoration, m_CurrentDecorationMaterial);
 			}
 			MainMenuUI.s_Instance.ShowDefaultPanel();
 		}
@@ -79,7 +78,6 @@ namespace Tanks.UI
 			if (dataManager != null && TankRotator.s_InstanceExists)
 			{
 				TankRotator.s_Instance.LoadModelForTankIndex(dataManager.selectedTank);
-				TankRotator.s_Instance.LoadDecorationForIndex(dataManager.selectedDecoration, dataManager.GetSelectedMaterialForDecoration(dataManager.selectedDecoration));
 			}
 		}
 

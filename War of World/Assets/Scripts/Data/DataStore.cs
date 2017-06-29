@@ -89,11 +89,7 @@ namespace Tanks.Data
 					decorations[i] = new DecorationData();
 				}
 			}
-			else
-			{
-				Debug.LogError("No decoration library. Failed to init decoration size");
-			}
-
+	
 			// Init unlocked tanks
 			TankLibrary tankLib = TankLibrary.s_Instance;
 			if (tankLib != null)

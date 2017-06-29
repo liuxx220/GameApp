@@ -47,7 +47,6 @@ namespace Tanks.Data
 			set { m_Data.selectedTank = value; }
 		}
 
-		//The array index of the last decoration selected by the player. Corresponds to the definition index in the TankDecorationLibrary.
 		public int selectedDecoration
 		{
 			get { return m_Data.selectedDecoration; }
@@ -129,17 +128,6 @@ namespace Tanks.Data
 			m_Saver = new EncryptedJsonSaver();
 #endif
 			m_Data = new DataStore();
-
-			//We always want the first tank and the first decoration (a null decoration) to be unlocked by default, and init accordingly.
-			if (m_Data.decorations.Length > 0)
-			{
-				m_Data.decorations[0].unlocked = true;
-			}
-			if (m_Data.unlockedTanks.Length > 0)
-			{
-				m_Data.unlockedTanks[0] = true;
-			}
-
 			m_Saver.Load(m_Data);
 		}
 
@@ -304,24 +292,6 @@ namespace Tanks.Data
 			SaveData();
 		}
 
-		//Returns the last material that was selected for a given decoration.
-		public int GetSelectedMaterialForDecoration(int decorationIndex)
-		{
-			if (m_Data.decorations.Length > decorationIndex && decorationIndex >= 0)
-			{
-				return m_Data.decorations[decorationIndex].selectedColourIndex;
-			}
-			return -1;
-		}
-
-		//Sets the last material that was selected for a given decoration.
-		public void SetSelectedMaterialForDecoration(int decorationIndex, int materialIndex)
-		{
-			if (m_Data.decorations.Length > decorationIndex && decorationIndex >= 0)
-			{
-				m_Data.decorations[decorationIndex].selectedColourIndex = materialIndex;
-			}
-		}
 
 		//Returns the number of materials that have been unlocked for a given decoration.
 		public int GetNumberOfUnlockedColours(int decorationIndex)

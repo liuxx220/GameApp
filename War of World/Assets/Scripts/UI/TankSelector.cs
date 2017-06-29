@@ -65,7 +65,7 @@ namespace Tanks.UI
 			{
 				m_CurrentIndex = dataManager.selectedTank;
 				m_CurrentDecoration = dataManager.selectedDecoration;
-				m_CurrentDecorationMaterial = dataManager.GetSelectedMaterialForDecoration(m_CurrentDecoration);
+				m_CurrentDecorationMaterial = 0;
 			}
 		}
 		
@@ -87,7 +87,6 @@ namespace Tanks.UI
 			UpdateTankStats(next);
 
 			TankRotator.s_Instance.LoadModelForTankIndex(m_CurrentIndex);
-			TankRotator.s_Instance.LoadDecorationForIndex(m_CurrentDecoration, m_CurrentDecorationMaterial);
 		}
 
 		//Changes attached decoration
@@ -95,15 +94,12 @@ namespace Tanks.UI
 		{
 			//Flip out the current decoration index
 			m_CurrentDecoration = decorationIndex;
-
-			TankRotator.s_Instance.LoadDecorationForIndex(m_CurrentDecoration, m_CurrentDecorationMaterial);
 		}
 
 		//Changes attached decoration colour
 		public void ChangeCurrentDecorationColour(int decorationColour)
 		{
-			m_CurrentDecorationMaterial = decorationColour;
-			TankRotator.s_Instance.LoadDecorationForIndex(m_CurrentDecoration, m_CurrentDecorationMaterial);
+
 		}
 
 		//returns index of decoration

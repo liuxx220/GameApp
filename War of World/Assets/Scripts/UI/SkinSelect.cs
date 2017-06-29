@@ -65,41 +65,9 @@ namespace Tanks.UI
 		}
 		
 		//Clears current UI items and adds new UI items
-		public void RegenerateItems()
-		{
-			m_RouletteButton.gameObject.SetActive(!PlayerDataManager.s_Instance.AreAllDecorationsUnlocked());
+        public void RegenerateItems()
+        {
 
-			Clear();
-
-			int length = TankDecorationLibrary.s_Instance.GetNumberOfDefinitions();
-
-			for (int i = 0; i < length; i++)
-			{
-				TankDecorationDefinition decoration = TankDecorationLibrary.s_Instance.GetDecorationForIndex(i);
-				GameObject skinObject = Instantiate<GameObject>(m_SkinPrefab.gameObject);
-				skinObject.transform.SetParent(gameObject.transform, false);
-				Skin skin = skinObject.GetComponent<Skin>();
-				skin.SetPreview(decoration.preview);
-
-				if (decoration.preview == null)
-				{
-					skin.SetNameText(decoration.name);
-				}
-
-				//Checks if the Decoration is unlocked, either permanently or temporarily (by an add)
-				bool isUnlocked = false;
-				if (PlayerDataManager.s_InstanceExists)
-				{
-					isUnlocked |= PlayerDataManager.s_Instance.IsDecorationUnlocked(i);
-				}
-				if (DailyUnlockManager.s_InstanceExists)
-				{
-					isUnlocked |= DailyUnlockManager.s_Instance.IsItemTempUnlocked(decoration.id);
-				}
-				skin.SetUnlockedStatus(isUnlocked);
-				skin.SetupSkinSelect(this);
-				skin.SetupSkin(i, decoration);
-			}
-		}
+        }
 	}
 }
