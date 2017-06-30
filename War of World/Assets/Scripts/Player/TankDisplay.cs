@@ -3,17 +3,22 @@ using System.Collections.Generic;
 using Tanks.Data;
 using Tanks.Effects;
 
+
+
+
+
+
 namespace Tanks.TankControllers
 {
-	//This class acts as a general visual control class for all tank variants.
-	//It allows tank chassis to be easily swapped out from the common controller scripts in-game, and doubles as an easy interface for menu-related functionality.
+    /// <summary>
+    /// Player 的外观显示，主要包含装饰层的东西
+    /// </summary>
 	public class TankDisplay : MonoBehaviour
 	{
-		//Root object for all tank mesh renderer/mesh objects. Used to mass enable/disable them.
-		[SerializeField]
-		protected GameObject m_TankRendererParent;
 
-		// Collection of all attached decorations
+		/// <summary>
+		/// 装饰
+		/// </summary>
 		private List<Decoration> m_AttachedDecorations;
 
 		private void Awake()
@@ -56,7 +61,6 @@ namespace Tanks.TankControllers
 
 		public void SetTankDecoration(int newDecorationId, int newMaterialIndex, bool destroyDecorations = true)
 		{
-			//Iterate through all decoration points and clear them
 			if (destroyDecorations)
 			{
 				for (int i = 0; i < m_AttachedDecorations.Count; i++)

@@ -11,7 +11,6 @@ namespace Tanks.TankControllers
 
     public class TankMovement : MonoBehaviour
 	{
-        //Enum to define how the tank is moving towards its desired direction.
         public enum MovementMode
         {
             Forward = 1,
@@ -56,14 +55,7 @@ namespace Tanks.TankControllers
         private bool m_bJoystickInput = false;
 
         UnityEngine.AI.NavMeshAgent navagent;
-        //The final velocity of the tank.
-        public Vector3 velocity
-        {
-            get;
-            protected set;
-        }
 
-        //Whether the tank is moving.
         public bool isMoving
         {
             get
@@ -72,11 +64,9 @@ namespace Tanks.TankControllers
             }
         }
 
-        int     floorMask;                      // A layer mask so that a ray can be cast just at gameobjects on the floor layer.
+        int     floorMask;                      
         float   camRayLength = 100f;   
 
-
-        //Accepts a TankManager reference to pull in all necessary data and references.
         public void Init(TankManager manager)
         {
             enabled = false;
@@ -86,25 +76,20 @@ namespace Tanks.TankControllers
             SetDefaults();
         }
 
-        //Called by the active tank input manager to set the movement direction of the tank.
-        public void SetDesiredMovementDirection(Vector3 moveDir)
+ 
+        public void SetMovementDirection( Vector3 moveDir )
         {
             m_DesiredDirection = moveDir;
-           
             if (m_DesiredDirection.sqrMagnitude > 1)
             {
-                m_IsFollow = false;
                 m_DesiredDirection.Normalize();
             }
         }
 
         private void Awake()
         {
-            //Get our rigidbody, and init originalconstraints for enable/disable code.
             LazyLoadRigidBody();
-
-            m_OriginalConstrains = m_Rigidbody.constraints;
-
+            m_OriginalConstrains  = m_Rigidbody.constraints;
             m_CurrentMovementMode = MovementMode.Forward;
         }
 
@@ -114,8 +99,6 @@ namespace Tanks.TankControllers
             {
                 return;
             }
-
-            //navagent    = GetComponent<UnityEngine.AI.NavMeshAgent>();
             anim        = GetComponent<Animator>();
             floorMask   = LayerMask.GetMask("Floor");
             m_Rigidbody = GetComponent<Rigidbody>();
@@ -124,16 +107,12 @@ namespace Tanks.TankControllers
 
         private void FixedUpdate()
         {
-            if (isMoving && !m_IsFollow )
+            if (isMoving )
             {
                 Move();
             }
-            if (m_IsFollow )
-            {
-                MoveTarget();
-            }
 
-            Animating();
+            anim.SetBool("IsWalking", isMoving);
         }
 
 
@@ -141,37 +120,14 @@ namespace Tanks.TankControllers
         {
             float moveDistance   = m_DesiredDirection.magnitude * m_Speed * Time.deltaTime;
             Vector3 movement     = m_DesiredDirection * moveDistance;
-            //Vector3 movement     = m_CurrentMovementMode == MovementMode.Backward ? -transform.forward : transform.forward;
-            //movement            *= moveDistance;
             movement.y           = 0f;
             m_Rigidbody.position = m_Rigidbody.position + movement;
             transform.position   = m_Rigidbody.position;
         }
 
-
-        private bool m_IsFollow = false;
-        private Vector3 m_targetpos;
-        private void MoveTarget()
-        {
-            if (navagent == null)
-                return;
-
-            if ((transform.position - m_targetpos).sqrMagnitude > 0.5f )
-            {
-                navagent.SetDestination(m_targetpos);
-            }
-            else
-            {
-                m_IsFollow = false;
-                navagent.enabled = false;
-            }
-        }
-         
         public void SetTargetPosition( Vector3 target )
         {
-            m_targetpos = target;
-            //m_IsFollow  = true;
-            //navagent.enabled = true;
+            
         }
 
 
@@ -202,19 +158,18 @@ namespace Tanks.TankControllers
             m_CurrentMovementMode       = MovementMode.Forward;
         }
 
-        //Disable movement, and also disable our engine noise emitter.
+      
         public void DisableMovement()
         {
             m_Speed = 0;
         }
 
-        //Reenable movement, and also the engine noise emitter.
+    
         public void EnableMovement()
         {
             m_Speed = m_OriginalSpeed;
         }
 
-        //We freeze the rigibody when the control is disabled to avoid the tank drifting!
         protected RigidbodyConstraints m_OriginalConstrains;
         void OnDisable()
         {
@@ -222,25 +177,15 @@ namespace Tanks.TankControllers
             m_Rigidbody.constraints          = RigidbodyConstraints.FreezeAll;
         }
 
-        //On enable, restore our rigidbody's range of movement.
+
         void OnEnable()
         {
             m_Rigidbody.constraints = m_OriginalConstrains;
         }
 
-        //Reset our movement values to their original values for this tank. This is to reset Nitro effects.
         void ResetMovementVariables()
         {
             m_Speed = m_OriginalSpeed;
-        }
-
- 
-        void Animating()
-        {
-            if (m_IsFollow || isMoving )   
-                anim.SetBool("IsWalking", true);
-            else
-                anim.SetBool("IsWalking", false);
         }
 	}
 }

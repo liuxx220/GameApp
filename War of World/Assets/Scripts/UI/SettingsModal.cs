@@ -48,7 +48,6 @@ namespace Tanks.UI
 			m_PlayerDataManager.musicVolume = 40f * Mathf.Log10(m_Music.value);
 			m_PlayerDataManager.sfxVolume = 40f * Mathf.Log10(m_Sfx.value);
 			m_PlayerDataManager.masterVolume = 40f * Mathf.Log10(m_Master.value);
-			m_PlayerDataManager.SaveData();
 			CloseModal();
 		}
 

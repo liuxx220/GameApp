@@ -63,7 +63,7 @@ namespace Tanks.UI
 			PlayerDataManager dataManager = PlayerDataManager.s_Instance;
 			if (dataManager != null)
 			{
-				m_CurrentIndex = dataManager.selectedTank;
+				m_CurrentIndex = dataManager.selectedPlayer;
 				m_CurrentDecoration = dataManager.selectedDecoration;
 				m_CurrentDecorationMaterial = 0;
 			}

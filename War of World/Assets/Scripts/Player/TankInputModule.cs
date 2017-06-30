@@ -2,6 +2,13 @@ using UnityEngine;
 using UnityEngine.Networking;
 using System;
 
+
+
+
+
+
+
+
 namespace Tanks.TankControllers
 {
 	/// <summary>
@@ -37,7 +44,6 @@ namespace Tanks.TankControllers
         //On enable, restore our rigidbody's range of movement.
         void OnEnable()
         {
-
             EasyJoystick.On_JoystickMove      += OnJoystickMove;
             EasyJoystick.On_JoystickMoveStart += OnJoystickMoveStart;
             EasyJoystick.On_JoystickMoveEnd   += OnJoystickMoveEnd;
@@ -48,7 +54,6 @@ namespace Tanks.TankControllers
 
         protected virtual void OnDisable()
         {
-            SetFireIsHeld(false);
             EasyJoystick.On_JoystickMove      -= OnJoystickMove;
             EasyJoystick.On_JoystickMoveStart -= OnJoystickMoveStart;
             EasyJoystick.On_JoystickMoveEnd   -= OnJoystickMoveEnd;
@@ -62,14 +67,23 @@ namespace Tanks.TankControllers
 			DoFiringInput();
 		}
 
-
+        /// --------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// 接口函数，检测鼠标的状态做一些处理
+        /// </summary>
+        /// --------------------------------------------------------------------------------------------------
 		protected abstract bool DoMovementInput();
 
+        /// --------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// 接口函数，检测键盘的状态做一些处理
+        /// </summary>
+        /// --------------------------------------------------------------------------------------------------
 		protected abstract bool DoFiringInput();
 
-		protected void SetDesiredMovementDirection(Vector3 moveDir)
+		protected void SetMovementDirection(Vector3 moveDir)
 		{
-			m_Movement.SetDesiredMovementDirection(moveDir);
+            m_Movement.SetMovementDirection(moveDir);
 		}
 
 
@@ -79,16 +93,10 @@ namespace Tanks.TankControllers
         }
 
 
-		protected void SetDesiredFirePosition(Vector3 target)
+		protected void SetFirePosition(Vector3 target)
 		{
 			m_Shooting.SetDesiredFirePosition(target);
 		}
-
-
-        protected void SetMovementTarget( Vector3 target )
-        {
-            m_Movement.SetTargetPosition(target);
-        }
 
 
 		public void SetFireIsHeld(bool fireHeld)
@@ -104,10 +112,12 @@ namespace Tanks.TankControllers
 			}
 		}
 
+        /// --------------------------------------------------------------------------------------------------------
         /// <summary>
         /// 判断是否属于遥感控制
         /// </summary>
-        /// <returns></returns>
+        /// <returns></returns>、
+        /// --------------------------------------------------------------------------------------------------------
         protected bool IsJoystickMoving()
         {
             return (m_bJoystickInputL || m_bJoystickInputR);
@@ -115,6 +125,11 @@ namespace Tanks.TankControllers
 
 
         private float fTouchAndUpTime = 0f;
+        /// --------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// 这里用来处理，操纵杆拖动抬起攻击技能
+        /// </summary>
+        /// --------------------------------------------------------------------------------------------------------
         protected void OnJoystickTouchStart(MovingJoystick move)
         {
             if (move.joystickName == "Right_Joystick")
@@ -123,24 +138,27 @@ namespace Tanks.TankControllers
             }
         }
 
+        /// --------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// 这里用来处理，操纵杆拖动抬起攻击技能
+        /// </summary>
+        /// --------------------------------------------------------------------------------------------------------
         protected void OnJoystickTouchEnd(MovingJoystick move)
         {
             if (move.joystickName == "Right_Joystick")
             {
-                if( Time.realtimeSinceStartup - fTouchAndUpTime < 0.2f )
+                if( Time.realtimeSinceStartup - fTouchAndUpTime > 0.5f && m_Shooting.IsShootPressup() )
                 {
                     SetFireIsHeld(true);
                 }
             }
-
-            else if (move.joystickName == "Left_Joystick")
-            {
-                m_Shooting.fireDirection.SetActive(false);
-            }
         }
+
+        /// --------------------------------------------------------------------------------------------------------
         /// <summary>
-        /// 移动摇杆开始
+        ///  移动摇杆开始,这里用来处理，操纵杆连续攻击攻击技能和移动方向的控制
         /// </summary>
+        /// --------------------------------------------------------------------------------------------------------
         protected void OnJoystickMoveStart( MovingJoystick move )
         {
             if( m_Shooting == null || m_Shooting.fireDirection == null )
@@ -160,7 +178,11 @@ namespace Tanks.TankControllers
         }
 
 
-        //移动摇杆结束
+        /// --------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// 移动摇杆结束,和移动方向的控制
+        /// </summary>
+        /// --------------------------------------------------------------------------------------------------------
         protected void OnJoystickMoveEnd(MovingJoystick move)
         {
             if (move.joystickName == "Right_Joystick")
@@ -174,23 +196,25 @@ namespace Tanks.TankControllers
             {
                 m_bJoystickInputL = false;
                 DisableMovement();
-                SetDesiredMovementDirection(Vector3.zero);
+                SetMovementDirection(Vector3.zero);
             }
         }
 
-        //移动摇杆中
+
+        /// --------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// 移动摇杆中，操纵杆连续攻击攻击技能和移动方向的控制
+        /// </summary>
+        /// --------------------------------------------------------------------------------------------------------
         protected void OnJoystickMove(MovingJoystick move)
         {
+            float x = move.joystickAxis.x;
+            float y = move.joystickAxis.y;
             if (move.joystickName == "Left_Joystick" )
             {
-                //获取摇杆中心偏移的坐标
                 m_bJoystickInputL = true;
-                float x = move.joystickAxis.x;
-                float y = move.joystickAxis.y;
-
-                //设置角色的朝向（朝向当前坐标+摇杆偏移量）  
                 if( !m_bJoystickInputR )
-                    SetDesiredFirePosition(new Vector3(transform.position.x + x, transform.position.y, transform.position.z + y));
+                    SetFirePosition(new Vector3(transform.position.x + x, transform.position.y, transform.position.z + y));
                 
                 Vector3 movedir = new Vector3(x, y, 0);
                 if (movedir.sqrMagnitude > 0.01f)
@@ -207,19 +231,15 @@ namespace Tanks.TankControllers
                     {
                         worldDirection.Normalize();
                     }
-                    SetDesiredMovementDirection(worldDirection);
+                    SetMovementDirection(worldDirection);
                 }
             }
 
             if (move.joystickName == "Right_Joystick" )
             {
-
-                float x = move.joystickAxis.x;
-                float y = move.joystickAxis.y;
-
-                //设置角色的朝向（朝向当前坐标+摇杆偏移量）  
-                SetDesiredFirePosition(new Vector3(transform.position.x + x, transform.position.y, transform.position.z + y));
-                SetFireIsHeld(true);
+                SetFirePosition(new Vector3(transform.position.x + x, transform.position.y, transform.position.z + y));
+                if( m_Shooting.IsShootContinued() )
+                    SetFireIsHeld(true);
             }
         }
 	}

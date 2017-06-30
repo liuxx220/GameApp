@@ -4,54 +4,50 @@ using UnityEngine;
 using UnityEngine.Audio;
 using Tanks.Utilities;
 
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
+
+
+
+
+
 
 namespace Tanks.Data
 {
-	//This class provides an interface to access and set persistent game data such as game settings, unlocks, player progress, currency, etc, as well as the serialization of this data to file.
-	//It also provides some convenience functions for common "queries" that are run for game data.
 	public class PlayerDataManager : Singleton<PlayerDataManager>
 	{
 		#region Fields
 
 		//References to the datastore object, and the saver object responsible for serializing the datastore to file.
 		[NonSerialized]
-		private DataStore m_Data;
-		[NonSerialized]
-		private IDataSaver m_Saver;
-
-		//Reference to the primary audiomixer for the game
+		private DataStore           m_Data;
 		[SerializeField]
-		protected AudioMixer m_AudioMixer;
-
+		protected AudioMixer        m_AudioMixer;
 		#endregion
 
 
 		#region Properties
-
-		//The in-game currency that the player has accrued.
 		public int currency
 		{
-			get
-			{
-				return m_Data.currency;
-			}
+			get { return m_Data.currency;}
 		}
 
-		//The array index of the last tank selected by the player. Corresponds to the definition index in the TankLibrary.
-		public int selectedTank
+		/// <summary>
+		/// 选择的英雄
+		/// </summary>
+		public int selectedPlayer
 		{
-			get { return m_Data.selectedTank; }
-			set { m_Data.selectedTank = value; }
+            get { return m_Data.selectedPlayer; }
+            set { m_Data.selectedPlayer = value; }
 		}
 
+        /// <summary>
+        /// 选择的英雄的装饰
+        /// </summary>
 		public int selectedDecoration
 		{
 			get { return m_Data.selectedDecoration; }
 			set { m_Data.selectedDecoration = value; }
 		}
+
 
 		//The player's chosen name.
 		public string playerName
@@ -122,48 +118,24 @@ namespace Tanks.Data
 			base.Awake();
 
 			// In the Unity editor, use a plain text saver so files can be inspected.
-#if UNITY_EDITOR || NETFX_CORE
-			m_Saver = new JsonSaver();
-#else
-			m_Saver = new EncryptedJsonSaver();
-#endif
 			m_Data = new DataStore();
-			m_Saver.Load(m_Data);
 		}
 
 		private void Start()
 		{
-			//Set our saved audio settings
 			if (m_AudioMixer != null)
 			{
-				m_AudioMixer.SetFloat("MusicVolume", musicVolume);
-				m_AudioMixer.SetFloat("SFXVolume", sfxVolume);
-				m_AudioMixer.SetFloat("MasterVolume", masterVolume);
+				m_AudioMixer.SetFloat("MusicVolume",    musicVolume);
+				m_AudioMixer.SetFloat("SFXVolume",      sfxVolume);
+				m_AudioMixer.SetFloat("MasterVolume",   masterVolume);
 			}
 		}
 
 		protected override void OnDestroy()
 		{
-			//We save on exit
-			if (s_Instance == this)
-			{
-				SaveData();
-			}
-
 			base.OnDestroy();
 		}
 
-		//use the specified saver to serialize our game data.
-		public void SaveData()
-		{
-			m_Saver.Save(m_Data);
-		}
-
-		//Returns whether the player has enough currency for a given cost
-		public bool CanPlayerAffordPurchase(int cost)
-		{
-			return m_Data.currency >= cost;
-		}
 
 		//Adds currency to the player's currency pool
 		public void AddCurrency(int currencyToAdd)
@@ -171,8 +143,6 @@ namespace Tanks.Data
 			if (currencyToAdd >= 0)
 			{
 				m_Data.currency += currencyToAdd;
-				SaveData();
-
 				if (onCurrencyChanged != null)
 				{
 					onCurrencyChanged(m_Data.currency);
@@ -194,13 +164,10 @@ namespace Tanks.Data
 				{
 					m_Data.currency = 0;
 				}
-
 				if (onCurrencyChanged != null)
 				{
 					onCurrencyChanged(m_Data.currency);
 				}
-
-				SaveData();
 			}
 			else
 			{
@@ -230,8 +197,6 @@ namespace Tanks.Data
 			{
 				throw new IndexOutOfRangeException("Tank index invalid");
 			}
-
-			SaveData();
 		}
 
 		//Returns whether a decoration for a given index is unlocked.
@@ -256,8 +221,6 @@ namespace Tanks.Data
 			{
 				throw new IndexOutOfRangeException("Tank index invalid");
 			}
-
-			SaveData();
 		}
 
 		//Returns whether a given material of a specific decoration has been unlocked.
@@ -288,8 +251,6 @@ namespace Tanks.Data
 					}
 				}
 			}
-
-			SaveData();
 		}
 
 
@@ -326,7 +287,6 @@ namespace Tanks.Data
 			for (int i = 0; i < allLevelData.Count; i++)
 			{
 				List<bool> objectives = allLevelData[i].objectivesAchieved;
-
 				if (objectives != null)
 				{
 					for (int j = 0; j < objectives.Count; j++)
@@ -338,7 +298,6 @@ namespace Tanks.Data
 					}
 				}
 			}
-
 			return totalMedalCount;
 		}
 
@@ -360,8 +319,6 @@ namespace Tanks.Data
 			{
 				m_Data.unlockedMultiplayerMaps.Remove(mapId);
 			}
-
-			SaveData();
 		}
 
 		//Returns whether the multiplayer map with the given ID string has been unlocked.
@@ -375,11 +332,9 @@ namespace Tanks.Data
 		//NOTE: No longer visible in-game. Used in conjunction with disabled ad functionality.
 		public void SaveTempUnlockData(string tempUnlockId, int tempUnlockColour, DateTime unlockDate)
 		{
-			m_Data.tempUnlockId = tempUnlockId;
+			m_Data.tempUnlockId     = tempUnlockId;
 			m_Data.tempUnlockColour = tempUnlockColour;
-			m_Data.tempUnlockDate = unlockDate.ToFileTime();
-
-			SaveData();
+			m_Data.tempUnlockDate   = unlockDate.ToFileTime();
 		}
 
 		//Returns the time that the last unlock was made.
@@ -402,18 +357,5 @@ namespace Tanks.Data
 		{
 			return m_Data.tempUnlockColour;
 		}
-
-		#if UNITY_EDITOR
-		//Menu option to clear save game data for debug purposes.
-		[MenuItem("Edit/Clear Save Data")]
-		static void ClearData()
-		{
-			string filename = JsonSaver.GetSaveFilename();
-			if (System.IO.File.Exists(filename))
-			{
-				System.IO.File.Delete(filename);
-			}
-		}
-		#endif
 	}
 }

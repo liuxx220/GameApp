@@ -163,7 +163,7 @@ namespace Tanks.Networking
 			PlayerDataManager dataManager = PlayerDataManager.s_Instance;
 			if (dataManager != null)
 			{
-				m_PlayerTankType = dataManager.selectedTank;
+				m_PlayerTankType = dataManager.selectedPlayer;
 				m_PlayerName = dataManager.playerName;
 			}
 		}

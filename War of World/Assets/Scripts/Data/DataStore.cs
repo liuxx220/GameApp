@@ -3,6 +3,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+
+
+
+
+
+
+
 namespace Tanks.Data
 {
 	/// <summary>
@@ -11,9 +18,9 @@ namespace Tanks.Data
 	[Serializable]
 	public class DecorationData
 	{
-		public bool unlocked;
+		public bool      unlocked;
 		public List<int> availableColours;
-		public int selectedColourIndex;
+		public int       selectedColourIndex;
 
 		public DecorationData()
 		{
@@ -27,9 +34,9 @@ namespace Tanks.Data
 	[Serializable]
 	public class LevelData
 	{
-		public string id;
+		public string       id;
 
-		public List<bool> objectivesAchieved;
+		public List<bool>   objectivesAchieved;
 
 		public LevelData(string id)
 		{
@@ -44,12 +51,12 @@ namespace Tanks.Data
 	[Serializable]
 	public class SettingsData
 	{
-		public float musicVolume = 0.0f;
-		public float sfxVolume = 0.0f;
-		public float masterVolume = 0.0f;
-		public float thumbstickSize = 0.6f;
-		public bool isLeftyMode = false;
-		public bool everyplayEnabled = false;
+		public float musicVolume        = 0.0f;
+		public float sfxVolume          = 0.0f;
+		public float masterVolume       = 0.0f;
+		public float thumbstickSize     = 0.6f;
+		public bool isLeftyMode         = false;
+		public bool everyplayEnabled    = false;
 	}
 
 	/// <summary>
@@ -59,52 +66,28 @@ namespace Tanks.Data
 	public class DataStore : ISerializationCallbackReceiver
 	{
 
-		public int selectedTank = 0;
-		public int selectedDecoration;
-		public int currency;
-		public bool[] unlockedTanks;
-		public string playerName;
+		public int          selectedPlayer = 0;
+		public int          selectedDecoration;
+		public int          currency;
+		public bool[]       unlockedTanks;
+		public string       playerName;
 		public DecorationData[] decorations;
-		public List<LevelData> levels;
+		public List<LevelData>  levels;
 		public SettingsData settingsData;
 		public List<string> unlockedMultiplayerMaps;
-		public long tempUnlockDate;
-		public string tempUnlockId;
-		public int tempUnlockColour;
+		public long         tempUnlockDate;
+		public string       tempUnlockId;
+		public int          tempUnlockColour;
 
 		private Dictionary<string, LevelData> m_LevelsDictionary;
 
 		public DataStore()
 		{
-			// Init decoration size
-            //TankDecorationLibrary decorationLib = TankDecorationLibrary.s_Instance;
-
-            //if (decorationLib != null)
-            //{
-            //    int numDecorations = decorationLib.GetNumberOfDefinitions();
-            //    decorations = new DecorationData[numDecorations];
-            //    for (int i = 0; i < numDecorations; ++i)
-            //    {
-            //        decorations[i] = new DecorationData();
-            //    }
-            //}
-	
-            //// Init unlocked tanks
-            //TankLibrary tankLib = TankLibrary.s_Instance;
-            //if (tankLib != null)
-            //{
-            //    unlockedTanks = new bool[tankLib.GetNumberOfDefinitions()];
-            //}
-            //else
-            //{
-            //    Debug.LogError("No tank library. Failed to init unlocked tanks");
-            //}
-
-            //unlockedMultiplayerMaps = new List<string>();
-            //m_LevelsDictionary = new Dictionary<string, LevelData>();
-            //levels = new List<LevelData>();
-            //settingsData = new SettingsData();
-            //playerName = s_DefaultName;
+            unlockedMultiplayerMaps = new List<string>();
+            m_LevelsDictionary  = new Dictionary<string, LevelData>();
+            levels              = new List<LevelData>();
+            settingsData        = new SettingsData();
+            unlockedTanks       = new bool[3];
 		}
 
 		/// <summary>

@@ -17,7 +17,7 @@ namespace Tanks.UI
 		{
 			if (PlayerDataManager.s_InstanceExists)
 			{
-				PlayerDataManager.s_Instance.selectedTank = m_CurrentIndex;
+				PlayerDataManager.s_Instance.selectedPlayer = m_CurrentIndex;
 			}
 			Close();
 		}

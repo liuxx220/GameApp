@@ -5,6 +5,14 @@ using Tanks.Data;
 using Tanks.Effects;
 using Tanks.TankControllers;
 
+
+
+
+
+
+
+
+
 namespace Tanks.Explosions
 {
     public class ExplosionManager : MonoBehaviour
@@ -58,7 +66,7 @@ namespace Tanks.Explosions
 
 		protected virtual void Start()
 		{
-			//m_EffectsGroup = ThemedEffectsLibrary.s_Instance.GetEffectsGroupForMap();
+			m_EffectsGroup = ThemedEffectsLibrary.s_Instance.GetEffectsGroupForMap();
 		}
 
 

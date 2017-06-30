@@ -4,6 +4,13 @@ using Tanks.UI;
 using Tanks.Data;
 using Tanks.Utilities;
 
+
+
+
+
+
+
+
 namespace Tanks.TankControllers
 {
 	/// <summary>
@@ -206,11 +213,11 @@ namespace Tanks.TankControllers
 				RaycastHit hit;
 				if (Physics.Raycast(mouseRay, out hit, float.PositiveInfinity, m_GroundLayerMask))
 				{
-					SetDesiredFirePosition(hit.point);
+                    SetFirePosition(hit.point);
 				}
 				else if (m_FloorPlane.Raycast(mouseRay, out hitDist))
 				{
-					SetDesiredFirePosition(mouseRay.GetPoint(hitDist));
+                    SetFirePosition(mouseRay.GetPoint(hitDist));
 				}
 
 				SetFireIsHeld(true);
@@ -256,7 +263,7 @@ namespace Tanks.TankControllers
 					worldDirection.Normalize();
 					worldDirection *= moveSpeed;
 					Vector2 moveDir = new Vector2(worldDirection.x, worldDirection.z);
-					SetDesiredMovementDirection(moveDir);
+                    SetMovementDirection(moveDir);
 
 					// If there's no touch input, tank should look at desired move dir
 					if (m_FiringTouch == null)

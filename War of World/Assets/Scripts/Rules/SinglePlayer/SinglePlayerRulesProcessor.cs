@@ -184,8 +184,6 @@ namespace Tanks.Rules.SinglePlayer
 					m_LevelData.objectivesAchieved[i] = true;
 				}
 			}
-            
-			PlayerDataManager.s_Instance.SaveData();
 		}
 
 		/// <summary>
@@ -228,13 +226,7 @@ namespace Tanks.Rules.SinglePlayer
 						objective.SetPreviouslyUnlocked();
 					}
 				}
-			}
-
-			//Persist if there is new data
-			if (levelDataChanged)
-			{
-				PlayerDataManager.s_Instance.SaveData();
-			}          
+			}      
 		}
 
 		/// <summary>

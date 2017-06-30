@@ -105,8 +105,6 @@ namespace Tanks.UI
 		//Place decoration on preview
 		public void ApplySkinToPreview()
 		{
-			m_SkinSelect.customization.ChangeDecoration(m_Index);
-			m_SkinSelect.customization.RefreshColourSelector();
 			m_SkinSelect.selectionModal.CloseModal();
 		}
 	}

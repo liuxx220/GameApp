@@ -62,14 +62,13 @@ namespace Tanks.UI
 				yield return null;			
 			
 			//Check if the last selected tank is still valid for selection. If not, reset to default.
-			int testIndex = PlayerDataManager.s_Instance.selectedTank;
-
+			int testIndex = PlayerDataManager.s_Instance.selectedPlayer;
 			TankTypeDefinition tankData = TankLibrary.s_Instance.GetTankDataForIndex(1);
 
 			if (!PlayerDataManager.s_Instance.IsTankUnlocked(testIndex) && !DailyUnlockManager.s_Instance.IsItemTempUnlocked(tankData.id))
 			{
 				testIndex = 0;
-				PlayerDataManager.s_Instance.selectedTank = 0;
+                PlayerDataManager.s_Instance.selectedPlayer = 0;
 			}
 			
 			//Loads correct tank

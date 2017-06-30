@@ -31,9 +31,6 @@ namespace Tanks.UI
 		[SerializeField]
 		protected GameObject m_CostParent;
 
-		[SerializeField]
-		protected BuyModal m_BuyModal;
-
 		private string m_MapName, m_MapId;
 		private int m_MapCost;
 
@@ -106,7 +103,7 @@ namespace Tanks.UI
 
 		public void OnUnlockClicked()
 		{
-			m_BuyModal.OpenBuyModal(m_MapName, m_MapCost, OnMapBuy, OnMapUnlock);
+			
 		}
 
 		private void OnMapBuy()

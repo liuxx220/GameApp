@@ -15,12 +15,21 @@ namespace Tanks
 		public event Action<MapDetails>     mapChanged;
 		public event Action<ModeDetails>    modeChanged;
 
+        /// <summary>
+        /// 联机关卡数据
+        /// </summary>
 		[SerializeField]
 		protected MapList                   m_MapList;
 
+        /// <summary>
+        /// 单机关卡数据
+        /// </summary>
 		[SerializeField]
 		protected SinglePlayerMapList       m_SinglePlayerMapList;
 
+        /// <summary>
+        /// 关卡战场赢规则数据
+        /// </summary>
 		[SerializeField]
 		protected ModeList                  m_ModeList;
 

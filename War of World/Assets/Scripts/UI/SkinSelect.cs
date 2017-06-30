@@ -11,38 +11,17 @@ namespace Tanks.UI
 		protected Skin m_SkinPrefab;
 
 		[SerializeField]
-		protected RouletteModal m_RouletteModal;
-
-		[SerializeField]
 		protected Modal m_SelectionModal;
 
 		[SerializeField]
 		protected Button m_RouletteButton;
 
-		[SerializeField]
-		protected LobbyCustomization m_Customization;
-
-		public RouletteModal rouletteModal
-		{
-			get
-			{
-				return m_RouletteModal;
-			}
-		}
 
 		public Modal selectionModal
 		{
 			get
 			{
 				return m_SelectionModal;
-			}
-		}
-
-		public LobbyCustomization customization
-		{
-			get
-			{
-				return m_Customization;
 			}
 		}
 
