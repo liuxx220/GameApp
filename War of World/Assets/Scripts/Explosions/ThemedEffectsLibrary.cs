@@ -6,10 +6,16 @@ using Tanks.Map;
 using Tanks.Explosions;
 using Tanks.Utilities;
 
+
+
+
+
+
+
 namespace Tanks.Effects
 {
-	//Struct that defines groups of special effects prefabs to be used for different biomes. Populated in editor via the ThemedEffectsLibrary monobehaviour.
-	[Serializable]
+	
+    [Serializable]
 	public struct EffectsGroup
 	{
 		//Enum to define the biome to which these effects belong.
@@ -41,9 +47,8 @@ namespace Tanks.Effects
 		public GameObject tankTrackParticles;
 	}
 
-	//The themed effects library is a persistent singleton that provides the means to populate effects data in editor, and accessor functions to easily retrieve it from any class that needs it.
-	//This differs from the other libraries in that it auto-selects which effects definition will be used based on the biome of the map the player is transitioning to.
-	public class ThemedEffectsLibrary : PersistentSingleton<ThemedEffectsLibrary>
+	
+    public class ThemedEffectsLibrary : PersistentSingleton<ThemedEffectsLibrary>
 	{
 		//An array of EffectsGroups. These determine which effects are used for each biome.
 		[SerializeField]

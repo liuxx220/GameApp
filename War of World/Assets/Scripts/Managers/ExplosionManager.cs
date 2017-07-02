@@ -2,6 +2,7 @@ using UnityEngine;
 using Tanks.Shells;
 using Tanks.CameraControl;
 using Tanks.Data;
+using System;
 using Tanks.Effects;
 using Tanks.TankControllers;
 
@@ -15,6 +16,51 @@ using Tanks.TankControllers;
 
 namespace Tanks.Explosions
 {
+    /// <summary>
+    /// 对战斗过程中使用频率比较高的资源缓存
+    /// </summary>
+    [Serializable]
+    public class ExplosionCache
+    {
+        public GameObject       m_prefab;
+        public int              m_cacheSize;
+
+        private GameObject[] m_caches;
+        private int m_cacheIndex = 0;
+
+        public void InitExplosionCache()
+        {
+            m_caches = new GameObject[m_cacheSize];
+            for (int i = 0; i < m_cacheSize; i++)
+            {
+                m_caches[i] = MonoBehaviour.Instantiate(m_prefab) as GameObject;
+                m_caches[i].SetActive(false);
+                m_caches[i].name = m_caches[i].name + i.ToString();
+            }
+        }
+
+        public GameObject NextGameObject()
+        {
+            GameObject obj = null;
+            for (int i = 0; i < m_cacheSize; i++)
+            {
+                obj = m_caches[i];
+                if (!obj.activeSelf)
+                    break;
+
+                m_cacheIndex = (m_cacheIndex + 1) % m_cacheSize;
+            }
+
+            if (obj.activeSelf)
+            {
+                // 归还到列表
+            }
+            m_cacheIndex = (m_cacheIndex + 1) % m_cacheSize;
+            return obj;
+        }
+    }
+
+
     public class ExplosionManager : MonoBehaviour
 	{
 		/// <summary>
@@ -40,12 +86,13 @@ namespace Tanks.Explosions
 		/// <summary>
 		/// Gets whether an instance of this singleton exists
 		/// </summary>
-		public static bool s_InstanceExists { get { return s_Instance != null; } }
+		public static bool              s_InstanceExists { get { return s_Instance != null; } }
 
-		/// <summary>
-		/// A permanent reference to the Effects Library from which we'll get our explosion prefabs to spawn.
-		/// </summary>
-		private EffectsGroup m_EffectsGroup;
+	
+        /// <summary>
+        /// 缓存列表
+        /// </summary>
+        public ExplosionCache[]        m_ExplosionCache;
 
 		/// <summary>
 		/// Get physics mask
@@ -60,13 +107,15 @@ namespace Tanks.Explosions
 			{
 				s_Instance = this;
 			}
-
-			m_PhysicsMask = LayerMask.GetMask("Players", "Projectiles", "Powerups", "DestructibleHazards", "Decorations");
+			m_PhysicsMask       = LayerMask.GetMask("Players", "Projectiles", "Powerups", "DestructibleHazards", "Decorations");
 		}
 
 		protected virtual void Start()
 		{
-			m_EffectsGroup = ThemedEffectsLibrary.s_Instance.GetEffectsGroupForMap();
+			for( int i = 0; i < m_ExplosionCache.Length; i++ )
+            {
+                m_ExplosionCache[i].InitExplosionCache();
+            }
 		}
 
 
@@ -78,52 +127,6 @@ namespace Tanks.Explosions
 			if (s_Instance == this)
 			{
 				s_Instance = null;
-			}
-		}
-
-		/// <summary>
-		/// Create clusters where appropriate
-		/// </summary>
-		public static void SpawnDebris(Vector3 spawnPos, Vector3 normalVector, int damageOwnerId, Collider ignoreCollider, DebrisSettings settings,
-		                               int randSeed)
-		{
-			if (settings != null && settings.prefab)
-			{
-				Random.State prevState = Random.state;
-				Random.InitState(randSeed);
-
-				Vector3 right = Vector3.Dot(normalVector, Vector3.up) < 0.8 ? Vector3.Cross(normalVector, Vector3.up) : Vector3.right;
-
-				int numSpawns = Random.Range(settings.minSpawns, settings.maxSpawns);
-				float distributionAngle = (360f / (numSpawns - 1));
-
-				for (int i = 0; i < numSpawns; i++)
-				{
-					Vector3 lookDir = normalVector;
-
-					lookDir = Quaternion.AngleAxis(Random.Range(0f, settings.maxUpAngle), right) * lookDir;
-					lookDir = Quaternion.AngleAxis(i * distributionAngle, normalVector) * lookDir;
-
-					// Create an instance of the shell and store a reference to its rigidbody.
-					Rigidbody shellInstance =
-						Instantiate(settings.prefab, spawnPos, Quaternion.identity) as Rigidbody;
-
-					if (shellInstance != null)
-					{
-						shellInstance.transform.forward = lookDir;
-						Vector3 shellVel = lookDir * Random.Range(settings.minForce, settings.maxForce);
-						shellInstance.velocity = shellVel;
-						shellInstance.MovePosition(spawnPos + shellVel * Time.fixedDeltaTime);
-
-						Shell shellObject = shellInstance.GetComponent<Shell>();
-						if (shellObject != null)
-						{
-							shellObject.Setup(damageOwnerId, ignoreCollider, randSeed);
-						}
-					}
-				}
-
-				Random.state = prevState;
 			}
 		}
 
@@ -145,24 +148,16 @@ namespace Tanks.Explosions
 		/// </summary>
 		private void DoLogicalExplosion(Vector3 explosionPosition, Vector3 explosionNormal, GameObject ignoreObject, int damageOwnerId, ExplosionSettings explosionConfig)
 		{
-			// Collect all the colliders in a sphere from the explosion's current position to a radius of the explosion radius.
 			Collider[] colliders = Physics.OverlapSphere(explosionPosition, Mathf.Max(explosionConfig.explosionRadius, explosionConfig.physicsRadius), m_PhysicsMask);
-
-			// Go through all the colliders...
 			for (int i = 0; i < colliders.Length; i++)
 			{
 				Collider struckCollider = colliders[i];
-
-				// Skip ignored object
 				if (struckCollider.gameObject == ignoreObject)
 				{
 					continue;
 				}
 
-				// Create a vector from the shell to the target.
 				Vector3 explosionToTarget = struckCollider.transform.position - explosionPosition;
-
-				// Calculate the distance from the shell to the target.
 				float explosionDistance = explosionToTarget.magnitude;
 			}
 
@@ -170,10 +165,33 @@ namespace Tanks.Explosions
 		}
 
 
+        /// <summary>
+        /// 实例化子弹对象
+        /// </summary>
+        public GameObject CreateVisualBullet(Vector3 pos, Vector3 dir, float speed, BulletClass explosionClass)
+        {
+            GameObject spawnedEffect = null;
+            int ClassIndex      = (int)explosionClass;
+            ExplosionCache pool = m_ExplosionCache[ClassIndex];
+            switch (explosionClass)
+            {
+                case BulletClass.FiringExplosion:
+                    spawnedEffect = pool.NextGameObject();
+                    break;
+                case BulletClass.ClusterExplosion:
+                    spawnedEffect = pool.NextGameObject();
+                    break;
+            }
+            return spawnedEffect;
+        }
+
+        /// <summary>
+        /// 子弹与物体碰撞后的爆炸效果
+        /// </summary>
 		private void CreateVisualExplosion(Vector3 explosionPosition, Vector3 explosionNormal, ExplosionClass explosionClass)
 		{
+            /*
 			Effect spawnedEffect = null;
-
 			switch (explosionClass)
 			{
 				case ExplosionClass.ExtraLarge:
@@ -211,17 +229,44 @@ namespace Tanks.Explosions
 					sound.Play();
 				}
 			}
+            */
 		}
 
 
 		/// <summary>
 		/// Make a pretty explosion on clients
 		/// </summary>
-		private void RpcVisualExplosion(Vector3 explosionPosition, Vector3 explosionNormal, ExplosionClass explosionClass)
+        public void DestroyExplosion(GameObject destoryObj, ExplosionClass explosionClass)
 		{
-			CreateVisualExplosion(explosionPosition, explosionNormal, explosionClass);
+            int ClassIndex      = (int)explosionClass;
+            ExplosionCache pool = m_ExplosionCache[ClassIndex];
+            if (pool != null )
+            {
+                destoryObj.SetActive(false);
+            }
+            else
+            {
+                MonoBehaviour.Destroy(destoryObj);
+            }
 		}
 
+
+        /// <summary>
+        /// Make a pretty explosion on clients
+        /// </summary>
+        public void DestroyBullet(GameObject destoryObj, BulletClass explosionClass)
+        {
+            int ClassIndex = (int)explosionClass;
+            ExplosionCache pool = m_ExplosionCache[ClassIndex];
+            if (pool != null)
+            {
+                destoryObj.SetActive(false);
+            }
+            else
+            {
+                MonoBehaviour.Destroy(destoryObj);
+            }
+        }
 
 		private void DoShakeForExplosion(Vector3 explosionPosition, ExplosionSettings explosionConfig)
 		{

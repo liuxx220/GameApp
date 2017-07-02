@@ -29,17 +29,15 @@ namespace Tanks.TankControllers
 	{
         public GameObject       gunobject;
         public GameObject       fireDirection;
+        public GameObject       gunHead;
 
-        Ray                     shootRay = new Ray();
-        RaycastHit              shootHit;
         int                     shootableMask;
         ParticleSystem          gunParticles;
-        LineRenderer            gunLine;
         AudioSource             gunAudio;
         float                   Esplasetimer;
         float                   effectsDisplayTime = 0.2f;
 
-        private SHOOTINGMODE    m_ShootMode = SHOOTINGMODE.Shoot_continued;
+        private SHOOTINGMODE    m_ShootMode = SHOOTINGMODE.Shoot_pressUp;
         private bool            m_FireInput;
         private float           m_curLookatDeg;
         private float           m_TurretHeading;
@@ -49,7 +47,6 @@ namespace Tanks.TankControllers
         {
             shootableMask   = LayerMask.GetMask("Shootable");
             gunParticles    = gunobject.GetComponent<ParticleSystem>();
-            gunLine         = gunobject.GetComponent<LineRenderer>();
             gunAudio        = gunobject.GetComponent<AudioSource>();
             fireDirection.SetActive(false);
             m_curLookatDeg  = transform.rotation.eulerAngles.y;
@@ -65,11 +62,6 @@ namespace Tanks.TankControllers
             }
 
             SmoothFaceDirection();
-
-            if (Esplasetimer >= 0.15f * effectsDisplayTime)
-            {
-                DisableEffects();
-            }
         }
 
         /// ----------------------------------------------------------------------------------------------
@@ -117,12 +109,6 @@ namespace Tanks.TankControllers
         }
 
 
-        public void DisableEffects()
-        {
-            gunLine.enabled = false;
-        }
-
-
         /// ----------------------------------------------------------------------------------------------
         /// <summary>
         /// 攻击
@@ -131,29 +117,12 @@ namespace Tanks.TankControllers
         void Shoot()
         {
             Esplasetimer = 0f;
-            gunAudio.Play();
             gunParticles.Stop();
             gunParticles.Play();
-
-            gunLine.enabled = true;
-            gunLine.SetPosition(0, gunobject.transform.position);
-
-            shootRay.origin     = gunobject.transform.position;
-            shootRay.direction  = transform.forward;
-
-            if (Physics.Raycast(shootRay, out shootHit, 50f, shootableMask))
-            {
-                Npc enemyHealth = shootHit.collider.GetComponent<Npc>();
-                if (enemyHealth != null)
-                {
-                    enemyHealth.TakeDamage(20, shootHit.point);
-                }
-                gunLine.SetPosition(1, shootHit.point);
-            }
+            if (IsShootContinued())
+                FireEffect1();
             else
-            {
-                gunLine.SetPosition(1, shootRay.origin + shootRay.direction * 50f);
-            }
+                FireEffect2();
         }
 
         public void SetFireIsHeld(bool fireHeld)
@@ -179,7 +148,25 @@ namespace Tanks.TankControllers
         /// ------------------------------------------------------------------------------------------
         private void FireEffect1()
         {
+            gunAudio.Play();
 
+            Vector3 position     = gunHead.transform.position;
+            Vector3 shotVector   = gunHead.transform.forward;
+
+            GameObject shellInstance = null;
+            if (ExplosionManager.s_InstanceExists)
+            {
+                shellInstance = ExplosionManager.s_Instance.CreateVisualBullet(position, shotVector, 0, BulletClass.FiringExplosion);
+            }
+
+            shellInstance.SetActive(true);
+            shellInstance.transform.localScale = Vector3.one;
+            shellInstance.transform.position = position;
+            shellInstance.transform.forward = shotVector;
+
+            InstantBullet shell = shellInstance.GetComponent<InstantBullet>();
+            shell.Setup(0, null, 50);
+            shell.transform.rotation = Quaternion.Euler(new Vector3(transform.rotation.eulerAngles.x, m_curLookatDeg, transform.rotation.eulerAngles.z));
         }
 
         /// ------------------------------------------------------------------------------------------
@@ -189,32 +176,26 @@ namespace Tanks.TankControllers
         /// ------------------------------------------------------------------------------------------
         private void FireEffect2()
         {
+            gunAudio.Play();
+            Vector3 position = gunobject.transform.position;
+            Vector3 shotVector = transform.forward;
 
-        }
-
-
-        /// ------------------------------------------------------------------------------------------
-        /// <summary>
-        /// 创建一个子弹实体
-        /// </summary>
-        /// ------------------------------------------------------------------------------------------
-        private Shell FireVisualBullet( Vector3 shortDir, Vector3 pos, int randSeed )
-        {
-            if( ExplosionManager.s_InstanceExists )
+            int randSeed = UnityEngine.Random.Range(int.MinValue, int.MaxValue);
+            GameObject shellInstance = null;
+            if (ExplosionManager.s_InstanceExists)
             {
-                ExplosionManager.s_Instance.SpawnExplosion( pos, shortDir, null, 0,  null, true );
+                shellInstance = ExplosionManager.s_Instance.CreateVisualBullet(position, shotVector, 0, BulletClass.ClusterExplosion );
             }
 
-            Rigidbody bullet          = null;// Instantiate<Rigidbody>();
-            bullet.transform.position = pos;
-            bullet.velocity           = shortDir;
+            shellInstance.SetActive(true);
+            shellInstance.transform.localScale = Vector3.one;
+            shellInstance.transform.position = position;
+            shellInstance.transform.forward = shotVector;
 
 
-            // 当射击的时候不与自己碰撞
-            Shell shell = bullet.GetComponent<Shell>();
-            shell.Setup(1, null, randSeed);
-            Physics.IgnoreCollision(shell.GetComponent<Collider>(), GetComponentInChildren<Collider>(), true);
-            return shell;
+            ScatteringBullet shell = shellInstance.GetComponent<ScatteringBullet>();
+            shell.Setup(0, null, 250);
+            shell.transform.rotation = Quaternion.Euler(new Vector3(transform.rotation.eulerAngles.x, m_curLookatDeg, transform.rotation.eulerAngles.z));
         }
 	}
 }

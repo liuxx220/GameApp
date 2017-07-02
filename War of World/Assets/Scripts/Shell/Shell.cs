@@ -1,6 +1,12 @@
 ﻿using UnityEngine;
 using Tanks.Explosions;
 
+
+
+
+
+
+
 namespace Tanks.Shells
 {
 	[RequireComponent(typeof(Rigidbody))]
@@ -165,7 +171,6 @@ namespace Tanks.Shells
 				{
 					em.SpawnExplosion(transform.position, explosionNormal, gameObject, m_OwningPlayerId, settings, false);
 				}
-				ExplosionManager.SpawnDebris(explosionPosition, explosionNormal, m_OwningPlayerId, c.collider, m_SpawnedDebris, m_RandSeed);
 			}
 
 			//If we're bouncing, reflect our movement direction, decay our force, reduce our number of bounces.

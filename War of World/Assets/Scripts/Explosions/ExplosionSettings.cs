@@ -14,9 +14,16 @@ namespace Tanks.Explosions
 		TurretExplosion,
 		BounceExplosion,
 		ClusterExplosion,
-		FiringExplosion
+		FiringExplosion,
+        Num
 	}
 
+    public enum BulletClass
+    {
+        FiringExplosion,
+        ClusterExplosion,
+        Num
+    }
 	/// <summary>
 	/// Explosion settings configuration scriptable object
 	/// </summary>
