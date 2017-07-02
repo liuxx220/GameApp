@@ -129,7 +129,7 @@ namespace Tanks.Shells
                 Vector3 hitPos =  colliders[i].transform.position;
                 Npc enemy = colliders[i].gameObject.GetComponent<Npc>();
                 if (enemy != null)
-                    enemy.TakeDamage(20, hitPos);
+                    enemy.TakeDamage(100, hitPos);
             }
         }
 	}

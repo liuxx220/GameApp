@@ -122,7 +122,10 @@ namespace Tanks.TankControllers
             if (IsShootContinued())
                 FireEffect1();
             else
+            {
                 FireEffect2();
+                m_FireInput = false;
+            }
         }
 
         public void SetFireIsHeld(bool fireHeld)
