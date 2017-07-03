@@ -2,12 +2,18 @@
 using System.Collections;
 using Tanks.TankControllers;
 
+
+
+
+
+
+
+
 namespace Tanks.Map
 {
 	/// <summary>
 	/// Spawn point - has a collider to check if any player is in the zone
 	/// </summary>
-	[RequireComponent(typeof(Collider))]
 	public class SpawnPoint : MonoBehaviour
 	{
 		[SerializeField]

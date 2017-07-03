@@ -216,7 +216,6 @@ namespace Tanks.Networking
         void Death()
         {
             m_IsDead = true;
-            m_CapsuleCollider.isTrigger = true;
             m_CtrlAnimator.SetTrigger("Dead");
             m_AudioSource.clip = m_DeathClip;
             m_AudioSource.Play();

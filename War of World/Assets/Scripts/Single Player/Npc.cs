@@ -78,7 +78,7 @@ namespace Tanks.SinglePlayer
 		void Update()
 		{
             timer += Time.deltaTime;
-            if (timer >= timeBetweenAttacks && playerInRange && m_CurrentHealth > 0)
+            if (timer >= timeBetweenAttacks && playerInRange  && m_CurrentHealth > 0)
             {
                 // ... attack.
                 Attack();
@@ -89,6 +89,10 @@ namespace Tanks.SinglePlayer
             {
                 navagent.enabled = false;
                 return;
+            }
+            else if ( !navagent.enabled  )
+            {
+                navagent.enabled = true;
             }
 
             else if (m_CurrentHealth > 0 && playerHealth.m_CurrentHealth > 0)
