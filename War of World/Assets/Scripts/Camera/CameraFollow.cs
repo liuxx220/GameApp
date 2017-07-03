@@ -27,6 +27,8 @@ namespace Tanks.CameraControl
 			FollowTank();
 		}
 
+		//
+
 		/// <summary>
 		/// Lazy loads the tank to follow
 		/// </summary>
