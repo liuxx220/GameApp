@@ -59,6 +59,7 @@ namespace Tanks.Shells
             }
             m_speed     = seed;
             m_spawnTime = Time.time;
+            m_dist      = 1000f;
 		}
 
 		private void FixedUpdate()

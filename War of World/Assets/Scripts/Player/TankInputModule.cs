@@ -27,6 +27,11 @@ namespace Tanks.TankControllers
 		protected int           m_GroundLayerMask;
 		protected Plane         m_FloorPlane;
 
+        protected Camera        mainCamera;
+        protected Quaternion    screenMovementSpace;
+        protected Vector3       screenMovementForward;
+        protected Vector3       screenMovementRight;
+
 		/// <summary>
 		/// Occurs when input method changed.
 		/// </summary>
@@ -34,11 +39,19 @@ namespace Tanks.TankControllers
 
 		protected virtual void Awake()
 		{
+            mainCamera          = Camera.main;
 			m_Shooting          = GetComponent<TankShooting>();
 			m_Movement          = GetComponent<TankMovement>();
 			m_FloorPlane        = new Plane(Vector3.up, 0);
 			m_GroundLayerMask   = LayerMask.GetMask("Ground");
 		}
+
+       void Start () {
+
+           screenMovementSpace   = Quaternion.Euler(0, mainCamera.transform.eulerAngles.y, 0);
+           screenMovementForward = screenMovementSpace * Vector3.forward;
+           screenMovementRight   = screenMovementSpace * Vector3.right;
+        }
 
 
         //On enable, restore our rigidbody's range of movement.
@@ -147,11 +160,13 @@ namespace Tanks.TankControllers
         {
             if (move.joystickName == "Right_Joystick")
             {
-                if( Time.realtimeSinceStartup - fTouchAndUpTime > 0.5f && m_Shooting.IsShootPressup() )
+                if( m_Shooting.IsShootPressup() )
                 {
                     SetFireIsHeld(true);
                 }
             }
+
+            Debug.Log("OnJoystickTouchEnd");
         }
 
         /// --------------------------------------------------------------------------------------------------------
@@ -185,11 +200,15 @@ namespace Tanks.TankControllers
         /// --------------------------------------------------------------------------------------------------------
         protected void OnJoystickMoveEnd(MovingJoystick move)
         {
+            Debug.Log("OnJoystickMoveEnd");
             if (move.joystickName == "Right_Joystick")
             {
                 m_bJoystickInputR = false;
                 m_Shooting.fireDirection.SetActive(false);
-                SetFireIsHeld(false);
+                if (m_Shooting.IsShootContinued())
+                {
+                    SetFireIsHeld(false);
+                }
             }
 
             if (move.joystickName == "Left_Joystick")
@@ -213,26 +232,12 @@ namespace Tanks.TankControllers
             if (move.joystickName == "Left_Joystick" )
             {
                 m_bJoystickInputL = true;
-                if( !m_bJoystickInputR )
-                    SetFirePosition(new Vector3(transform.position.x + x, transform.position.y, transform.position.z + y));
-                
-                Vector3 movedir = new Vector3(x, y, 0);
-                if (movedir.sqrMagnitude > 0.01f)
+                Vector3 worldDirection = x * screenMovementRight + y * screenMovementForward;
+                if (worldDirection.magnitude > 1)
                 {
-                    Vector3 worldUp = Camera.main.transform.TransformDirection(Vector3.up);
-                    worldUp.y       = 0;
-                    worldUp.Normalize();
-                    Vector3 worldRight = Camera.main.transform.TransformDirection(Vector3.right);
-                    worldRight.y    = 0;
-                    worldRight.Normalize();
-
-                    Vector3 worldDirection = worldUp * y + worldRight * x;
-                    if (worldDirection.magnitude > 1)
-                    {
-                        worldDirection.Normalize();
-                    }
-                    SetMovementDirection(worldDirection);
+                    worldDirection.Normalize();
                 }
+                SetMovementDirection(worldDirection);
             }
 
             if (move.joystickName == "Right_Joystick" )

@@ -11,27 +11,13 @@ namespace Tanks.TankControllers
 
     public class TankMovement : MonoBehaviour
 	{
-        public enum MovementMode
-        {
-            Forward = 1,
-            Backward = -1
-        }
 
-        private float m_OriginalSpeed       = 12f;
-        private float m_OriginalTurnRate    = 180f;
-        private float m_Speed               = 12f;
-
-        public float speed
-        {
-            get
-            {
-                return m_Speed;
-            }
-        }
-  
-
-        Animator anim;  
-        private Rigidbody m_Rigidbody;
+        public Vector3          m_DesiredDirection;
+        public float            walkingSpeed          = 5.0f;
+        public float            walkingSnappyness     = 50f;
+        
+        private Animator        m_Animator;  
+        private Rigidbody       m_Rigidbody;
 
         public Rigidbody Rigidbody
         {
@@ -41,21 +27,7 @@ namespace Tanks.TankControllers
             }
         }
 
-        private Vector3 m_DesiredDirection;
-        private MovementMode m_CurrentMovementMode;
-
-        public MovementMode currentMovementMode
-        {
-            get
-            {
-                return m_CurrentMovementMode;
-            }
-        }
-
-        private bool m_bJoystickInput = false;
-
-        UnityEngine.AI.NavMeshAgent navagent;
-
+      
         public bool isMoving
         {
             get
@@ -69,10 +41,9 @@ namespace Tanks.TankControllers
 
         public void Init(TankManager manager)
         {
-            enabled = false;
-            m_OriginalSpeed = manager.playerTankType.speed;
-            m_OriginalTurnRate = manager.playerTankType.turnRate;
-
+            enabled             = false;
+            walkingSpeed        = manager.playerTankType.speed;
+            walkingSnappyness   = manager.playerTankType.turnRate;
             SetDefaults();
         }
 
@@ -90,7 +61,6 @@ namespace Tanks.TankControllers
         {
             LazyLoadRigidBody();
             m_OriginalConstrains  = m_Rigidbody.constraints;
-            m_CurrentMovementMode = MovementMode.Forward;
         }
 
         private void LazyLoadRigidBody()
@@ -99,7 +69,7 @@ namespace Tanks.TankControllers
             {
                 return;
             }
-            anim        = GetComponent<Animator>();
+            m_Animator  = GetComponent<Animator>();
             floorMask   = LayerMask.GetMask("Floor");
             m_Rigidbody = GetComponent<Rigidbody>();
         }
@@ -112,16 +82,21 @@ namespace Tanks.TankControllers
                 Move();
             }
 
-            anim.SetBool("IsWalking", isMoving);
+            m_Animator.SetBool("IsWalking", isMoving);
         }
 
 
         private void Move()
         {
-            float moveDistance   = m_DesiredDirection.magnitude * m_Speed * Time.deltaTime;
-            Vector3 movement     = m_DesiredDirection * moveDistance;
-            movement.y           = 0f;
-            m_Rigidbody.position = m_Rigidbody.position + movement;
+            Vector3 targetVelocity = m_DesiredDirection * walkingSpeed * Time.deltaTime;
+            Vector3 deltaVelocity  = targetVelocity - m_Rigidbody.velocity;
+            if (m_Rigidbody != null && m_Rigidbody.useGravity )
+            {
+                deltaVelocity.y = 0;
+            }
+
+            //m_Rigidbody.AddForce(deltaVelocity * walkingSnappyness, ForceMode.Acceleration );
+            m_Rigidbody.position = m_Rigidbody.position + targetVelocity;
             transform.position   = m_Rigidbody.position;
         }
 
@@ -150,24 +125,22 @@ namespace Tanks.TankControllers
         public void SetDefaults()
         {
             enabled = true;
-            ResetMovementVariables();
             LazyLoadRigidBody();
 
             m_Rigidbody.velocity        = Vector3.zero;
             m_DesiredDirection          = Vector3.zero;
-            m_CurrentMovementMode       = MovementMode.Forward;
         }
 
       
         public void DisableMovement()
         {
-            m_Speed = 0;
+            
         }
 
     
         public void EnableMovement()
         {
-            m_Speed = m_OriginalSpeed;
+            
         }
 
         protected RigidbodyConstraints m_OriginalConstrains;
@@ -181,11 +154,6 @@ namespace Tanks.TankControllers
         void OnEnable()
         {
             m_Rigidbody.constraints = m_OriginalConstrains;
-        }
-
-        void ResetMovementVariables()
-        {
-            m_Speed = m_OriginalSpeed;
         }
 	}
 }

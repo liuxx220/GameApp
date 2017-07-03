@@ -167,8 +167,10 @@ namespace Tanks.TankControllers
             shellInstance.transform.position = position;
             shellInstance.transform.forward = shotVector;
 
+            // 忽略与自身的碰撞
+            Physics.IgnoreCollision(shellInstance.GetComponent<Collider>(), GetComponentInChildren<Collider>(), true);
             InstantBullet shell = shellInstance.GetComponent<InstantBullet>();
-            shell.Setup(0, null, 50);
+            shell.Setup(0, null, 100);
             shell.transform.rotation = Quaternion.Euler(new Vector3(transform.rotation.eulerAngles.x, m_curLookatDeg, transform.rotation.eulerAngles.z));
         }
 
@@ -195,9 +197,10 @@ namespace Tanks.TankControllers
             shellInstance.transform.position = position;
             shellInstance.transform.forward = shotVector;
 
-
+            // 忽略与自身的碰撞
+            Physics.IgnoreCollision(shellInstance.GetComponent<Collider>(), GetComponentInChildren<Collider>(), true);
             ScatteringBullet shell = shellInstance.GetComponent<ScatteringBullet>();
-            shell.Setup(0, null, 250);
+            shell.Setup(0, null, 100);
             shell.transform.rotation = Quaternion.Euler(new Vector3(transform.rotation.eulerAngles.x, m_curLookatDeg, transform.rotation.eulerAngles.z));
         }
 	}

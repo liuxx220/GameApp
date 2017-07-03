@@ -14,6 +14,7 @@ namespace Tanks.TankControllers
 	/// </summary>
 	public class TankKeyboardInput : TankInputModule
 	{
+
 		protected override bool DoFiringInput()
 		{
 			if (EventSystem.current.IsPointerOverGameObject())
@@ -44,6 +45,7 @@ namespace Tanks.TankControllers
 
 		protected override bool DoMovementInput()
 		{
+            //return true;
 			float y = Input.GetAxisRaw("Vertical");
 			float x = Input.GetAxisRaw("Horizontal");
 
@@ -57,15 +59,7 @@ namespace Tanks.TankControllers
                 return false;
             }
 
-
-			Vector3 worldUp = Camera.main.transform.TransformDirection(Vector3.up);
-			worldUp.y = 0;
-			worldUp.Normalize();
-			Vector3 worldRight = Camera.main.transform.TransformDirection(Vector3.right);
-			worldRight.y = 0;
-			worldRight.Normalize();
-
-			Vector3 worldDirection = worldUp * y + worldRight * x;
+            Vector3 worldDirection = x * screenMovementRight + y * screenMovementForward;
             if (worldDirection.magnitude > 1)
 			{
                 worldDirection.Normalize();

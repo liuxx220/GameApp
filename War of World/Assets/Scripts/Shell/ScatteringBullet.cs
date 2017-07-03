@@ -16,7 +16,7 @@ namespace Tanks.Shells
         /// <summary>
         /// 移动速度
         /// </summary>
-        private float           m_speed = 250f;
+        private float           m_speed = 65;
 
         /// <summary>
         /// 寿命
@@ -38,6 +38,9 @@ namespace Tanks.Shells
         /// </summary>
         private Collider        m_TempIgnoreCollider;
         
+        private BoxCollider     m_boxCollider;
+
+        private Vector3         m_ModifySize = new Vector3( 1, 0.1f, 0.1f);
         /// <summary>
         /// 忽略碰撞两 fixedUpdate
         /// </summary>
@@ -45,8 +48,9 @@ namespace Tanks.Shells
         private int             m_TempIgnoreColliderTime = 2;
 		private void Awake()
 		{
-
+            m_boxCollider       = transform.GetComponent<BoxCollider>();
             m_PhysicsMask       = LayerMask.GetMask("Shootable");
+            m_boxCollider.size  = m_ModifySize;
 		}
 
         /// <summary>
@@ -54,11 +58,17 @@ namespace Tanks.Shells
         /// </summary>
         private void Update()
         {
+            if (m_boxCollider != null)
+            {
+                m_ModifySize.x += 3 * Time.deltaTime;
+                m_boxCollider.size = m_ModifySize;
+            }
+
             transform.position += transform.forward * m_speed * Time.deltaTime;
             if (Time.time > m_spawnTime + m_lifeTime )
             {
                 transform.gameObject.SetActive(false);
-            }
+            } 
         }
 
 
@@ -71,7 +81,8 @@ namespace Tanks.Shells
                 m_TempIgnoreCollider        = ignoreCollider;
             }
 
-            m_spawnTime = Time.time;
+            m_ModifySize.x  = 1.0f;
+            m_spawnTime     = Time.time;
 		}
 
 		private void FixedUpdate()

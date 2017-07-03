@@ -65,7 +65,7 @@ namespace Tanks.CameraControl
 			//Calculates the target position
 			Vector3 tankPosition = m_TankToFollowTransform.position;
 			Vector3 targetPosition = new Vector3(tankPosition.x, transform.position.y, tankPosition.z);
-			targetPosition = targetPosition + m_ForwardThreshold * m_TankToFollowTransform.forward * (float)m_TankToFollowMovement.currentMovementMode;
+            targetPosition = targetPosition + m_ForwardThreshold * m_TankToFollowTransform.forward;
 
 			//Smooth damps to that position
 			transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref m_MoveVelocity, m_DampTime, float.PositiveInfinity, Time.unscaledDeltaTime);

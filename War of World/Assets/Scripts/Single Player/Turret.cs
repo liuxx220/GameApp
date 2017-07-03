@@ -136,36 +136,7 @@ namespace Tanks.Hazards
 		//This is the general maths behind how far ahead of the player we'll shoot. To alter the primary 'leading' amount, assign a new value to the leadingModifier variable. Recommended amount: 1.5f.
 		private void DoTargeting()
 		{
-			if (m_CurrentFollowTransform == null)
-			{
-				return;	
-			}
-
-			Vector3 position = m_CurrentFollowTransform.position;
-
-			float vInitial = FiringLogic.s_InitialVelocity;
-
-			float vY = vInitial * Mathf.Sin(m_CurrentLaunchAngle);
-
-			float t = (-vY) / (-1 * Mathf.Abs(Physics.gravity.y));
-
-			float tTotal = 2 * t;
-
-			m_ActiveTargetPosition = position;
-
-			//Leading
-			if (m_TankToFollowMovement != null && m_CurrentFollowTransformIndex == m_PlayerTankIndex)
-			{
-				Vector3 tankPositionWithLeading;
-				tankPositionWithLeading = position + (m_TankToFollowMovement.speed / m_LeadingModifier * tTotal) * m_CurrentFollowTransform.forward * (float)m_TankToFollowMovement.currentMovementMode;
-
-				if (m_TankToFollowMovement.isMoving)
-				{
-					m_ActiveTargetPosition = tankPositionWithLeading;
-				}
-			}
-
-			m_TargetSqrDistance = (transform.position - m_ActiveTargetPosition).sqrMagnitude;
+			
 		}
 
 		//This is the 'trigger', and will only fire if other conditions are met.

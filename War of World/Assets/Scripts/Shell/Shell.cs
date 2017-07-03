@@ -10,7 +10,6 @@ using Tanks.Explosions;
 namespace Tanks.Shells
 {
 	[RequireComponent(typeof(Rigidbody))]
-	//This class defines the behaviour of all shells in the game.
 	public class Shell : MonoBehaviour
 	{
 		//References to ExplosionSettings ScriptableObject that defines the explosion parameters for this shell.
@@ -21,15 +20,12 @@ namespace Tanks.Shells
 		[SerializeField]
 		protected ExplosionSettings m_BounceExplosionSettings;
 
-		//Variables to allow objects to be spawned on explosion, either for elaborate SFX or cluster munitions.
-		[SerializeField]
-		protected DebrisSettings m_SpawnedDebris;
-
 		//Variables for controlling shell bounciness - how many times to bounce, force decay per bounce, and bounce direction
 		[SerializeField]
 		protected int m_Bounces = 0;
 		[SerializeField]
-		protected float m_BounceForceDecay = 1.05f;
+		
+        protected float m_BounceForceDecay = 1.05f;
 		[SerializeField]
 		protected Vector3 m_BounceAdditionalForce = Vector3.up;
 
