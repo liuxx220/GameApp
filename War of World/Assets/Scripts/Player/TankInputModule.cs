@@ -106,9 +106,9 @@ namespace Tanks.TankControllers
         }
 
 
-		protected void SetFirePosition(Vector3 target)
+		protected void SetFirePosition( float fAngle )
 		{
-			m_Shooting.SetDesiredFirePosition(target);
+            m_Shooting.SetDesiredFirePosition(fAngle);
 		}
 
 
@@ -242,7 +242,9 @@ namespace Tanks.TankControllers
 
             if (move.joystickName == "Right_Joystick" )
             {
-                SetFirePosition(new Vector3(transform.position.x + x, transform.position.y, transform.position.z + y));
+                float angle = 90 - Mathf.Atan2(y, x) * Mathf.Rad2Deg;
+                Debug.Log("Rad2Deg =" + angle.ToString());
+                SetFirePosition(angle);
                 if( m_Shooting.IsShootContinued() )
                     SetFireIsHeld(true);
             }

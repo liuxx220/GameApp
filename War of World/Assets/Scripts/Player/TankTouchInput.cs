@@ -208,19 +208,19 @@ namespace Tanks.TankControllers
 			}
 			else if (m_FiringTouch != null)
 			{
-				Ray mouseRay = Camera.main.ScreenPointToRay(m_FiringTouch.Value.position);
-				float hitDist;
-				RaycastHit hit;
-				if (Physics.Raycast(mouseRay, out hit, float.PositiveInfinity, m_GroundLayerMask))
-				{
-                    SetFirePosition(hit.point);
-				}
-				else if (m_FloorPlane.Raycast(mouseRay, out hitDist))
-				{
-                    SetFirePosition(mouseRay.GetPoint(hitDist));
-				}
+                //Ray mouseRay = Camera.main.ScreenPointToRay(m_FiringTouch.Value.position);
+                //float hitDist;
+                //RaycastHit hit;
+                //if (Physics.Raycast(mouseRay, out hit, float.PositiveInfinity, m_GroundLayerMask))
+                //{
+                //    SetFirePosition(hit.point);
+                //}
+                //else if (m_FloorPlane.Raycast(mouseRay, out hitDist))
+                //{
+                //    SetFirePosition(mouseRay.GetPoint(hitDist));
+                //}
 
-				SetFireIsHeld(true);
+                //SetFireIsHeld(true);
 
 				return true;
 			}

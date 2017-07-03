@@ -138,10 +138,9 @@ namespace Tanks.TankControllers
         /// 设置枪口的朝向，即角色的面相
         /// </summary>
         /// ------------------------------------------------------------------------------------------
-        public void SetDesiredFirePosition( Vector3 target )
+        public void SetDesiredFirePosition( float fAngle )
         {
-            Vector3 toAimPos     = target - transform.position;
-            m_TurretHeading      = 90 - Mathf.Atan2(toAimPos.z, toAimPos.x) * Mathf.Rad2Deg;
+            m_TurretHeading     = fAngle;
         }
 
         /// ------------------------------------------------------------------------------------------
