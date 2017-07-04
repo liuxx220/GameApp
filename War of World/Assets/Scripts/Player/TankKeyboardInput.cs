@@ -45,7 +45,7 @@ namespace Tanks.TankControllers
 
 		protected override bool DoMovementInput()
 		{
-            //return true;
+   
 			float y = Input.GetAxisRaw("Vertical");
 			float x = Input.GetAxisRaw("Horizontal");
 
@@ -74,12 +74,11 @@ namespace Tanks.TankControllers
                 {
                     desiredDir.Normalize();
                 }
+
                 SetMovementDirection(worldDirection);
-
-
                 if (!m_bJoystickInputR)
                 {
-                    float angle = 90 - Mathf.Atan2(y, x) * Mathf.Rad2Deg;
+                    float angle = Mathf.Atan2( x, y );
                     SetFirePosition(angle);
                 }
 			}

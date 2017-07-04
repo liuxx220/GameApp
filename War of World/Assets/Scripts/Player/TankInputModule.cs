@@ -252,7 +252,7 @@ namespace Tanks.TankControllers
 
             if (move.joystickName == "Right_Joystick" )
             {
-                float angle = 90 - Mathf.Atan2(y,x) * Mathf.Rad2Deg;
+                float angle = move.Axis2Angle(true);
                 SetFirePosition(angle);
                 if( m_Shooting.IsShootContinued() )
                     SetFireIsHeld(true);
