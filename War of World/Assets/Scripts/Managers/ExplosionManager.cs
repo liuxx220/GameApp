@@ -94,6 +94,12 @@ namespace Tanks.Explosions
         /// </summary>
         public ExplosionCache[]        m_ExplosionCache;
 
+        /// <summary>
+        /// 每种子弹效果参数
+        /// </summary>
+        public ExplosionSettings[]      m_ExplosionBulletConfig;
+
+
 		/// <summary>
 		/// Get physics mask
 		/// </summary>
@@ -135,11 +141,7 @@ namespace Tanks.Explosions
 		/// </summary>
 		public void SpawnExplosion(Vector3 explosionPosition, Vector3 explosionNormal, GameObject ignoreObject, int damageOwnerId, ExplosionSettings explosionConfig, bool clientOnly)
 		{
-			if (clientOnly)
-			{
-				CreateVisualExplosion(explosionPosition, explosionNormal, explosionConfig.explosionClass);
-			}
-			DoLogicalExplosion(explosionPosition, explosionNormal, ignoreObject, damageOwnerId, explosionConfig);
+			
 		}
 
 		/// <summary>
@@ -179,6 +181,10 @@ namespace Tanks.Explosions
                     spawnedEffect = pool.NextGameObject();
                     break;
                 case BulletClass.ClusterExplosion:
+                    spawnedEffect = pool.NextGameObject();
+                    break;
+
+                case BulletClass.PulseExplosion:
                     spawnedEffect = pool.NextGameObject();
                     break;
             }

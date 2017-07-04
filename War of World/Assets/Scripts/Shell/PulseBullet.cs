@@ -10,7 +10,7 @@ using Tanks.SinglePlayer;
 
 namespace Tanks.Shells
 {
-    public class InstantBullet : MonoBehaviour
+    public class PulseBullet : MonoBehaviour
 	{
 
         /// <summary>
@@ -98,18 +98,7 @@ namespace Tanks.Shells
             {
                 Npc enemy = c.gameObject.GetComponent<Npc>();
                 if( enemy != null )
-                    enemy.TakeDamage(20, hitPos);
-            }
-
-
-            // 子弹碰撞后效果
-            if (ExplosionManager.s_InstanceExists)
-            {
-                ExplosionManager.s_Instance.DestroyBullet(transform.gameObject, BulletClass.FiringExplosion);
-            }
-            else
-            {
-                MonoBehaviour.Destroy(transform.gameObject);
+                    enemy.TakeDamage(120, hitPos);
             }
 		}
 

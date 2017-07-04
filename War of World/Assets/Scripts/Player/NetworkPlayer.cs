@@ -39,10 +39,6 @@ namespace Tanks.Networking
         /// </summary>
         ParticleSystem                      m_BehitParticles;
 
-        /// <summary>
-        /// 胶囊体
-        /// </summary>
-        CapsuleCollider                     m_CapsuleCollider;
 
         /// <summary>
         /// 资源相关, 动画控制器
@@ -112,7 +108,6 @@ namespace Tanks.Networking
             m_CtrlAnimator      = GetComponent<Animator>();
             m_AudioSource       = GetComponent<AudioSource>();
             m_BehitParticles    = GetComponentInChildren<ParticleSystem>();
-            m_CapsuleCollider   = GetComponent<CapsuleCollider>();
         }
 
 

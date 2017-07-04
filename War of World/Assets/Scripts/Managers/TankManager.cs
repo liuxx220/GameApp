@@ -161,7 +161,7 @@ namespace Tanks.TankControllers
 			movement = GetComponent<TankMovement>();
 			shooting = GetComponent<TankShooting>();
 			movement.Init(this);
-
+            
 			GameManager.AddTank(this);
 		}
 
@@ -200,6 +200,7 @@ namespace Tanks.TankControllers
 			
 			movement.Rigidbody.rotation = m_AssignedSpawnPoint.rotation;
 			movement.transform.rotation = m_AssignedSpawnPoint.rotation;
+            shooting.BackShootingAngles(movement.transform.rotation.eulerAngles.y);
 		}
 
 		/// <summary>
