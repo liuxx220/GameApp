@@ -13,7 +13,7 @@ namespace Tanks.TankControllers
 	{
 
         public Vector3          m_DesiredDirection;
-        public float            walkingSpeed          = 5.0f;
+        private float           walkingSpeed          = 8.5f;
         public float            walkingSnappyness     = 50f;
         
         private Animator        m_Animator;  
@@ -31,8 +31,6 @@ namespace Tanks.TankControllers
         public void Init(TankManager manager)
         {
             enabled             = false;
-            walkingSpeed        = manager.playerTankType.speed;
-            walkingSnappyness   = manager.playerTankType.turnRate;
             SetDefaults();
         }
 
@@ -74,11 +72,6 @@ namespace Tanks.TankControllers
         {
             Vector3 targetVelocity = m_DesiredDirection * walkingSpeed * Time.deltaTime;
             transform.position = transform.position + targetVelocity;
-        }
-
-        public void SetTargetPosition( Vector3 target )
-        {
-            
         }
 
         public void SetDefaults()

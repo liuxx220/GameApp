@@ -299,6 +299,17 @@ namespace Tanks.Networking
                     }
                 }
             }
+
+            if( sceneName == "snow2")
+            {
+                localPlayer.SetGameModel(Explosions.PLAYGAMEMODEL.PLAYGAME_TPS);
+                GameSettings.s_Instance.m_PlayerGameModel = Explosions.PLAYGAMEMODEL.PLAYGAME_TPS;
+            }
+            if (sceneName == "snow3")
+            {
+                localPlayer.SetGameModel(Explosions.PLAYGAMEMODEL.PLAYGAME_FPS);
+                GameSettings.s_Instance.m_PlayerGameModel = Explosions.PLAYGAMEMODEL.PLAYGAME_FPS;
+            }
         }
 	}
 }

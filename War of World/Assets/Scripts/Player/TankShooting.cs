@@ -38,9 +38,9 @@ namespace Tanks.TankControllers
         float                   Esplasetimer;
         float                   effectsDisplayTime = 0.2f;
 
-        private SHOOTINGMODE   m_ShootMode = SHOOTINGMODE.Shoot_pulse;
+        private SHOOTINGMODE    m_ShootMode = SHOOTINGMODE.Shoot_pulse;
         private bool            m_FireInput;
-        private float           m_curLookatDeg;
+        public  float           m_curLookatDeg;
         private float           m_TurretHeading;
         private float           m_fOldEulerAngles = 0;
 
@@ -140,8 +140,11 @@ namespace Tanks.TankControllers
         void Shoot()
         {
             Esplasetimer = 0f;
-            gunParticles.Stop();
-            gunParticles.Play();
+            if (gunParticles != null)
+            {
+                gunParticles.Stop();
+                gunParticles.Play();
+            }
             if (m_ShootMode == SHOOTINGMODE.Shoot_continued)
             {
                 FireEffect1();
@@ -180,7 +183,8 @@ namespace Tanks.TankControllers
         /// ------------------------------------------------------------------------------------------
         private void FireEffect1()
         {
-            gunAudio.Play();
+            if (gunAudio != null )
+                gunAudio.Play();
 
             Vector3 position     = gunHead.transform.position;
             Vector3 shotVector   = gunHead.transform.forward;
@@ -210,7 +214,8 @@ namespace Tanks.TankControllers
         /// ------------------------------------------------------------------------------------------
         private void FireEffect2()
         {
-            gunAudio.Play();
+            if (gunAudio != null)
+                gunAudio.Play();
             Vector3 position = gunobject.transform.position;
             Vector3 shotVector = transform.forward;
 
@@ -240,7 +245,8 @@ namespace Tanks.TankControllers
         /// ------------------------------------------------------------------------------------------
         private void FireEffect3()
         {
-            gunAudio.Play();
+            if (gunAudio != null)
+                gunAudio.Play();
             Vector3 position = gunobject.transform.position;
             Vector3 shotVector = transform.forward;
 

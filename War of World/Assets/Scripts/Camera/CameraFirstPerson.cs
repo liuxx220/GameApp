@@ -7,9 +7,7 @@ namespace Tanks.CameraControl
     public class CameraFirstPerson : Singleton<CameraFirstPerson>
 	{
 
-		private Transform               m_TankToFollowTransform = null;
-		private TankMovement            m_TankToFollowMovement = null;
-        private CharacterController     m_CharacterController;
+		private Transform               m_TankTransform = null;
 
         public float sensitivityX       = 0;
         public float sensitivityY       = 0;
@@ -23,7 +21,6 @@ namespace Tanks.CameraControl
 		private void Start()
 		{
             LazyLoadTankToFollow();
-            m_CharacterController = GetComponent<CharacterController>();
             if (GetComponent<Rigidbody>())
                 GetComponent<Rigidbody>().freezeRotation = true;
 		}
@@ -31,21 +28,18 @@ namespace Tanks.CameraControl
 		// Update is called once per frame
 		private void Update()
 		{
-            if (m_TankToFollowTransform == null || m_TankToFollowMovement == null)
+            if ( m_TankTransform == null )
             {
                 return;
             }
 
-            sensitivityY = m_TankToFollowTransform.rotation.eulerAngles.y;
-            sensitivityY = Mathf.Clamp(sensitivityY, mMinimumY, mMaximumY);
-            sensitivityX = m_TankToFollowTransform.rotation.eulerAngles.x;
-            sensitivityX = Mathf.Clamp(sensitivityX, mMinimumY, mMaximumY);
-            transform.localEulerAngles = new Vector3(0, sensitivityY, 0);
+            transform.position = m_TankTransform.transform.position;
+            transform.rotation = m_TankTransform.transform.rotation;
 		}
 
         private void LazyLoadTankToFollow()
         {
-            if (m_TankToFollowTransform != null)
+            if (m_TankTransform != null)
             {
                 return;
             }
@@ -56,8 +50,7 @@ namespace Tanks.CameraControl
                 TankManager tank = tanksList[i];
                 if (tank != null)
                 {
-                    m_TankToFollowTransform = tank.transform;
-                    m_TankToFollowMovement  = tank.movement;
+                    m_TankTransform = tank.transform;
                 }
             }
         }

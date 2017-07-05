@@ -56,6 +56,7 @@ public class GUIEasyJoystickInspector : Editor{
 			t.isActivated = EditorGUILayout.Toggle("Activated",t.isActivated);
 			if (t.visible) GUI.backgroundColor = Color.green; else GUI.backgroundColor = Color.red;
 			t.visible = EditorGUILayout.Toggle("Visible",t.visible);
+            t.JoystickFov = EditorGUILayout.Toggle("JoystickFov", t.JoystickFov);
 			if (t.showDebugRadius) GUI.backgroundColor = Color.green; else GUI.backgroundColor = Color.red;
 			t.showDebugRadius = EditorGUILayout.Toggle("Show debug area",t.showDebugRadius);
 			GUI.backgroundColor = Color.white;
@@ -141,6 +142,11 @@ public class GUIEasyJoystickInspector : Editor{
 				
 				EditorGUILayout.BeginVertical(paddingStyle1);
 				t.speed.x = EditorGUILayout.FloatField("Speed",t.speed.x);
+
+                t.AxisXFovMin = EditorGUILayout.FloatField("AxisX Fov Min", t.AxisXFovMin);
+                t.AxisXFovMax = EditorGUILayout.FloatField("AxisX Fov Max", t.AxisXFovMax);
+
+
 				if (t.inverseXAxis) GUI.backgroundColor = Color.green; else GUI.backgroundColor = Color.red;
 				t.inverseXAxis = EditorGUILayout.Toggle("Inverse axis",t.inverseXAxis);
 				GUI.backgroundColor = Color.white;
@@ -222,7 +228,11 @@ public class GUIEasyJoystickInspector : Editor{
 			if (t.enableYaxis){
 
 				EditorGUILayout.BeginVertical(paddingStyle1);
-				t.speed.y = EditorGUILayout.FloatField("Speed",t.speed.y);	
+				t.speed.y = EditorGUILayout.FloatField("Speed",t.speed.y);
+
+                t.AxisYFovMin = EditorGUILayout.FloatField("AxisY Fov Min", t.AxisYFovMin);
+                t.AxisYFovMax = EditorGUILayout.FloatField("AxisY Fov Max", t.AxisYFovMax);
+
 				if (t.inverseYAxis) GUI.backgroundColor = Color.green; else GUI.backgroundColor = Color.red;
 				t.inverseYAxis = EditorGUILayout.Toggle("Inverse axis",t.inverseYAxis);
 				GUI.backgroundColor = Color.white;

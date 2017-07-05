@@ -3,6 +3,7 @@ using UnityEngine;
 using Tanks.Data;
 using Tanks.TankControllers;
 using Tanks.UI;
+using Tanks.Explosions;
 using TanksNetworkManager = Tanks.Networking.NetworkManager;
 
 
@@ -13,6 +14,10 @@ namespace Tanks.Networking
 {
     public class NetworkPlayer : MonoBehaviour
 	{
+
+        public  GameObject                  m_FPS;
+        public  GameObject                  m_TPS;
+
 
 		private string                      m_PlayerName = "";
 		private int                         m_PlayerTankType = 0;
@@ -90,7 +95,24 @@ namespace Tanks.Networking
 			set;
 		}
 
-
+        /// -----------------------------------------------------------------------------------------------
+        /// <summary>
+        /// 设置游戏的模式
+        /// </summary>
+        /// -----------------------------------------------------------------------------------------------
+        public void SetGameModel( PLAYGAMEMODEL model )
+        {
+            if( model == PLAYGAMEMODEL.PLAYGAME_FPS )
+            {
+                m_FPS.SetActive(true);
+                m_TPS.SetActive(false);
+            }
+            else
+            {
+                m_FPS.SetActive(false);
+                m_TPS.SetActive(true);
+            }
+        }
 		/// <summary>
 		/// Gets the local NetworkPlayer object
 		/// </summary>

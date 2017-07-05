@@ -4,6 +4,12 @@ using Tanks.Map;
 using Tanks.Rules;
 using Tanks.Networking;
 using Tanks.Utilities;
+using Tanks.Explosions;
+
+
+
+
+
 
 namespace Tanks
 {
@@ -64,6 +70,7 @@ namespace Tanks
 		}
 
 
+        public PLAYGAMEMODEL        m_PlayerGameModel = PLAYGAMEMODEL.PLAYGAME_TPS;
 		public bool isSinglePlayer
 		{
 			get { return NetworkManager.s_Instance.isSinglePlayer; }

@@ -34,6 +34,11 @@ namespace Tanks.Explosions
         Num
     }
 
+    public enum PLAYGAMEMODEL
+    {
+        PLAYGAME_FPS,
+        PLAYGAME_TPS,
+    }
 
 	public class ExplosionSettings : ScriptableObject
 	{
