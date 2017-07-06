@@ -34,6 +34,12 @@ namespace Tanks.Shells
         private int             m_PhysicsMask;
 
         /// <summary>
+        /// 子弹效果参数
+        /// </summary>
+        [SerializeField]
+        protected ExplosionSettings m_ExplosionSettings;
+
+        /// <summary>
         /// 临时忽律碰撞
         /// </summary>
         private Collider        m_TempIgnoreCollider;

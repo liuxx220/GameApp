@@ -17,6 +17,7 @@ namespace Tanks.Networking
 
         public  GameObject                  m_FPS;
         public  GameObject                  m_TPS;
+        public  GameObject                  m_Flag;
 
 
 		private string                      m_PlayerName = "";
@@ -106,11 +107,13 @@ namespace Tanks.Networking
             {
                 m_FPS.SetActive(true);
                 m_TPS.SetActive(false);
+                m_Flag.SetActive(false);
             }
             else
             {
                 m_FPS.SetActive(false);
                 m_TPS.SetActive(true);
+                m_Flag.SetActive(true);
             }
         }
 		/// <summary>

@@ -13,10 +13,15 @@ namespace Tanks.TankControllers
 	{
 
         public Vector3          m_DesiredDirection;
-        private float           walkingSpeed          = 8.5f;
+        private float           walkingSpeed          = 5f;
         public float            walkingSnappyness     = 50f;
-        
-        private Animator        m_Animator;  
+
+
+        /// <summary>
+        /// 角色动画和行为控制器对象
+        /// </summary>
+        private CharacterController m_Controller;
+        private Animator            m_Animator;  
  
       
         public bool isMoving
@@ -26,6 +31,13 @@ namespace Tanks.TankControllers
                 return m_DesiredDirection.sqrMagnitude > 0.01f;
             }
         }
+
+        /// -------------------------------------------------------------------------------------------
+        /// <summary>
+        /// 移动是否启用固定更新逻辑
+        /// </summary>
+        /// -------------------------------------------------------------------------------------------
+        public bool m_bUseFixedUpdate = false;
 
 
         public void Init(TankManager manager)
@@ -42,6 +54,7 @@ namespace Tanks.TankControllers
             {
                 m_DesiredDirection.Normalize();
             }
+            //m_DesiredDirection = transform.TransformDirection(m_DesiredDirection);
         }
 
         private void Awake()
@@ -51,27 +64,52 @@ namespace Tanks.TankControllers
 
         private void LazyLoadRigidBody()
         {
-            m_Animator  = GetComponent<Animator>();
+            m_Animator    = GetComponent<Animator>();
+            m_Controller  = GetComponent<CharacterController>();
             //floorMask   = LayerMask.GetMask("Floor");
         }
 
+        /// ------------------------------------------------------------------------------------------
+        /// <summary>
+        /// 行为的心跳帧
+        /// </summary>
+        /// ------------------------------------------------------------------------------------------
+        private void Update()
+        {
+            if( !m_bUseFixedUpdate )
+            {
+                UpdateMove();
+            }
+        }
 
+        /// ------------------------------------------------------------------------------------------
+        /// <summary>
+        /// 行为的心跳帧
+        /// </summary>
         private void FixedUpdate()
         {
-            if (isMoving )
+            if (!m_bUseFixedUpdate)
             {
+                UpdateMove();
+            }
+        }
+
+        float gravity = 20.0f;
+        private void UpdateMove( )
+        {
+            if (isMoving)
+            {
+                CollisionFlags flag;
                 Vector3 targetVelocity = m_DesiredDirection * walkingSpeed * Time.deltaTime;
-                transform.position = transform.position + targetVelocity;
+                if (m_Controller != null)
+                {
+                    targetVelocity.y -= gravity * Time.deltaTime;
+                    flag = m_Controller.Move(targetVelocity);
+                    //transform.position = new Vector3( transform.position.x, 0, transform.position.z );
+                }
             }
 
             m_Animator.SetBool("IsWalking", isMoving);
-        }
-
-
-        private void Move()
-        {
-            Vector3 targetVelocity = m_DesiredDirection * walkingSpeed * Time.deltaTime;
-            transform.position = transform.position + targetVelocity;
         }
 
         public void SetDefaults()

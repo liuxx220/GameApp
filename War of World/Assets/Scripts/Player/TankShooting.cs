@@ -23,6 +23,7 @@ namespace Tanks.TankControllers
         Shoot_continued,        // 连续射击
         Shoot_pressUp,          // 释放射击
         Shoot_pulse,            // 脉冲式发射
+        Shoot_Rocket,           // 火箭弹
     };
 
 
@@ -44,6 +45,12 @@ namespace Tanks.TankControllers
         private float           m_TurretHeading;
         private float           m_fOldEulerAngles = 0;
 
+
+        /// <summary>
+        /// 预测目标点的变量
+        /// </summary>
+        private Ray             m_shootRay = new Ray();
+        private RaycastHit      m_shootHit;
         void Awake()
         {
             shootableMask   = LayerMask.GetMask("Shootable");
@@ -139,7 +146,18 @@ namespace Tanks.TankControllers
         /// ----------------------------------------------------------------------------------------------
         void Shoot()
         {
+
             Esplasetimer = 0f;
+            {
+                m_shootRay.origin       = gunobject.transform.position;
+                m_shootRay.direction    = transform.forward;
+                if( Physics.Raycast( m_shootRay, out m_shootHit, 100, shootableMask ) )
+                {
+
+                }
+            }
+
+
             if (gunParticles != null)
             {
                 gunParticles.Stop();
@@ -157,6 +175,11 @@ namespace Tanks.TankControllers
             if(m_ShootMode == SHOOTINGMODE.Shoot_pulse)
             {
                 FireEffect3();
+                m_FireInput = false;
+            }
+            if( m_ShootMode == SHOOTINGMODE.Shoot_Rocket )
+            {
+                FireEffect4();
                 m_FireInput = false;
             }
         }
@@ -265,6 +288,37 @@ namespace Tanks.TankControllers
             // 忽略与自身的碰撞
             Physics.IgnoreCollision(shellInstance.GetComponent<Collider>(), GetComponentInChildren<Collider>(), true);
             PulseBullet shell = shellInstance.GetComponent<PulseBullet>();
+            shell.Setup(0, null, 100);
+            shell.transform.rotation = Quaternion.Euler(new Vector3(transform.rotation.eulerAngles.x, m_curLookatDeg, transform.rotation.eulerAngles.z));
+        }
+
+        /// ------------------------------------------------------------------------------------------
+        /// <summary>
+        /// 这里暂时先这么实现各种子弹，子弹2射击的效果
+        /// </summary>
+        /// ------------------------------------------------------------------------------------------
+        private void FireEffect4()
+        {
+            if (gunAudio != null)
+                gunAudio.Play();
+            Vector3 position = gunobject.transform.position;
+            Vector3 shotVector = transform.forward;
+
+            int randSeed = UnityEngine.Random.Range(int.MinValue, int.MaxValue);
+            GameObject shellInstance = null;
+            if (ExplosionManager.s_InstanceExists)
+            {
+                shellInstance = ExplosionManager.s_Instance.CreateVisualBullet(position, shotVector, 0, BulletClass.RocketExplosion);
+            }
+
+            shellInstance.SetActive(true);
+            shellInstance.transform.localScale = Vector3.one;
+            shellInstance.transform.position = position;
+            shellInstance.transform.forward = shotVector;
+
+            // 忽略与自身的碰撞
+            Physics.IgnoreCollision(shellInstance.GetComponent<Collider>(), GetComponentInChildren<Collider>(), true);
+            Shell shell = shellInstance.GetComponent<Shell>();
             shell.Setup(0, null, 100);
             shell.transform.rotation = Quaternion.Euler(new Vector3(transform.rotation.eulerAngles.x, m_curLookatDeg, transform.rotation.eulerAngles.z));
         }

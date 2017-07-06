@@ -42,7 +42,8 @@ namespace Tanks.Shells
         /// <summary>
         /// 子弹效果参数
         /// </summary>
-        private ExplosionSettings m_effectParam = null;
+        [SerializeField]
+        protected ExplosionSettings m_ExplosionSettings;
 
 
 		private void Awake()

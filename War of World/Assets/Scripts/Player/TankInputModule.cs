@@ -270,11 +270,9 @@ namespace Tanks.TankControllers
             {
                 if (GameSettings.s_Instance.m_PlayerGameModel == Explosions.PLAYGAMEMODEL.PLAYGAME_FPS)
                 {
-
                     if (Mathf.Abs(x) > 0)
                     {
-                        float speed = x * 30;
-                        speed = Mathf.Min(20.0f, speed);
+                        float speed = x * 120;
                         transform.Rotate(Vector3.up * Time.deltaTime * speed);
                     }
                 }

@@ -31,6 +31,7 @@ namespace Tanks.Explosions
         FiringExplosion,
         ClusterExplosion,
         PulseExplosion,
+        RocketExplosion,
         Num
     }
 

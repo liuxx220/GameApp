@@ -85,7 +85,7 @@ namespace Tanks.TankControllers
 
             if (GameSettings.s_Instance.m_PlayerGameModel == Explosions.PLAYGAMEMODEL.PLAYGAME_FPS)
             {
-
+                
                 Vector3 worldUp     = mainCamera.transform.TransformDirection(Vector3.up);
                 worldUp.y           = 0;
                 worldUp.Normalize();
@@ -99,7 +99,7 @@ namespace Tanks.TankControllers
                 {
                     desiredDir.Normalize();
                 }
-
+                
                 SetMovementDirection(worldDirection);
             }
             #endif
