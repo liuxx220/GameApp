@@ -37,6 +37,8 @@ namespace Tanks.UI
 		protected CanvasGroup m_DefaultPanel;
 		[SerializeField]
 		protected CanvasGroup m_SinglePlayerPanel;
+        [SerializeField]
+        protected CanvasGroup m_CreateGamePanel;
 		[SerializeField]
 		protected LobbyInfoPanel m_InfoPanel;
 		[SerializeField]
@@ -186,7 +188,7 @@ namespace Tanks.UI
 
         public void OnLoadGameClicked()
         {
-            
+            ShowPanel(m_CreateGamePanel);
         }
 
         public void OnSaveGameClicked()

@@ -3,6 +3,7 @@ using UnityEngine;
 using Tanks.Data;
 using Tanks.TankControllers;
 using Tanks.UI;
+using Tanks.Explosions;
 using TanksNetworkManager = Tanks.Networking.NetworkManager;
 
 
@@ -13,6 +14,11 @@ namespace Tanks.Networking
 {
     public class NetworkPlayer : MonoBehaviour
 	{
+
+        public  GameObject                  m_FPS;
+        public  GameObject                  m_TPS;
+        public  GameObject                  m_Flag;
+
 
 		private string                      m_PlayerName = "";
 		private int                         m_PlayerTankType = 0;
@@ -39,10 +45,6 @@ namespace Tanks.Networking
         /// </summary>
         ParticleSystem                      m_BehitParticles;
 
-        /// <summary>
-        /// 胶囊体
-        /// </summary>
-        CapsuleCollider                     m_CapsuleCollider;
 
         /// <summary>
         /// 资源相关, 动画控制器
@@ -94,7 +96,26 @@ namespace Tanks.Networking
 			set;
 		}
 
-
+        /// -----------------------------------------------------------------------------------------------
+        /// <summary>
+        /// 设置游戏的模式
+        /// </summary>
+        /// -----------------------------------------------------------------------------------------------
+        public void SetGameModel( PLAYGAMEMODEL model )
+        {
+            if( model == PLAYGAMEMODEL.PLAYGAME_FPS )
+            {
+                m_FPS.SetActive(true);
+                m_TPS.SetActive(false);
+                m_Flag.SetActive(false);
+            }
+            else
+            {
+                m_FPS.SetActive(false);
+                m_TPS.SetActive(true);
+                m_Flag.SetActive(true);
+            }
+        }
 		/// <summary>
 		/// Gets the local NetworkPlayer object
 		/// </summary>
@@ -112,7 +133,6 @@ namespace Tanks.Networking
             m_CtrlAnimator      = GetComponent<Animator>();
             m_AudioSource       = GetComponent<AudioSource>();
             m_BehitParticles    = GetComponentInChildren<ParticleSystem>();
-            m_CapsuleCollider   = GetComponent<CapsuleCollider>();
         }
 
 
@@ -216,7 +236,6 @@ namespace Tanks.Networking
         void Death()
         {
             m_IsDead = true;
-            m_CapsuleCollider.isTrigger = true;
             m_CtrlAnimator.SetTrigger("Dead");
             m_AudioSource.clip = m_DeathClip;
             m_AudioSource.Play();

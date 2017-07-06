@@ -45,27 +45,65 @@ namespace Tanks.TankControllers
 
 		protected override bool DoMovementInput()
 		{
-            //return true;
+            #if UNITY_EDITOR
 			float y = Input.GetAxisRaw("Vertical");
 			float x = Input.GetAxisRaw("Horizontal");
 
 			Vector3 cameraDirection = new Vector3(x, y, 0);
 			if (cameraDirection.sqrMagnitude < 0.01f)
 			{
-                if (!IsJoystickMoving() )
-                {
-                    DisableMovement();
-                }
+                DisableMovement();
                 return false;
             }
 
-            Vector3 worldDirection = x * screenMovementRight + y * screenMovementForward;
-            if (worldDirection.magnitude > 1)
-			{
-                worldDirection.Normalize();
-			}
-            SetMovementDirection(worldDirection);
-			return true;
+            if (GameSettings.s_Instance.m_PlayerGameModel == Explosions.PLAYGAMEMODEL.PLAYGAME_TPS)
+            {
+                if (cameraDirection.magnitude > 0.01f)
+                {
+                    Vector3 worldUp         = Camera.main.transform.TransformDirection(Vector3.up);
+                    worldUp.y = 0;
+                    worldUp.Normalize();
+                    Vector3 worldRight      = Camera.main.transform.TransformDirection(Vector3.right);
+                    worldRight.y = 0;
+                    worldRight.Normalize();
+
+                    Vector3 worldDirection = worldUp * y + worldRight * x;
+                    Vector2 desiredDir     = new Vector2(worldDirection.x, worldDirection.z);
+                    if (desiredDir.magnitude > 1)
+                    {
+                        desiredDir.Normalize();
+                    }
+
+                    SetMovementDirection(worldDirection);
+                    if (!m_bJoystickInputR)
+                    {
+                        float angle = Mathf.Atan2(x, y);
+                        SetFirePosition(angle);
+                    }
+                }
+            }
+
+            if (GameSettings.s_Instance.m_PlayerGameModel == Explosions.PLAYGAMEMODEL.PLAYGAME_FPS)
+            {
+                
+                Vector3 worldUp     = mainCamera.transform.TransformDirection(Vector3.up);
+                worldUp.y           = 0;
+                worldUp.Normalize();
+                Vector3 worldRight  = mainCamera.transform.TransformDirection(Vector3.right);
+                worldRight.y        = 0;
+                worldRight.Normalize();
+
+                Vector3 worldDirection = worldUp * y + worldRight * x;
+                Vector2 desiredDir      = new Vector2(worldDirection.x, worldDirection.z);
+                if (desiredDir.magnitude > 1)
+                {
+                    desiredDir.Normalize();
+                }
+                
+                SetMovementDirection(worldDirection);
+            }
+            #endif
+            return true;
 		}
 	}
 }

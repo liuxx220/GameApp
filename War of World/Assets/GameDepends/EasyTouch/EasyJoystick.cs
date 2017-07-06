@@ -169,8 +169,8 @@ public class EasyJoystick : MonoBehaviour {
 		get {
 			return this.joystickAxis;
 		}
-	}	
-	
+	}
+
 	/// <summary>
 	/// Gest or set the touch position.
 	/// </summary>
@@ -208,7 +208,12 @@ public class EasyJoystick : MonoBehaviour {
 	public bool enable = true;
 	
 	public bool visible = true;
-	
+
+    /// <summary>
+    /// 是否用来控制摄像机镜头
+    /// </summary>
+    public bool JoystickFov = false;
+
 	/// <summary>
 	/// Activacte or deactivate the joystick
 	/// </summary>
@@ -409,8 +414,14 @@ public class EasyJoystick : MonoBehaviour {
 	/// <summary>
 	/// The speed of each joystick axis
 	/// </summary>
-	public Vector2 speed;
-	
+	public Vector2  speed;
+
+    public float    AxisXFovMin = -60;
+    public float    AxisXFovMax = +60;
+
+    public float    AxisYFovMin = -10;
+    public float    AxisYFovMax = +10;
+
 	#region X axis
 	public bool enableXaxis = true;
 
@@ -907,8 +918,8 @@ public class EasyJoystick : MonoBehaviour {
 				// Joystick Axis & dead zone
 				Vector2 oldJoystickAxis = new Vector2(joystickAxis.x,joystickAxis.y);
    				float deadCoef = ComputeDeadZone();
-    			joystickAxis= new Vector2(joystickTouch.x*deadCoef, joystickTouch.y*deadCoef);				
-				
+    			joystickAxis= new Vector2(joystickTouch.x*deadCoef, joystickTouch.y*deadCoef);
+
 				// Inverse axis ?
 				if (inverseXAxis){
 					joystickAxis.x *= -1;	
@@ -1573,18 +1584,37 @@ public class EasyJoystick : MonoBehaviour {
 				Vector2 center = new Vector2( (anchorPosition.x+joystickCenter.x) * VirtualScreen.xRatio , (VirtualScreen.height-(anchorPosition.y +joystickCenter.y)) * VirtualScreen.yRatio);
 				if (gesture.fingerIndex == joystickIndex){
 					if (((gesture.position - center).sqrMagnitude < (zoneRadius *VirtualScreen.xRatio )*(zoneRadius *VirtualScreen.xRatio) && resetFingerExit) || !resetFingerExit) {
-						
-						
 						joystickTouch  = new Vector2( gesture.position.x , gesture.position.y) - center;
 						joystickTouch = new Vector2( joystickTouch.x / VirtualScreen.xRatio, joystickTouch.y / VirtualScreen.yRatio);
-						
-							if (!enableXaxis){
-								joystickTouch.x =0;
-							}
-							
-							if (!enableYaxis){
-								joystickTouch.y=0;
-							}
+
+                        if (JoystickFov)
+                        {
+                            if (Mathf.Abs(joystickTouch.x) > Mathf.Abs(joystickTouch.y))
+                            {
+                                // 第一象、第二象                 
+                                joystickTouch.y = 0;
+                            }
+                            else if ((Mathf.Abs(joystickTouch.x) < Mathf.Abs(joystickTouch.y)))
+                            {
+                                // 第三象、第四象
+                                joystickTouch.x = 0;
+                            }
+                            else
+                            {
+                                joystickTouch.y = 0;
+                                joystickTouch.x = 0;
+                            }
+                        }
+
+                        if (!enableXaxis)
+                        {
+                            joystickTouch.x = 0;
+                        }
+
+                        if (!enableYaxis)
+                        {
+                            joystickTouch.y = 0;
+                        }
 						
 						if ((joystickTouch/(zoneRadius-touchSizeCoef)).sqrMagnitude > 1){
 							joystickTouch.Normalize();
@@ -1618,6 +1648,7 @@ public class EasyJoystick : MonoBehaviour {
 	#endregion
 
 	#region ManualJoystick
+    private Vector2 lasttouch = Vector2.zero;
 	public void On_Manual(Vector2 movement)
 	{
 		if (isActivated)
@@ -1629,10 +1660,11 @@ public class EasyJoystick : MonoBehaviour {
 					virtualJoystick = true;
 					CreateEvent(MessageName.On_JoystickTouchStart);
 				}
-				
-				joystickIndex = 0;
-				joystickTouch.x = movement.x * (areaRect.width / 2);
-				joystickTouch.y = movement.y * (areaRect.height / 2);
+
+                joystickIndex = 0;
+                joystickTouch.x = movement.x * (areaRect.width / 2);
+                joystickTouch.y = movement.y * (areaRect.height / 2);
+                
 			}
 			else
 			{

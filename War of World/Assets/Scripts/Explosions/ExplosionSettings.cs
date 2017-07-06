@@ -1,5 +1,13 @@
 using UnityEngine;
 
+
+
+
+
+
+
+
+
 namespace Tanks.Explosions
 {
 	/// <summary>
@@ -22,20 +30,27 @@ namespace Tanks.Explosions
     {
         FiringExplosion,
         ClusterExplosion,
+        PulseExplosion,
+        RocketExplosion,
         Num
     }
-	/// <summary>
-	/// Explosion settings configuration scriptable object
-	/// </summary>
-	[CreateAssetMenu(fileName = "Explosion", menuName = "Explosion Definition", order = 1)]
+
+    public enum PLAYGAMEMODEL
+    {
+        PLAYGAME_FPS,
+        PLAYGAME_TPS,
+    }
+
 	public class ExplosionSettings : ScriptableObject
 	{
-		public string id;
-		public ExplosionClass explosionClass;
-		public float explosionRadius;
-		public float damage;
-		public float physicsRadius;
-		public float physicsForce;
+		public string       id;
+        public BulletClass  explosionClass;
+		public float        explosionRadius;
+		public float        damage;
+		public float        physicsRadius;
+		public float        physicsForce;
+        public float        moventspedd;
+        public float        lifetime;
 		[Range(0, 1)]
 		public float shakeMagnitude;
 	}

@@ -13,20 +13,16 @@ namespace Tanks.TankControllers
 	{
 
         public Vector3          m_DesiredDirection;
-        public float            walkingSpeed          = 5.0f;
+        private float           walkingSpeed          = 5f;
         public float            walkingSnappyness     = 50f;
-        
-        private Animator        m_Animator;  
-        private Rigidbody       m_Rigidbody;
 
-        public Rigidbody Rigidbody
-        {
-            get
-            {
-                return m_Rigidbody;
-            }
-        }
 
+        /// <summary>
+        /// 角色动画和行为控制器对象
+        /// </summary>
+        private CharacterController m_Controller;
+        private Animator            m_Animator;  
+ 
       
         public bool isMoving
         {
@@ -36,14 +32,17 @@ namespace Tanks.TankControllers
             }
         }
 
-        int     floorMask;                      
-        float   camRayLength = 100f;   
+        /// -------------------------------------------------------------------------------------------
+        /// <summary>
+        /// 移动是否启用固定更新逻辑
+        /// </summary>
+        /// -------------------------------------------------------------------------------------------
+        public bool m_bUseFixedUpdate = false;
+
 
         public void Init(TankManager manager)
         {
             enabled             = false;
-            walkingSpeed        = manager.playerTankType.speed;
-            walkingSnappyness   = manager.playerTankType.turnRate;
             SetDefaults();
         }
 
@@ -55,79 +54,69 @@ namespace Tanks.TankControllers
             {
                 m_DesiredDirection.Normalize();
             }
+            //m_DesiredDirection = transform.TransformDirection(m_DesiredDirection);
         }
 
         private void Awake()
         {
             LazyLoadRigidBody();
-            m_OriginalConstrains  = m_Rigidbody.constraints;
         }
 
         private void LazyLoadRigidBody()
         {
-            if (m_Rigidbody != null)
-            {
-                return;
-            }
-            m_Animator  = GetComponent<Animator>();
-            floorMask   = LayerMask.GetMask("Floor");
-            m_Rigidbody = GetComponent<Rigidbody>();
+            m_Animator    = GetComponent<Animator>();
+            m_Controller  = GetComponent<CharacterController>();
+            //floorMask   = LayerMask.GetMask("Floor");
         }
 
+        /// ------------------------------------------------------------------------------------------
+        /// <summary>
+        /// 行为的心跳帧
+        /// </summary>
+        /// ------------------------------------------------------------------------------------------
+        private void Update()
+        {
+            if( !m_bUseFixedUpdate )
+            {
+                UpdateMove();
+            }
+        }
 
+        /// ------------------------------------------------------------------------------------------
+        /// <summary>
+        /// 行为的心跳帧
+        /// </summary>
         private void FixedUpdate()
         {
-            if (isMoving )
+            if (!m_bUseFixedUpdate)
             {
-                Move();
+                UpdateMove();
+            }
+        }
+
+        float gravity = 20.0f;
+        private void UpdateMove( )
+        {
+            if (isMoving)
+            {
+                CollisionFlags flag;
+                Vector3 targetVelocity = m_DesiredDirection * walkingSpeed * Time.deltaTime;
+                if (m_Controller != null)
+                {
+                    targetVelocity.y -= gravity * Time.deltaTime;
+                    flag = m_Controller.Move(targetVelocity);
+                    //transform.position = new Vector3( transform.position.x, 0, transform.position.z );
+                }
             }
 
             m_Animator.SetBool("IsWalking", isMoving);
         }
-
-
-        private void Move()
-        {
-            Vector3 targetVelocity = m_DesiredDirection * walkingSpeed * Time.deltaTime;
-            Vector3 deltaVelocity  = targetVelocity - m_Rigidbody.velocity;
-            if (m_Rigidbody != null && m_Rigidbody.useGravity )
-            {
-                deltaVelocity.y = 0;
-            }
-
-            //m_Rigidbody.AddForce(deltaVelocity * walkingSnappyness, ForceMode.Acceleration );
-            m_Rigidbody.position = m_Rigidbody.position + targetVelocity;
-            transform.position   = m_Rigidbody.position;
-        }
-
-        public void SetTargetPosition( Vector3 target )
-        {
-            
-        }
-
-
-        private void Turn()
-        {
-            Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit floorHit;
-            if (Physics.Raycast(camRay, out floorHit, camRayLength, floorMask))
-            {
-                Vector3 playerToMouse = floorHit.point - transform.position;
-                playerToMouse.y = 0f;
-
-                Quaternion newRotatation = Quaternion.LookRotation(playerToMouse);
-                m_Rigidbody.MoveRotation(newRotatation);
-                transform.rotation = m_Rigidbody.rotation;
-            }
-        }
-
 
         public void SetDefaults()
         {
             enabled = true;
             LazyLoadRigidBody();
 
-            m_Rigidbody.velocity        = Vector3.zero;
             m_DesiredDirection          = Vector3.zero;
         }
 
@@ -141,19 +130,6 @@ namespace Tanks.TankControllers
         public void EnableMovement()
         {
             
-        }
-
-        protected RigidbodyConstraints m_OriginalConstrains;
-        void OnDisable()
-        {
-            m_OriginalConstrains             = m_Rigidbody.constraints;
-            m_Rigidbody.constraints          = RigidbodyConstraints.FreezeAll;
-        }
-
-
-        void OnEnable()
-        {
-            m_Rigidbody.constraints = m_OriginalConstrains;
         }
 	}
 }

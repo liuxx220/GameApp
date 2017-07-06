@@ -24,11 +24,6 @@ namespace Tanks.Shells
         public float            m_lifeTime = 0.5f;
 
         /// <summary>
-        /// 飞行最大距离
-        /// </summary>
-        private float           m_dist = 1000f;
-
-        /// <summary>
         /// 子弹重生事件
         /// </summary>
         private float           m_spawnTime = 0f;
@@ -43,6 +38,14 @@ namespace Tanks.Shells
         /// </summary>
         private int             m_IgnoreColliderFixedFrames = 2;
         private int             m_TempIgnoreColliderTime = 2;
+
+        /// <summary>
+        /// 子弹效果参数
+        /// </summary>
+        [SerializeField]
+        protected ExplosionSettings m_ExplosionSettings;
+
+
 		private void Awake()
 		{
             
@@ -59,7 +62,6 @@ namespace Tanks.Shells
             }
             m_speed     = seed;
             m_spawnTime = Time.time;
-            m_dist      = 1000f;
 		}
 
 		private void FixedUpdate()
@@ -81,8 +83,7 @@ namespace Tanks.Shells
 		private void Update()
 		{
             transform.position += transform.forward * m_speed * Time.deltaTime;
-            m_dist              -= m_speed * Time.deltaTime;
-            if( Time.time > m_spawnTime + m_lifeTime || m_dist < 0 )
+            if( Time.time > m_spawnTime + m_lifeTime  )
             {
                 transform.gameObject.SetActive(false);
             }

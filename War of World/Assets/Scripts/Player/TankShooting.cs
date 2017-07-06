@@ -22,6 +22,8 @@ namespace Tanks.TankControllers
     {
         Shoot_continued,        // 连续射击
         Shoot_pressUp,          // 释放射击
+        Shoot_pulse,            // 脉冲式发射
+        Shoot_Rocket,           // 火箭弹
     };
 
 
@@ -37,12 +39,18 @@ namespace Tanks.TankControllers
         float                   Esplasetimer;
         float                   effectsDisplayTime = 0.2f;
 
-        private SHOOTINGMODE    m_ShootMode = SHOOTINGMODE.Shoot_pressUp;
+        private SHOOTINGMODE    m_ShootMode = SHOOTINGMODE.Shoot_pulse;
         private bool            m_FireInput;
-        private float           m_curLookatDeg;
+        public  float           m_curLookatDeg;
         private float           m_TurretHeading;
-        
+        private float           m_fOldEulerAngles = 0;
 
+
+        /// <summary>
+        /// 预测目标点的变量
+        /// </summary>
+        private Ray             m_shootRay = new Ray();
+        private RaycastHit      m_shootHit;
         void Awake()
         {
             shootableMask   = LayerMask.GetMask("Shootable");
@@ -50,17 +58,27 @@ namespace Tanks.TankControllers
             gunAudio        = gunobject.GetComponent<AudioSource>();
             fireDirection.SetActive(false);
             m_curLookatDeg  = transform.rotation.eulerAngles.y;
+            m_fOldEulerAngles = m_curLookatDeg;
         }
 
 
         void Update()
         {
             Esplasetimer += Time.deltaTime;
-            if (m_FireInput && Esplasetimer >= 0.15f && Time.timeScale != 0)
+            if (m_ShootMode == SHOOTINGMODE.Shoot_pulse)
             {
-                Shoot();
+                if (m_FireInput && Esplasetimer >= 1.0f && Time.timeScale != 0)
+                {
+                    Shoot();
+                }
             }
-
+            else
+            {
+                if (m_FireInput && Esplasetimer >= 0.15f && Time.timeScale != 0)
+                {
+                    Shoot();
+                }
+            }
             SmoothFaceDirection();
         }
 
@@ -69,9 +87,11 @@ namespace Tanks.TankControllers
         /// 判断是否可以攻击
         /// </summary>
         /// ----------------------------------------------------------------------------------------------
-        public bool IsCanShooting()
+        public void BackShootingAngles( float fAngles )
         {
-            return true;
+            m_fOldEulerAngles = fAngles;
+            m_curLookatDeg    = fAngles;
+            m_TurretHeading   = fAngles;
         }
 
         /// ----------------------------------------------------------------------------------------------
@@ -91,7 +111,17 @@ namespace Tanks.TankControllers
         /// ----------------------------------------------------------------------------------------------
         public bool IsShootPressup()
         {
-            return m_ShootMode == SHOOTINGMODE.Shoot_pressUp; ;
+            return m_ShootMode == SHOOTINGMODE.Shoot_pressUp || m_ShootMode == SHOOTINGMODE.Shoot_pulse; 
+        }
+
+        /// ----------------------------------------------------------------------------------------------
+        /// <summary>
+        /// 判断是否是抬起射击
+        /// </summary>
+        /// ----------------------------------------------------------------------------------------------
+        public bool IsShootPulse()
+        {
+            return m_ShootMode == SHOOTINGMODE.Shoot_pulse;
         }
 
         /// ----------------------------------------------------------------------------------------------
@@ -116,14 +146,40 @@ namespace Tanks.TankControllers
         /// ----------------------------------------------------------------------------------------------
         void Shoot()
         {
+
             Esplasetimer = 0f;
-            gunParticles.Stop();
-            gunParticles.Play();
-            if (IsShootContinued())
+            {
+                m_shootRay.origin       = gunobject.transform.position;
+                m_shootRay.direction    = transform.forward;
+                if( Physics.Raycast( m_shootRay, out m_shootHit, 100, shootableMask ) )
+                {
+
+                }
+            }
+
+
+            if (gunParticles != null)
+            {
+                gunParticles.Stop();
+                gunParticles.Play();
+            }
+            if (m_ShootMode == SHOOTINGMODE.Shoot_continued)
+            {
                 FireEffect1();
-            else
+            }
+            if (m_ShootMode == SHOOTINGMODE.Shoot_pressUp)
             {
                 FireEffect2();
+                m_FireInput = false;
+            }
+            if(m_ShootMode == SHOOTINGMODE.Shoot_pulse)
+            {
+                FireEffect3();
+                m_FireInput = false;
+            }
+            if( m_ShootMode == SHOOTINGMODE.Shoot_Rocket )
+            {
+                FireEffect4();
                 m_FireInput = false;
             }
         }
@@ -138,10 +194,9 @@ namespace Tanks.TankControllers
         /// 设置枪口的朝向，即角色的面相
         /// </summary>
         /// ------------------------------------------------------------------------------------------
-        public void SetDesiredFirePosition( Vector3 target )
+        public void SetDesiredFirePosition( float fAngle )
         {
-            Vector3 toAimPos     = target - transform.position;
-            m_TurretHeading      = 90 - Mathf.Atan2(toAimPos.z, toAimPos.x) * Mathf.Rad2Deg;
+            m_TurretHeading = fAngle + m_fOldEulerAngles;
         }
 
         /// ------------------------------------------------------------------------------------------
@@ -151,7 +206,8 @@ namespace Tanks.TankControllers
         /// ------------------------------------------------------------------------------------------
         private void FireEffect1()
         {
-            gunAudio.Play();
+            if (gunAudio != null )
+                gunAudio.Play();
 
             Vector3 position     = gunHead.transform.position;
             Vector3 shotVector   = gunHead.transform.forward;
@@ -181,7 +237,8 @@ namespace Tanks.TankControllers
         /// ------------------------------------------------------------------------------------------
         private void FireEffect2()
         {
-            gunAudio.Play();
+            if (gunAudio != null)
+                gunAudio.Play();
             Vector3 position = gunobject.transform.position;
             Vector3 shotVector = transform.forward;
 
@@ -200,6 +257,68 @@ namespace Tanks.TankControllers
             // 忽略与自身的碰撞
             Physics.IgnoreCollision(shellInstance.GetComponent<Collider>(), GetComponentInChildren<Collider>(), true);
             ScatteringBullet shell = shellInstance.GetComponent<ScatteringBullet>();
+            shell.Setup(0, null, 100);
+            shell.transform.rotation = Quaternion.Euler(new Vector3(transform.rotation.eulerAngles.x, m_curLookatDeg, transform.rotation.eulerAngles.z));
+        }
+
+        /// ------------------------------------------------------------------------------------------
+        /// <summary>
+        /// 这里暂时先这么实现各种子弹，子弹2射击的效果
+        /// </summary>
+        /// ------------------------------------------------------------------------------------------
+        private void FireEffect3()
+        {
+            if (gunAudio != null)
+                gunAudio.Play();
+            Vector3 position = gunobject.transform.position;
+            Vector3 shotVector = transform.forward;
+
+            int randSeed = UnityEngine.Random.Range(int.MinValue, int.MaxValue);
+            GameObject shellInstance = null;
+            if (ExplosionManager.s_InstanceExists)
+            {
+                shellInstance = ExplosionManager.s_Instance.CreateVisualBullet(position, shotVector, 0, BulletClass.PulseExplosion);
+            }
+
+            shellInstance.SetActive(true);
+            shellInstance.transform.localScale = Vector3.one;
+            shellInstance.transform.position = position;
+            shellInstance.transform.forward = shotVector;
+
+            // 忽略与自身的碰撞
+            Physics.IgnoreCollision(shellInstance.GetComponent<Collider>(), GetComponentInChildren<Collider>(), true);
+            PulseBullet shell = shellInstance.GetComponent<PulseBullet>();
+            shell.Setup(0, null, 100);
+            shell.transform.rotation = Quaternion.Euler(new Vector3(transform.rotation.eulerAngles.x, m_curLookatDeg, transform.rotation.eulerAngles.z));
+        }
+
+        /// ------------------------------------------------------------------------------------------
+        /// <summary>
+        /// 这里暂时先这么实现各种子弹，子弹2射击的效果
+        /// </summary>
+        /// ------------------------------------------------------------------------------------------
+        private void FireEffect4()
+        {
+            if (gunAudio != null)
+                gunAudio.Play();
+            Vector3 position = gunobject.transform.position;
+            Vector3 shotVector = transform.forward;
+
+            int randSeed = UnityEngine.Random.Range(int.MinValue, int.MaxValue);
+            GameObject shellInstance = null;
+            if (ExplosionManager.s_InstanceExists)
+            {
+                shellInstance = ExplosionManager.s_Instance.CreateVisualBullet(position, shotVector, 0, BulletClass.RocketExplosion);
+            }
+
+            shellInstance.SetActive(true);
+            shellInstance.transform.localScale = Vector3.one;
+            shellInstance.transform.position = position;
+            shellInstance.transform.forward = shotVector;
+
+            // 忽略与自身的碰撞
+            Physics.IgnoreCollision(shellInstance.GetComponent<Collider>(), GetComponentInChildren<Collider>(), true);
+            Shell shell = shellInstance.GetComponent<Shell>();
             shell.Setup(0, null, 100);
             shell.transform.rotation = Quaternion.Euler(new Vector3(transform.rotation.eulerAngles.x, m_curLookatDeg, transform.rotation.eulerAngles.z));
         }
