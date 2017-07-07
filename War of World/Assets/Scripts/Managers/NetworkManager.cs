@@ -108,10 +108,6 @@ namespace Tanks.Networking
 		protected virtual void Start()
 		{
 			m_Settings = GameSettings.s_Instance;
-            GameObject LocalPlayer  = Instantiate(m_NetworkPlayerPrefab);
-            NetworkPlayer newPlayer = LocalPlayer.GetComponent<NetworkPlayer>();
-            DontDestroyOnLoad(LocalPlayer);
-            newPlayer.StartLocalPlayer();
 		}
 
 
@@ -193,6 +189,11 @@ namespace Tanks.Networking
 		/// </summary>
 		public void ProgressToGameScene()
 		{
+            GameObject LocalPlayer = Instantiate(m_NetworkPlayerPrefab);
+            NetworkPlayer newPlayer = LocalPlayer.GetComponent<NetworkPlayer>();
+            DontDestroyOnLoad(LocalPlayer);
+            newPlayer.StartLocalPlayer();
+
 			m_SceneChangeMode = SceneChangeMode.Game;
 			for (int i = 0; i < connectedPlayers.Count; ++i)
 			{
@@ -299,7 +300,9 @@ namespace Tanks.Networking
                     }
                 }
             }
-
+            localPlayer.SetGameModel(Explosions.PLAYGAMEMODEL.PLAYGAME_TPS);
+            GameSettings.s_Instance.m_PlayerGameModel = Explosions.PLAYGAMEMODEL.PLAYGAME_TPS;
+            /*
             if( sceneName == "snow2")
             {
                 localPlayer.SetGameModel(Explosions.PLAYGAMEMODEL.PLAYGAME_TPS);
@@ -310,6 +313,7 @@ namespace Tanks.Networking
                 localPlayer.SetGameModel(Explosions.PLAYGAMEMODEL.PLAYGAME_FPS);
                 GameSettings.s_Instance.m_PlayerGameModel = Explosions.PLAYGAMEMODEL.PLAYGAME_FPS;
             }
+            */
         }
 	}
 }

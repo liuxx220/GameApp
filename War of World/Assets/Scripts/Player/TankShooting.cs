@@ -34,8 +34,6 @@ namespace Tanks.TankControllers
         public GameObject       gunHead;
 
         int                     shootableMask;
-        ParticleSystem          gunParticles;
-        AudioSource             gunAudio;
         float                   Esplasetimer;
         float                   effectsDisplayTime = 0.2f;
 
@@ -54,8 +52,6 @@ namespace Tanks.TankControllers
         void Awake()
         {
             shootableMask   = LayerMask.GetMask("Shootable");
-            gunParticles    = gunobject.GetComponent<ParticleSystem>();
-            gunAudio        = gunobject.GetComponent<AudioSource>();
             fireDirection.SetActive(false);
             m_curLookatDeg  = transform.rotation.eulerAngles.y;
             m_fOldEulerAngles = m_curLookatDeg;
@@ -157,12 +153,6 @@ namespace Tanks.TankControllers
                 }
             }
 
-
-            if (gunParticles != null)
-            {
-                gunParticles.Stop();
-                gunParticles.Play();
-            }
             if (m_ShootMode == SHOOTINGMODE.Shoot_continued)
             {
                 FireEffect1();
@@ -206,9 +196,6 @@ namespace Tanks.TankControllers
         /// ------------------------------------------------------------------------------------------
         private void FireEffect1()
         {
-            if (gunAudio != null )
-                gunAudio.Play();
-
             Vector3 position     = gunHead.transform.position;
             Vector3 shotVector   = gunHead.transform.forward;
 
@@ -237,8 +224,7 @@ namespace Tanks.TankControllers
         /// ------------------------------------------------------------------------------------------
         private void FireEffect2()
         {
-            if (gunAudio != null)
-                gunAudio.Play();
+
             Vector3 position = gunobject.transform.position;
             Vector3 shotVector = transform.forward;
 
@@ -268,8 +254,7 @@ namespace Tanks.TankControllers
         /// ------------------------------------------------------------------------------------------
         private void FireEffect3()
         {
-            if (gunAudio != null)
-                gunAudio.Play();
+
             Vector3 position = gunobject.transform.position;
             Vector3 shotVector = transform.forward;
 
@@ -299,8 +284,7 @@ namespace Tanks.TankControllers
         /// ------------------------------------------------------------------------------------------
         private void FireEffect4()
         {
-            if (gunAudio != null)
-                gunAudio.Play();
+
             Vector3 position = gunobject.transform.position;
             Vector3 shotVector = transform.forward;
 
