@@ -100,9 +100,9 @@ namespace Tanks.TankControllers
         }
 
 
-		protected void SetFirePosition( float fAngle )
+		protected void SetFirePosition( Vector3 facedir )
 		{
-            m_Shooting.SetDesiredFirePosition(fAngle);
+            m_Shooting.SetDesiredFirePosition(facedir);
 		}
 
 
@@ -245,8 +245,7 @@ namespace Tanks.TankControllers
                 {
                     if (!m_bJoystickInputR)
                     {
-                        float angle = 90 - Mathf.Atan2(y, x) * Mathf.Rad2Deg;
-                        SetFirePosition(angle);
+                        SetFirePosition( new Vector3( x, y, 0 ) );
                     }
 
                     Vector3 worldUp = Camera.main.transform.TransformDirection(Vector3.up);
@@ -279,8 +278,7 @@ namespace Tanks.TankControllers
 
                 if (GameSettings.s_Instance.m_PlayerGameModel == Explosions.PLAYGAMEMODEL.PLAYGAME_TPS)
                 {
-                    float angle = move.Axis2Angle(true);
-                    SetFirePosition(angle);
+                    SetFirePosition( new Vector3( x, y, 0 ) );
                     if (m_Shooting.IsShootContinued())
                         SetFireIsHeld(true);
                 }

@@ -154,7 +154,6 @@ namespace Tanks.TankControllers
                     }
                 }
 
-                Debug.Log(bestAnimation.clip.name);
                 m_animation.CrossFade(bestAnimation.clip.name );
             }
             else

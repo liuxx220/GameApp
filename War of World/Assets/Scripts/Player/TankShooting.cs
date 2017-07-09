@@ -7,6 +7,7 @@ using Tanks.CameraControl;
 using Tanks.Shells;
 using Tanks.Explosions;
 using Tanks.SinglePlayer;
+using Random = UnityEngine.Random;
 
 
 
@@ -29,37 +30,59 @@ namespace Tanks.TankControllers
 
     public class TankShooting : MonoBehaviour
 	{
-        public GameObject       gunobject;
+
         public GameObject       fireDirection;
         public GameObject       gunHead;
+        public GameObject       muzzleFlash;
+        public GameObject       RedPoint;
 
+        public float            coneAngle = 1.5f;
         int                     shootableMask;
         float                   Esplasetimer;
-        float                   effectsDisplayTime = 0.2f;
+        float                   effectsDisplayTime = 0;
 
-        private SHOOTINGMODE    m_ShootMode = SHOOTINGMODE.Shoot_pulse;
+        private SHOOTINGMODE    m_ShootMode = SHOOTINGMODE.Shoot_continued;
         private bool            m_FireInput;
         public  float           m_curLookatDeg;
         private float           m_TurretHeading;
         private float           m_fOldEulerAngles = 0;
 
-
+        private Vector3         m_faceDirection = Vector3.zero;
         /// <summary>
         /// 预测目标点的变量
         /// </summary>
         private Ray             m_shootRay = new Ray();
         private RaycastHit      m_shootHit;
+
+        /// <summary>
+        /// 屏幕射线相关的数据
+        /// </summary>
+        private LineRenderer    m_LineRender;
+        public  float           m_scroolSpeed = 0.5f;
+        public  float           m_pulseSpeed = 1.5f;
+        public  float           m_noiseSize = 1.0f;
+        public  float           m_maxWidth = 0.5f;
+        public  float           m_minWidth = 0.2f;
+        private float           m_aniTime = 0.0f;
+        private float           m_andDir = 1.0f;
         void Awake()
         {
-            shootableMask   = LayerMask.GetMask("Shootable");
+            shootableMask       = LayerMask.GetMask("Shootable");
+            m_LineRender        = gameObject.GetComponent<LineRenderer>();
             fireDirection.SetActive(false);
-            m_curLookatDeg  = transform.rotation.eulerAngles.y;
-            m_fOldEulerAngles = m_curLookatDeg;
+            muzzleFlash.SetActive(false);
+            m_curLookatDeg      = transform.rotation.eulerAngles.y;
+            m_fOldEulerAngles   = m_curLookatDeg;
         }
 
 
         void Update()
         {
+            m_shootRay.origin       = gunHead.transform.position;
+            m_shootRay.direction    = gunHead.transform.forward;
+            Physics.Raycast(m_shootRay, out m_shootHit, 100, shootableMask);
+            DrawPulseLine();
+
             Esplasetimer += Time.deltaTime;
             if (m_ShootMode == SHOOTINGMODE.Shoot_pulse)
             {
@@ -76,6 +99,45 @@ namespace Tanks.TankControllers
                 }
             }
             SmoothFaceDirection();
+
+            effectsDisplayTime += Time.deltaTime;
+            if (effectsDisplayTime >= 0.2f)
+            {
+                muzzleFlash.SetActive(false);
+            }
+        }
+
+        /// ----------------------------------------------------------------------------------------------
+        /// <summary>
+        /// 更新脉冲摄像
+        /// </summary>
+        /// ----------------------------------------------------------------------------------------------
+        void DrawPulseLine()
+        {
+           
+            float aniFactor = Mathf.PingPong(Time.time * m_pulseSpeed, 1.0f);
+            aniFactor       = Mathf.Max( m_minWidth, aniFactor ) * m_maxWidth;
+            m_LineRender.SetWidth(aniFactor, aniFactor );
+
+            if( m_shootHit.transform )
+            {
+                m_LineRender.SetPosition(1, (m_shootHit.distance * Vector3.forward));
+               if( RedPoint != null )
+               {
+                   RedPoint.GetComponent<Renderer>().enabled = true;
+                   RedPoint.transform.position = m_shootHit.point + ( transform.position - m_shootHit.point ) * 0.01f;
+                   RedPoint.transform.rotation = Quaternion.LookRotation( m_shootHit.normal, transform.up );
+               }
+            }
+            else
+            {
+                float maxDist = 100.0f;
+                m_LineRender.SetPosition( 1, maxDist * Vector3.forward );
+                if( RedPoint != null )
+               {
+                   RedPoint.GetComponent<Renderer>().enabled = false;
+               }
+            }
         }
 
         /// ----------------------------------------------------------------------------------------------
@@ -144,15 +206,8 @@ namespace Tanks.TankControllers
         {
 
             Esplasetimer = 0f;
-            {
-                m_shootRay.origin       = gunobject.transform.position;
-                m_shootRay.direction    = transform.forward;
-                if( Physics.Raycast( m_shootRay, out m_shootHit, 100, shootableMask ) )
-                {
-
-                }
-            }
-
+            muzzleFlash.SetActive(true);
+            effectsDisplayTime = 0;
             if (m_ShootMode == SHOOTINGMODE.Shoot_continued)
             {
                 FireEffect1();
@@ -184,10 +239,19 @@ namespace Tanks.TankControllers
         /// 设置枪口的朝向，即角色的面相
         /// </summary>
         /// ------------------------------------------------------------------------------------------
-        public void SetDesiredFirePosition( float fAngle )
+        public void SetDesiredFirePosition( Vector3 facedir )
         {
-            m_TurretHeading = fAngle + m_fOldEulerAngles;
+            m_faceDirection = facedir;
+            float angle     = 90f - Mathf.Atan2(m_faceDirection.y, m_faceDirection.x) * Mathf.Rad2Deg;
+            m_TurretHeading = angle + m_fOldEulerAngles;
         }
+
+
+        public Vector3 GetFaceDirection()
+        {
+            return m_faceDirection;
+        }
+
 
         /// ------------------------------------------------------------------------------------------
         /// <summary>
@@ -196,9 +260,11 @@ namespace Tanks.TankControllers
         /// ------------------------------------------------------------------------------------------
         private void FireEffect1()
         {
+            var coneRandomRotation = Quaternion.Euler(Random.Range(-coneAngle, coneAngle), Random.Range(-coneAngle, coneAngle), 0f);
             Vector3 position     = gunHead.transform.position;
             Vector3 shotVector   = gunHead.transform.forward;
 
+ 
             GameObject shellInstance = null;
             if (ExplosionManager.s_InstanceExists)
             {
@@ -225,8 +291,8 @@ namespace Tanks.TankControllers
         private void FireEffect2()
         {
 
-            Vector3 position = gunobject.transform.position;
-            Vector3 shotVector = transform.forward;
+            Vector3 position = gunHead.transform.position;
+            Vector3 shotVector = gunHead.transform.forward;
 
             int randSeed = UnityEngine.Random.Range(int.MinValue, int.MaxValue);
             GameObject shellInstance = null;
@@ -255,8 +321,8 @@ namespace Tanks.TankControllers
         private void FireEffect3()
         {
 
-            Vector3 position = gunobject.transform.position;
-            Vector3 shotVector = transform.forward;
+            Vector3 position = gunHead.transform.position;
+            Vector3 shotVector = gunHead.transform.forward;
 
             int randSeed = UnityEngine.Random.Range(int.MinValue, int.MaxValue);
             GameObject shellInstance = null;
@@ -285,8 +351,8 @@ namespace Tanks.TankControllers
         private void FireEffect4()
         {
 
-            Vector3 position = gunobject.transform.position;
-            Vector3 shotVector = transform.forward;
+            Vector3 position = gunHead.transform.position;
+            Vector3 shotVector = gunHead.transform.forward;
 
             int randSeed = UnityEngine.Random.Range(int.MinValue, int.MaxValue);
             GameObject shellInstance = null;

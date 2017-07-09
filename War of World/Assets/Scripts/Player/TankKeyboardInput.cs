@@ -77,8 +77,7 @@ namespace Tanks.TankControllers
                     SetMovementDirection(worldDirection);
                     if (!m_bJoystickInputR)
                     {
-                        float angle = Mathf.Atan2(x, y);
-                        SetFirePosition(angle);
+                        SetFirePosition(new Vector3(x, y, 0) );
                     }
                 }
             }
