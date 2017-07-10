@@ -16,7 +16,7 @@ namespace Tanks.TankControllers
 	/// </summary>
 	[RequireComponent(typeof(TankShooting))]
 	[RequireComponent(typeof(TankMovement))]
-    public abstract class TankInputModule : MonoBehaviour
+    public abstract class TankInputModule : NetworkBehaviour
 	{
 		protected TankShooting  m_Shooting;
 		protected TankMovement  m_Movement;
@@ -34,8 +34,21 @@ namespace Tanks.TankControllers
 		/// </summary>
 		public static event Action<bool> s_InputMethodChanged;
 
+        public static TankInputModule s_CurrentInputModule
+        {
+            get;
+            private set;
+        }
+
+        public bool isActiveModule
+        {
+            get { return s_CurrentInputModule == this; }
+        }
+
+
 		protected virtual void Awake()
 		{
+            OnBecomesInactive();
 			m_Shooting          = GetComponent<TankShooting>();
 			m_Movement          = GetComponent<TankMovement>();
 			m_FloorPlane        = new Plane(Vector3.up, 0);
@@ -70,8 +83,23 @@ namespace Tanks.TankControllers
 
 		protected virtual void Update()
 		{
-			DoMovementInput();
-			DoFiringInput();
+            if (!hasAuthority)
+            {
+                return;
+            }
+
+            bool isActive   = DoMovementInput();
+            isActive        |= DoFiringInput();
+
+            if (isActive && !isActiveModule)
+            {
+                if (s_CurrentInputModule != null)
+                {
+                    s_CurrentInputModule.OnBecomesInactive();
+                }
+                s_CurrentInputModule = this;
+                OnBecomesActive();
+            }
 		}
 
         /// --------------------------------------------------------------------------------------------------
@@ -87,6 +115,16 @@ namespace Tanks.TankControllers
         /// </summary>
         /// --------------------------------------------------------------------------------------------------
 		protected abstract bool DoFiringInput();
+
+        protected virtual void OnBecomesActive()
+        {
+
+        }
+
+        protected virtual void OnBecomesInactive()
+        {
+
+        }
 
 		protected void SetMovementDirection(Vector3 moveDir)
 		{

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System;
-
+using UnityEngine.Networking;
 
 
 
@@ -32,7 +32,7 @@ namespace Tanks.TankControllers
         }
     }
 
-    public class TankMovement : MonoBehaviour
+    public class TankMovement : NetworkBehaviour
 	{
         public GameObject           AnimationObject;
         public float                minWalkSpeed = 2.0f;
@@ -61,10 +61,10 @@ namespace Tanks.TankControllers
 
         private Vector3             m_DesiredDirection;
 
-        private Vector3             m_lastPosition = Vector3.zero;
-        private Vector3             m_Velocity = Vector3.zero;
-        private Vector3             m_localVelocity = Vector3.zero;
-        private Vector3             lowerBodyForward = Vector3.forward;
+        private Vector3             m_lastPosition      = Vector3.zero;
+        private Vector3             m_Velocity          = Vector3.zero;
+        private Vector3             m_localVelocity     = Vector3.zero;
+        private Vector3             lowerBodyForward    = Vector3.forward;
         private Vector3             lowerBodyForwardTarget = Vector3.forward;
         private MoveAnimation       bestAnimation = null;
 
@@ -131,8 +131,7 @@ namespace Tanks.TankControllers
         /// ------------------------------------------------------------------------------------------
         private void Update()
         {
-            UpdateMove();
-
+            
             idleWeight = Mathf.Lerp(idleWeight, Mathf.InverseLerp(minWalkSpeed, maxIdleSpeed, Speed), Time.deltaTime * 10);
             m_animation[idle.name].weight = idleWeight;
             if( Speed > 0 )
@@ -187,6 +186,13 @@ namespace Tanks.TankControllers
             Speed           = m_localVelocity.magnitude;
             Angle           = HorizontalAngle(m_localVelocity);
             m_lastPosition  = transform.position;
+
+            if( !hasAuthority )
+            {
+                return;
+            }
+
+            UpdateMove();
         }
 
         private void LateUpdate()

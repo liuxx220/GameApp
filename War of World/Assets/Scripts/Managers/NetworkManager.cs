@@ -1,9 +1,20 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
+using UnityEngine.Networking.Match;
+using UnityEngine.Networking.Types;
 using UnityEngine.SceneManagement;
 using Tanks.Map;
 using Tanks.UI;
+
+
+
+
+
+
+
+
 
 namespace Tanks.Networking
 {
@@ -30,25 +41,56 @@ namespace Tanks.Networking
 		Singleplayer
 	}
 
-    public class NetworkManager : MonoBehaviour
+    public class NetworkManager : UnityEngine.Networking.NetworkManager
 	{
 		#region Constants
-		private static readonly string      s_LobbySceneName = "LobbyScene";
+		private static readonly string          s_LobbySceneName = "LobbyScene";
 		#endregion
 
+        [SerializeField]
+        protected NetworkPlayer                 m_NetworkPlayerPrefab1;
 
 		#region Events
-		public event Action<NetworkPlayer>  playerJoined;
-		public event Action<NetworkPlayer>  playerLeft;
-		private Action                      m_NextHostStartedCallback;
+		public event Action<NetworkPlayer>      playerJoined;
+		public event Action<NetworkPlayer>      playerLeft;
+		private Action                          m_NextHostStartedCallback;
 		#endregion
 
 
-		#region Fields
-		[SerializeField]
-        protected GameObject                m_NetworkPlayerPrefab;
-		protected GameSettings              m_Settings;
-		private SceneChangeMode             m_SceneChangeMode;
+        /// <summary>
+        /// 网络层触发事件的东西
+        /// </summary>
+        #region NetworkEvent
+        public  event Action                    hostStarted;
+        public  event Action                    serverStopped;
+        public  event Action                    clientStopped;
+        public  event Action<NetworkConnection> clientConnected;    // 客户端链接事件
+        public  event Action<NetworkConnection> clientDisconnected;
+        public  event Action<NetworkConnection, int> clientError;
+        public  event Action<NetworkConnection, int> serverError;
+        public  event Action<bool,string>       sceneChanged;
+        public  event Action                    serverPlayersReadied;
+        public  event Action<bool, MatchInfo>   matchCreated;
+        public  event Action<bool, MatchInfo>   matchJoined;
+        public  event Action                    serverClientDisconnected;
+        /// <summary>
+        /// Called when game mode changes
+        /// </summary>
+        public  event Action                    gameModeUpdated;
+        /// <summary>
+        /// Called when we've been dropped from a matchMade game
+        /// </summary>
+        public  event Action                    matchDropped;
+
+        private Action<bool, MatchInfo>         NextMatchJoinedCallback;
+        private Action<bool, MatchInfo>         NextMatchCreateCallback;
+        #endregion
+
+        #region Fields
+        [SerializeField]
+        protected GameObject                    m_NetworkPlayerPrefab;
+		protected GameSettings                  m_Settings;
+		private SceneChangeMode                 m_SceneChangeMode;
 		#endregion
 
 		
@@ -85,6 +127,14 @@ namespace Tanks.Networking
 		{
 			get {return isSinglePlayer ? playerCount >= 1 : playerCount >= 2;}
 		}
+
+        public static bool s_IsServer
+        {
+            get
+            {
+                return NetworkServer.active;
+            }
+        }
 		#endregion
 
 
@@ -98,8 +148,8 @@ namespace Tanks.Networking
 		#region Unity Methods
 		protected virtual void Awake()
 		{
-            s_Instance = this;
-            connectedPlayers = new List<NetworkPlayer>();
+            s_Instance          = this;
+            connectedPlayers    = new List<NetworkPlayer>();
             SceneManager.activeSceneChanged += OnClientSceneChanged;
             DontDestroyOnLoad(this);
 		}
@@ -173,9 +223,31 @@ namespace Tanks.Networking
 
 
 		#region Methods
+        /// --------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// 断开链接
+        /// </summary>
+        /// --------------------------------------------------------------------------------------------------
+        public void Disconnect( )
+        {
+            switch( gameType )
+            {
+                case NetworkGameType.Direct:
+                    break;
+
+                case NetworkGameType.Matchmaking:
+                    break;
+
+                case NetworkGameType.Singleplayer:
+                    break;
+            }
+        }
+
+        /// --------------------------------------------------------------------------------------------------------
 		/// <summary>
-		/// Initiate single player mode
+		/// 开启一个单人游戏模式
 		/// </summary>
+        /// --------------------------------------------------------------------------------------------------------
 		public void StartSinglePlayerMode(Action callback)
 		{
 			m_NextHostStartedCallback = callback;
@@ -183,7 +255,238 @@ namespace Tanks.Networking
 			gameType    = NetworkGameType.Singleplayer;
 		}
 
-	
+        /// --------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// 开启一个多人游戏模式
+        /// </summary>
+        /// --------------------------------------------------------------------------------------------------------
+		public void StartMultiplayerServer( Action callback )
+        {
+            if( state != NetworkState.Inactive )
+            {
+                throw new InvalidOperationException("Network currently active. Disconnect first.");
+            }
+
+            m_NextHostStartedCallback = callback;
+            state                     = NetworkState.InLobby;
+            gameType                  = NetworkGameType.Direct;
+
+            StartHost();
+        }
+
+
+        /// --------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// 开启一个多人匹配游戏模式
+        /// </summary>
+        /// --------------------------------------------------------------------------------------------------------
+		public void StartMatchmakingGame( string gameName, Action< bool, MatchInfo> onCreate )
+        {
+            if (state != NetworkState.Inactive)
+            {
+                throw new InvalidOperationException("Network currently active. Disconnect first.");
+            }
+
+            state       = NetworkState.Connecting;
+            gameType    = NetworkGameType.Matchmaking;
+
+            StartMatchMaker();
+            NextMatchCreateCallback = onCreate;
+            matchMaker.CreateMatch(gameName, (uint)4, true, string.Empty, string.Empty, string.Empty, 0, 0, OnMatchCreate);
+        }
+
+        /// --------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Initialize the matchmaking client to receive match lists
+        /// </summary>
+        /// --------------------------------------------------------------------------------------------------------
+        public void StartMatchingmakingClient()
+        {
+            if (state != NetworkState.Inactive)
+            {
+                throw new InvalidOperationException("Network currently active. Disconnect first.");
+            }
+
+            state       = NetworkState.Pregame;
+            gameType    = NetworkGameType.Matchmaking;
+            StartMatchMaker();
+        }
+
+
+        /// --------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// 加入游戏 匹配模式
+        /// </summary>
+        /// --------------------------------------------------------------------------------------------------------
+        public void JoinMatchmakingGame( NetworkID netID, Action< bool, MatchInfo> onJoin )
+        {
+            if( gameType != NetworkGameType.Matchmaking || state != NetworkState.Pregame )
+            {
+                throw new InvalidOperationException("Game not in matching state. Make sure you call StartMatchmakingClient first.");
+            }
+
+            state       = NetworkState.Connecting;
+            NextMatchJoinedCallback = onJoin;
+            matchMaker.JoinMatch(netID, string.Empty, string.Empty, string.Empty, 0, 0, OnMatchJoined);
+        }
+
+
+        /// --------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// 停止单人游戏模式
+        /// </summary>
+        /// --------------------------------------------------------------------------------------------------------
+        public void StopSingleplayerGame()
+        {
+            switch( state )
+            {
+                case NetworkState.InLobby:
+                    break;
+
+                case NetworkState.Connecting:
+                case NetworkState.Pregame:
+                case NetworkState.InGame:
+                    StopHost();
+                    break;
+            }
+        }
+
+
+        /// --------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// 停止直接多人游戏模式
+        /// </summary>
+        /// --------------------------------------------------------------------------------------------------------
+        public void StopDirectMultiplayerGame()
+        {
+            switch (state)
+            {
+                case NetworkState.Connecting:
+                case NetworkState.Pregame:
+                case NetworkState.InGame:
+                    {
+                        StopHost();
+                    }
+                    break;
+            }
+        }
+
+        /// --------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// 停止多人匹配游戏模式
+        /// </summary>
+        /// --------------------------------------------------------------------------------------------------------
+        public void StopMatchmakingGame()
+        {
+            switch (state)
+            {
+                case NetworkState.Connecting:
+                    {
+                        if (s_IsServer)
+                        {
+                            StopMatchMaker();
+                            StopHost();
+                            matchInfo = null;
+                        }
+                        else
+                        {
+                            StopMatchMaker();
+                            StopClient();
+                            matchInfo = null;
+                        }
+                    }
+                    break;
+                case NetworkState.Pregame:
+                    {
+                        if( !s_IsServer )
+                            StopMatchMaker();
+                    }
+                    break;
+                case NetworkState.InLobby:
+                case NetworkState.InGame:
+                    {
+                        if( s_IsServer )
+                        {
+                            if( matchMaker != null && matchInfo != null )
+                            {
+                                matchMaker.DestroyMatch(matchInfo.networkId, 0, (success, info) =>
+                                {
+                                    if (!success)
+                                    {
+                                        Debug.LogErrorFormat("Failed to terminate matchmaking game. {0}", info);
+                                    }
+                                    StopMatchMaker();
+                                    StopHost();
+                                    matchInfo = null;
+                                });
+                            }
+                            else
+                            {
+                                Debug.LogWarning("No matchmaker or matchInfo despite being a server in matchmaking state.");
+                                StopMatchMaker();
+                                StopHost();
+                                matchInfo = null;
+                            }
+                        }
+                        else
+                        {
+                            if (matchMaker != null && matchInfo != null)
+                            {
+                                matchMaker.DropConnection(matchInfo.networkId, matchInfo.nodeId, 0, (success, info) =>
+                                {
+                                    if (!success)
+                                    {
+                                        Debug.LogErrorFormat("Failed to disconnect from matchmaking game. {0}", info);
+                                    }
+                                    StopMatchMaker();
+                                    StopClient();
+                                    matchInfo = null;
+                                });
+                            }
+                            else
+                            {
+                                Debug.LogWarning("No matchmaker or matchInfo despite being a client in matchmaking state.");
+                                StopMatchMaker();
+                                StopClient();
+                                matchInfo = null;
+                            }
+                        }
+                    }
+                    break;
+            }
+
+            state   = NetworkState.Inactive;
+        }
+
+        /// --------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Sets the current matchmaking game as unlisted
+        /// </summary>
+        /// --------------------------------------------------------------------------------------------------------
+        protected void UnlistMatch()
+        {
+            if (gameType == NetworkGameType.Matchmaking &&
+                matchMaker != null)
+            {
+                matchMaker.SetMatchAttributes(matchInfo.networkId, false, 0, (success, info) => Debug.Log("Match hidden"));
+            }
+        }
+
+        /// --------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Causes the current matchmaking game to become listed again
+        /// </summary>
+        /// --------------------------------------------------------------------------------------------------------
+        protected void ListMatch()
+        {
+            if (gameType == NetworkGameType.Matchmaking &&
+                matchMaker != null)
+            {
+                matchMaker.SetMatchAttributes(matchInfo.networkId, true, 0, (success, info) => Debug.Log("Match shown"));
+            }
+        }
+
+
 		/// <summary>
 		/// Makes the server change to the correct game scene for our map, and tells all clients to do the same
 		/// </summary>
@@ -234,24 +537,50 @@ namespace Tanks.Networking
 		{
 			for (int i = 0; i < connectedPlayers.Count; ++i)
 			{
-				connectedPlayers[i].SetPlayerId(i);
+                connectedPlayers[i].SetPlayerId(i);
 			}
 		}
 
-
+        /// --------------------------------------------------------------------------------------------------------
 		/// <summary>
-		/// Register network players so we have all of them
+		/// 增加一个玩家到本地游戏中
 		/// </summary>
+        /// --------------------------------------------------------------------------------------------------------
 		public void RegisterNetworkPlayer(NetworkPlayer newPlayer)
 		{
+
 			MapDetails currentMap = m_Settings.map;
 			connectedPlayers.Add(newPlayer);
+            // newPlayer.becameReady += OnPlayerSetReady;
+
+            if (s_IsServer)
+            {
+                UpdatePlayerIDs();
+            }
+
+            string sceneName = SceneManager.GetActiveScene().name;
+            if (currentMap != null && sceneName == currentMap.sceneName)
+            {
+                newPlayer.OnEnterGameScene();
+            }
+            else if (sceneName == s_LobbySceneName)
+            {
+                ;// newPlayer.OnEnterLobbyScene();
+            }
+
+            if( playerJoined != null )
+            {
+                playerJoined(newPlayer);
+            }
+
+            //newPlayer.gameDetailsReady += FireGameModeUpdated;
 		}
 
-
+        /// --------------------------------------------------------------------------------------------------------
 		/// <summary>
-		/// Deregister network players
+        /// 从本地游戏里删除一个玩家
 		/// </summary>
+        /// --------------------------------------------------------------------------------------------------------
 		public void DeregisterNetworkPlayer(NetworkPlayer removedPlayer)
 		{
 			int index = connectedPlayers.IndexOf(removedPlayer);
@@ -260,11 +589,17 @@ namespace Tanks.Networking
 				connectedPlayers.RemoveAt(index);
 			}
 
-			UpdatePlayerIDs();
+            UpdatePlayerIDs();
 			if (playerLeft != null)
 			{
 				playerLeft(removedPlayer);
 			}
+
+            //removedPlayer.gameDetailsReady -= FireGameModeUpdated;
+            //if (removedPlayer != null)
+            //{
+            //    removedPlayer.becameReady -= OnPlayerSetReady;
+            //}
 		}
 		#endregion
 
@@ -315,5 +650,377 @@ namespace Tanks.Networking
             }
             */
         }
-	}
+
+
+        /// ------------------------------------------------------------------------------------------------------
+        #region Networking event
+
+
+        public override void OnClientError(NetworkConnection conn, int errorCode)
+        {
+            base.OnClientError(conn, errorCode);
+            if( clientError != null )
+            {
+                clientError(conn, errorCode);
+            }
+        }
+
+        public override void OnClientConnect(NetworkConnection conn)
+        {
+            ClientScene.Ready(conn);
+            ClientScene.AddPlayer(0);
+            
+            if( clientConnected != null )
+            {
+                clientConnected(conn);
+            }
+
+        }
+
+        public override void OnClientDisconnect(NetworkConnection conn)
+        {
+            base.OnClientDisconnect(conn);
+            if( clientDisconnected != null )
+            {
+                clientDisconnected(conn);
+            }
+        }
+
+        public override void OnServerError(NetworkConnection conn, int errorCode)
+        {
+            base.OnServerError(conn, errorCode);
+            if( serverError != null )
+            {
+                serverError(conn, errorCode);
+            }
+        }
+
+        public override void OnServerSceneChanged(string sceneName)
+        {
+            base.OnServerSceneChanged(sceneName);
+            if( sceneChanged != null )
+            {
+                sceneChanged(true, sceneName);
+            }
+
+            if( sceneName == s_LobbySceneName )
+            {
+                ListMatch();
+                networkSceneName = string.Empty;
+            }
+        }
+
+        public override void OnClientSceneChanged(NetworkConnection conn)
+        {
+            MapDetails currentMap = m_Settings.map;
+            base.OnClientSceneChanged(conn);
+
+            PlayerController pc = conn.playerControllers[0];
+            if( !pc.unetView.isLocalPlayer )
+            {
+                return;
+            }
+
+            string sceneName = SceneManager.GetActiveScene().name;
+            if (currentMap != null && sceneName == currentMap.sceneName)
+            {
+                state = NetworkState.InGame;
+
+                // Tell all network players that they're in the game scene
+                for (int i = 0; i < connectedPlayers.Count; ++i)
+                {
+                    NetworkPlayer np = connectedPlayers[i];
+                    if (np != null)
+                    {
+                        np.OnEnterGameScene();
+                    }
+                }
+            }
+            else if (sceneName == s_LobbySceneName)
+            {
+                if (state != NetworkState.Inactive)
+                {
+                    if (gameType == NetworkGameType.Singleplayer)
+                    {
+                        state = NetworkState.Pregame;
+                    }
+                    else
+                    {
+                        state = NetworkState.InLobby;
+                    }
+                }
+
+                // Tell all network players that they're in the lobby scene
+                for (int i = 0; i < connectedPlayers.Count; ++i)
+                {
+                    NetworkPlayer np = connectedPlayers[i];
+                    if (np != null)
+                    {
+                        np.OnEnterLobbyScene();
+                    }
+                }
+            }
+
+            if (sceneChanged != null)
+            {
+                sceneChanged(false, sceneName);
+            }
+        }
+
+        public override void OnServerAddPlayer(NetworkConnection conn, short playerControllerId)
+        {
+            Debug.Log("OnServerAddPlayer");
+
+            NetworkPlayer newPlayer = Instantiate<NetworkPlayer>(m_NetworkPlayerPrefab1);
+            DontDestroyOnLoad(newPlayer);
+            NetworkServer.AddPlayerForConnection(conn, newPlayer.gameObject, playerControllerId);
+        }
+
+        public override void OnServerRemovePlayer(NetworkConnection conn, PlayerController player)
+        {
+            Debug.Log("OnServerRemovePlayer");
+            base.OnServerRemovePlayer(conn, player);
+
+            NetworkPlayer connectedPlayer = GetPlayerForConnection(conn);
+            if (connectedPlayer != null)
+            {
+                Destroy(connectedPlayer);
+                connectedPlayers.Remove(connectedPlayer);
+            }
+        }
+
+        public override void OnServerReady(NetworkConnection conn)
+        {
+            Debug.Log("OnServerReady");
+            base.OnServerReady(conn);
+        }
+
+        public override void OnServerConnect(NetworkConnection conn)
+        {
+            Debug.LogFormat("OnServerConnect\nID {0}\nAddress {1}\nHostID {2}", conn.connectionId, conn.address, conn.hostId);
+
+            if (numPlayers >= 4 ||
+                state != NetworkState.InLobby)
+            {
+                conn.Disconnect();
+            }
+            else
+            {
+                // Reset ready flags for everyone because the game state changed
+                if (state == NetworkState.InLobby)
+                {
+                    ClearAllReadyStates();
+                }
+            }
+
+            base.OnServerConnect(conn);
+        }
+
+        public override void OnServerDisconnect(NetworkConnection conn)
+        {
+            Debug.Log("OnServerDisconnect");
+            base.OnServerDisconnect(conn);
+
+            // Reset ready flags for everyone because the game state changed
+            if (state == NetworkState.InLobby)
+            {
+                ClearAllReadyStates();
+            }
+
+            if (serverClientDisconnected != null)
+            {
+                serverClientDisconnected();
+            }
+        }
+
+        public override void OnMatchCreate(bool success, string extendedInfo, MatchInfo matchInfo)
+        {
+            base.OnMatchCreate(success, extendedInfo, matchInfo);
+            Debug.Log("OnMatchCreate");
+
+            if (success)
+            {
+                state = NetworkState.InLobby;
+            }
+            else
+            {
+                state = NetworkState.Inactive;
+            }
+
+            if (NextMatchCreateCallback != null)
+            {
+                NextMatchCreateCallback(success, matchInfo);
+                NextMatchCreateCallback = null;
+            }
+
+            // Fire event
+            if (matchCreated != null)
+            {
+                matchCreated(success, matchInfo);
+            }
+        }
+
+        public override void OnMatchJoined(bool success, string extendedInfo, MatchInfo matchInfo)
+        {
+            base.OnMatchJoined(success, extendedInfo, matchInfo);
+            Debug.Log("OnMatchJoined");
+
+            if (success)
+            {
+                state = NetworkState.InLobby;
+            }
+            else
+            {
+                state = NetworkState.Pregame;
+            }
+
+            // Fire callback
+            if (NextMatchJoinedCallback != null)
+            {
+                NextMatchJoinedCallback(success, matchInfo);
+                NextMatchJoinedCallback = null;
+            }
+
+            // Fire event
+            if (matchJoined != null)
+            {
+                matchJoined(success, matchInfo);
+            }
+        }
+
+        public override void OnDropConnection(bool success, string extendedInfo)
+        {
+            base.OnDropConnection(success, extendedInfo);
+            Debug.Log("OnDropConnection");
+
+            if (matchDropped != null)
+            {
+                matchDropped();
+            }
+        }
+
+        public override void OnStartServer()
+        {
+            base.OnStartServer();
+            networkSceneName = string.Empty;
+        }
+
+        public override void OnStopServer()
+        {
+            base.OnStopServer();
+            Debug.Log("OnStopServer");
+
+            for (int i = 0; i < connectedPlayers.Count; ++i)
+            {
+                NetworkPlayer player = connectedPlayers[i];
+                if (player != null)
+                {
+                    NetworkServer.Destroy(player.gameObject);
+                }
+            }
+
+            connectedPlayers.Clear();
+            networkSceneName = string.Empty;
+
+            if (serverStopped != null)
+            {
+                serverStopped();
+            }
+        }
+
+        public override void OnStopClient()
+        {
+            Debug.Log("OnStopClient");
+            base.OnStopClient();
+
+            for (int i = 0; i < connectedPlayers.Count; ++i)
+            {
+                NetworkPlayer player = connectedPlayers[i];
+                if (player != null)
+                {
+                    Destroy(player.gameObject);
+                }
+            }
+
+            connectedPlayers.Clear();
+            if (clientStopped != null)
+            {
+                clientStopped();
+            }
+        }
+
+        public override void OnStartHost()
+        {
+            Debug.Log("OnStartHost");
+            base.OnStartHost();
+
+            if (m_NextHostStartedCallback != null)
+            {
+                m_NextHostStartedCallback();
+                m_NextHostStartedCallback = null;
+            }
+            if (hostStarted != null)
+            {
+                hostStarted();
+            }
+        }
+
+        public virtual void OnPlayerSetReady(NetworkPlayer player)
+        {
+            if (AllPlayersReady() && serverPlayersReadied != null)
+            {
+                serverPlayersReadied();
+            }
+        }
+        #endregion
+
+        /// -----------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// 判断所有的玩家是否准备好了
+        /// </summary>
+        /// -----------------------------------------------------------------------------------------------------
+        public bool AllPlayersReady()
+        {
+            if (!hasSufficientPlayers)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < connectedPlayers.Count; ++i)
+            {
+                if (!connectedPlayers[i].ready)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        /// -----------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// 清除所有的玩家的状态
+        /// </summary>
+        /// -----------------------------------------------------------------------------------------------------
+        public void ClearAllReadyStates()
+        {
+            for (int i = 0; i < connectedPlayers.Count; ++i)
+            {
+                NetworkPlayer player = connectedPlayers[i];
+                if (player != null)
+                {
+                    player.ClearReady();
+                }
+            }
+        }
+
+        /// -----------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// 根据 NetworkConnection 得到 NetworkPlayer
+        /// </summary>
+        /// -----------------------------------------------------------------------------------------------------
+        public static NetworkPlayer GetPlayerForConnection(NetworkConnection conn)
+        {
+            return conn.playerControllers[0].gameObject.GetComponent<NetworkPlayer>();
+        }
+    }
 }

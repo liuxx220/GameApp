@@ -28,8 +28,15 @@ namespace Tanks.TankControllers
     };
 
 
-    public class TankShooting : MonoBehaviour
-	{
+    public class TankShooting : NetworkBehaviour
+    {
+
+        #region ActionEvent
+        public  event Action<int>       ammoQtyChanged;
+        public  event Action<int>       overrideShellChanged;
+        public  event Action            fired;
+        #endregion
+
 
         public GameObject       fireDirection;
         public GameObject       gunHead;
@@ -38,16 +45,18 @@ namespace Tanks.TankControllers
 
         public float            coneAngle = 1.5f;
         int                     shootableMask;
+        protected int           m_PlayerNumber = 1;
         float                   Esplasetimer;
         float                   effectsDisplayTime = 0;
 
         private SHOOTINGMODE    m_ShootMode = SHOOTINGMODE.Shoot_continued;
         private bool            m_FireInput;
         public  float           m_curLookatDeg;
-        private float           m_TurretHeading;
         private float           m_fOldEulerAngles = 0;
 
-        private Vector3         m_faceDirection = Vector3.zero;
+        [SyncVar]
+        private float           m_TurretHeading;
+
         /// <summary>
         /// 预测目标点的变量
         /// </summary>
@@ -58,13 +67,17 @@ namespace Tanks.TankControllers
         /// 屏幕射线相关的数据
         /// </summary>
         private LineRenderer    m_LineRender;
-        public  float           m_scroolSpeed = 0.5f;
         public  float           m_pulseSpeed = 1.5f;
-        public  float           m_noiseSize = 1.0f;
         public  float           m_maxWidth = 0.5f;
         public  float           m_minWidth = 0.2f;
-        private float           m_aniTime = 0.0f;
-        private float           m_andDir = 1.0f;
+
+        private static TankShooting s_localTank;
+        public static TankShooting s_LocalTank
+        {
+            get { return s_localTank; }
+        }
+
+
         void Awake()
         {
             shootableMask       = LayerMask.GetMask("Shootable");
@@ -75,8 +88,8 @@ namespace Tanks.TankControllers
             m_fOldEulerAngles   = m_curLookatDeg;
         }
 
-
-        void Update()
+        [ClientCallback]
+        private void Update()
         {
             m_shootRay.origin       = gunHead.transform.position;
             m_shootRay.direction    = gunHead.transform.forward;
@@ -208,23 +221,30 @@ namespace Tanks.TankControllers
             Esplasetimer = 0f;
             muzzleFlash.SetActive(true);
             effectsDisplayTime = 0;
+
+            Vector3 position    = gunHead.transform.position;
+            Vector3 shotVector  = gunHead.transform.forward;
+
+            // 随机种子
+            int randSeed        = UnityEngine.Random.Range(int.MinValue, int.MaxValue);
+            CmdFire(shotVector, position, randSeed);
             if (m_ShootMode == SHOOTINGMODE.Shoot_continued)
             {
-                FireEffect1();
+                FireEffect1( shotVector, position, randSeed );
             }
             if (m_ShootMode == SHOOTINGMODE.Shoot_pressUp)
             {
-                FireEffect2();
+                FireEffect2(shotVector, position, randSeed );
                 m_FireInput = false;
             }
             if(m_ShootMode == SHOOTINGMODE.Shoot_pulse)
             {
-                FireEffect3();
+                FireEffect3(shotVector, position, randSeed );
                 m_FireInput = false;
             }
             if( m_ShootMode == SHOOTINGMODE.Shoot_Rocket )
             {
-                FireEffect4();
+                FireEffect4(shotVector, position, randSeed );
                 m_FireInput = false;
             }
         }
@@ -241,40 +261,27 @@ namespace Tanks.TankControllers
         /// ------------------------------------------------------------------------------------------
         public void SetDesiredFirePosition( Vector3 facedir )
         {
-            m_faceDirection = facedir;
-            float angle     = 90f - Mathf.Atan2(m_faceDirection.y, m_faceDirection.x) * Mathf.Rad2Deg;
-            m_TurretHeading = angle + m_fOldEulerAngles;
+            float angle     = 90f - Mathf.Atan2(facedir.y, facedir.x) * Mathf.Rad2Deg;
+            CmdSetLook(angle + m_fOldEulerAngles);
         }
-
-
-        public Vector3 GetFaceDirection()
-        {
-            return m_faceDirection;
-        }
-
 
         /// ------------------------------------------------------------------------------------------
         /// <summary>
         /// 这里暂时先这么实现各种子弹，子弹1射击的效果
         /// </summary>
         /// ------------------------------------------------------------------------------------------
-        private void FireEffect1()
+        private void FireEffect1( Vector3 shootVector, Vector3 position, int randSeed )
         {
-            var coneRandomRotation = Quaternion.Euler(Random.Range(-coneAngle, coneAngle), Random.Range(-coneAngle, coneAngle), 0f);
-            Vector3 position     = gunHead.transform.position;
-            Vector3 shotVector   = gunHead.transform.forward;
-
- 
             GameObject shellInstance = null;
             if (ExplosionManager.s_InstanceExists)
             {
-                shellInstance = ExplosionManager.s_Instance.CreateVisualBullet(position, shotVector, 0, BulletClass.FiringExplosion);
+                shellInstance = ExplosionManager.s_Instance.CreateVisualBullet(position, shootVector, 0, BulletClass.FiringExplosion);
             }
 
             shellInstance.SetActive(true);
             shellInstance.transform.localScale = Vector3.one;
-            shellInstance.transform.position = position;
-            shellInstance.transform.forward = shotVector;
+            shellInstance.transform.position   = position;
+            shellInstance.transform.forward    = shootVector;
 
             // 忽略与自身的碰撞
             Physics.IgnoreCollision(shellInstance.GetComponent<Collider>(), GetComponentInChildren<Collider>(), true);
@@ -288,23 +295,18 @@ namespace Tanks.TankControllers
         /// 这里暂时先这么实现各种子弹，子弹2射击的效果
         /// </summary>
         /// ------------------------------------------------------------------------------------------
-        private void FireEffect2()
+        private void FireEffect2( Vector3 shootVector, Vector3 position, int randSeed )
         {
-
-            Vector3 position = gunHead.transform.position;
-            Vector3 shotVector = gunHead.transform.forward;
-
-            int randSeed = UnityEngine.Random.Range(int.MinValue, int.MaxValue);
             GameObject shellInstance = null;
             if (ExplosionManager.s_InstanceExists)
             {
-                shellInstance = ExplosionManager.s_Instance.CreateVisualBullet(position, shotVector, 0, BulletClass.ClusterExplosion );
+                shellInstance = ExplosionManager.s_Instance.CreateVisualBullet(position, shootVector, 0, BulletClass.ClusterExplosion );
             }
 
             shellInstance.SetActive(true);
             shellInstance.transform.localScale = Vector3.one;
             shellInstance.transform.position = position;
-            shellInstance.transform.forward = shotVector;
+            shellInstance.transform.forward = shootVector;
 
             // 忽略与自身的碰撞
             Physics.IgnoreCollision(shellInstance.GetComponent<Collider>(), GetComponentInChildren<Collider>(), true);
@@ -318,23 +320,18 @@ namespace Tanks.TankControllers
         /// 这里暂时先这么实现各种子弹，子弹2射击的效果
         /// </summary>
         /// ------------------------------------------------------------------------------------------
-        private void FireEffect3()
+        private void FireEffect3(Vector3 shootVector, Vector3 position, int randSeed )
         {
-
-            Vector3 position = gunHead.transform.position;
-            Vector3 shotVector = gunHead.transform.forward;
-
-            int randSeed = UnityEngine.Random.Range(int.MinValue, int.MaxValue);
             GameObject shellInstance = null;
             if (ExplosionManager.s_InstanceExists)
             {
-                shellInstance = ExplosionManager.s_Instance.CreateVisualBullet(position, shotVector, 0, BulletClass.PulseExplosion);
+                shellInstance = ExplosionManager.s_Instance.CreateVisualBullet(position, shootVector, 0, BulletClass.PulseExplosion);
             }
 
             shellInstance.SetActive(true);
             shellInstance.transform.localScale = Vector3.one;
             shellInstance.transform.position = position;
-            shellInstance.transform.forward = shotVector;
+            shellInstance.transform.forward = shootVector;
 
             // 忽略与自身的碰撞
             Physics.IgnoreCollision(shellInstance.GetComponent<Collider>(), GetComponentInChildren<Collider>(), true);
@@ -348,29 +345,73 @@ namespace Tanks.TankControllers
         /// 这里暂时先这么实现各种子弹，子弹2射击的效果
         /// </summary>
         /// ------------------------------------------------------------------------------------------
-        private void FireEffect4()
+        private void FireEffect4(Vector3 shootVector, Vector3 position, int randSeed)
         {
-
-            Vector3 position = gunHead.transform.position;
-            Vector3 shotVector = gunHead.transform.forward;
-
-            int randSeed = UnityEngine.Random.Range(int.MinValue, int.MaxValue);
             GameObject shellInstance = null;
             if (ExplosionManager.s_InstanceExists)
             {
-                shellInstance = ExplosionManager.s_Instance.CreateVisualBullet(position, shotVector, 0, BulletClass.RocketExplosion);
+                shellInstance = ExplosionManager.s_Instance.CreateVisualBullet(position, shootVector, 0, BulletClass.RocketExplosion);
             }
 
             shellInstance.SetActive(true);
             shellInstance.transform.localScale = Vector3.one;
             shellInstance.transform.position = position;
-            shellInstance.transform.forward = shotVector;
+            shellInstance.transform.forward = shootVector;
 
             // 忽略与自身的碰撞
             Physics.IgnoreCollision(shellInstance.GetComponent<Collider>(), GetComponentInChildren<Collider>(), true);
             Shell shell = shellInstance.GetComponent<Shell>();
             shell.Setup(0, null, 100);
             shell.transform.rotation = Quaternion.Euler(new Vector3(transform.rotation.eulerAngles.x, m_curLookatDeg, transform.rotation.eulerAngles.z));
+        }
+
+
+        /// ------------------------------------------------------------------------------------------------
+        /// 网络层
+        
+        [Command]
+        private void CmdSetLook( float turretHeading )
+        {
+            m_TurretHeading = turretHeading;
+        }
+
+        [Command]
+        private void CmdFire( Vector3 shotVector, Vector3 position, int randSedd )
+        {
+            RpcFire(0, shotVector, position, randSedd);
+        }
+
+        [ClientRpc]
+        private void RpcFire(int playerId, Vector3 shotVector, Vector3 position, int randSeed)
+        {
+            if (fired != null)
+            {
+                fired();
+            }
+
+            // If this fire message is for our own local player id, we skip. We already spawned a projectile
+            if (playerId != TankShooting.s_LocalTank.m_PlayerNumber)
+            {
+                if (m_ShootMode == SHOOTINGMODE.Shoot_continued)
+                {
+                    FireEffect1(shotVector, position, randSeed);
+                }
+                if (m_ShootMode == SHOOTINGMODE.Shoot_pressUp)
+                {
+                    FireEffect2(shotVector, position, randSeed);
+                    m_FireInput = false;
+                }
+                if (m_ShootMode == SHOOTINGMODE.Shoot_pulse)
+                {
+                    FireEffect3(shotVector, position, randSeed);
+                    m_FireInput = false;
+                }
+                if (m_ShootMode == SHOOTINGMODE.Shoot_Rocket)
+                {
+                    FireEffect4(shotVector, position, randSeed);
+                    m_FireInput = false;
+                }
+            }
         }
 	}
 }
