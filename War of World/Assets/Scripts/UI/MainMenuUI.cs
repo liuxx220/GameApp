@@ -2,8 +2,8 @@ using System;
 using UnityEngine;
 using UnityEngine.Events;
 using Tanks.Utilities;
-
-
+using Tanks.Networking;
+using TanksNetworkPlayer = Tanks.Networking.NetworkPlayer;
 
 
 
@@ -34,23 +34,25 @@ namespace Tanks.UI
 		#region Fields
 
 		[SerializeField]
-		protected CanvasGroup m_DefaultPanel;
+		protected CanvasGroup       m_DefaultPanel;
 		[SerializeField]
-		protected CanvasGroup m_SinglePlayerPanel;
+		protected CanvasGroup       m_SinglePlayerPanel;
         [SerializeField]
-        protected CanvasGroup m_CreateGamePanel;
+        protected CanvasGroup       m_CreateGamePanel;
+        [SerializeField]
+        protected CanvasGroup       m_LobbyPanel;
 		[SerializeField]
-		protected LobbyInfoPanel m_InfoPanel;
+		protected LobbyInfoPanel    m_InfoPanel;
 		[SerializeField]
-		protected LobbyPlayerList m_PlayerList;
+		protected LobbyPlayerList   m_PlayerList;
 		[SerializeField]
-		protected SettingsModal m_SettingsModal;
+		protected SettingsModal     m_SettingsModal;
 		[SerializeField]
-		protected GameObject m_QuitButton;
-		private CanvasGroup m_CurrentPanel;
+		protected GameObject        m_QuitButton;
+		private CanvasGroup         m_CurrentPanel;
 
-		private Action m_WaitTask;
-		private bool m_ReadyToFireTask;
+		private Action              m_WaitTask;
+		private bool                m_ReadyToFireTask;
 
 		#endregion
 
@@ -131,16 +133,38 @@ namespace Tanks.UI
 			}
 		}
 
+        public void ShowConnectingModal(bool reconnectMatchmakingClient)
+        {
+            ShowInfoPopup("Connecting...", () =>
+            {
+                if (NetworkManager.s_Instance != null )
+                {
+                    if (reconnectMatchmakingClient)
+                    {
+                        NetworkManager.s_Instance.Disconnect();
+                        NetworkManager.s_Instance.StartMatchingmakingClient();
+                    }
+                    else
+                    {
+                        NetworkManager.s_Instance.Disconnect();
+                    }
+                }
+            });
+        }
+
 		public void ShowDefaultPanel()
 		{
 			ShowPanel(m_DefaultPanel);
 		}
 
+        public void ShowLobbyPanel()
+        {
+            ShowPanel(m_LobbyPanel);
+        }
+
 		/// <summary>
 		/// Shows the info popup with a callback
 		/// </summary>
-		/// <param name="label">Label.</param>
-		/// <param name="callback">Callback.</param>
 		public void ShowInfoPopup(string label, UnityAction callback)
 		{
 			if (m_InfoPanel != null)
@@ -168,7 +192,9 @@ namespace Tanks.UI
 		//Event listener
 		private void OnClientStopped()
 		{
-			m_ReadyToFireTask = true;
+            NetworkManager netManager = NetworkManager.s_Instance;
+            netManager.clientStopped  -= OnClientStopped;
+            m_ReadyToFireTask         = true;
 		}
 
 		private void ShowSingleplayerPanel()
@@ -186,9 +212,16 @@ namespace Tanks.UI
             ShowSingleplayerPanel();
         }
 
-        public void OnLoadGameClicked()
+
+        private void GoToCreateGamePanel()
         {
             ShowPanel(m_CreateGamePanel);
+        }
+
+
+        public void OnLoadGameClicked()
+        {
+            DoIfNetworkReady(GoToCreateGamePanel);
         }
 
         public void OnSaveGameClicked()
@@ -208,5 +241,37 @@ namespace Tanks.UI
 		}
 
 		#endregion
+
+        /// -------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Wait for network to disconnect before performing an action
+        /// </summary>
+        /// -------------------------------------------------------------------------------------------
+        public void DoIfNetworkReady( Action task )
+        {
+            if( task == null )
+            {
+                throw new ArgumentNullException("task");
+            }
+
+            NetworkManager netManager = NetworkManager.s_Instance;
+            if (netManager.isNetworkActive)
+            {
+                m_WaitTask = task;
+
+                LoadingModal modal = LoadingModal.s_Instance;
+                if (modal != null)
+                {
+                    modal.FadeIn();
+                }
+
+                m_ReadyToFireTask = false;
+                netManager.clientStopped += OnClientStopped;
+            }
+            else
+            {
+                task();
+            }
+        }
 	}
 }

@@ -30,7 +30,6 @@ namespace Tanks.SinglePlayer
 
 			if (collectionEffect != null)
 			{
-				zoneObject.GetComponentInParent<TankManager>().AddPickupName(pickupName);
 				Instantiate(collectionEffect, transform.position + Vector3.up, Quaternion.LookRotation(Vector3.up));
 			}
 				

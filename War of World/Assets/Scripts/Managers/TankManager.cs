@@ -23,7 +23,7 @@ namespace Tanks.TankControllers
 	/// and whether or not players have control of their tank in the
 	/// different phases of the game.
 	/// </summary>
-    public class TankManager : MonoBehaviour
+    public class TankManager : NetworkBehaviour
 	{
 		#region Fields
 
@@ -31,8 +31,11 @@ namespace Tanks.TankControllers
 		private Transform m_AssignedSpawnPoint;
 
 
-		protected int m_PlayerId = -1;
-		protected int m_Score = 0;
+        [SyncVar(hook = "OnPlayerIdChanged")]
+        protected int m_PlayerId = -1;
+        [SyncVar]
+        protected int m_Score = 0;
+        [SyncVar(hook = "OnRankChanged")]
 		protected int m_Rank = -1;
 
 		#endregion
@@ -123,13 +126,26 @@ namespace Tanks.TankControllers
 
 		#region Methods
 
-		public void OnStartClient()
-		{
-			if (!initialized && m_PlayerId >= 0)
-			{
-				Initialize();
-			}
-		}
+        public override void OnStartClient()
+        {
+            base.OnStartClient();
+
+            if (!initialized && m_PlayerId >= 0)
+            {
+                Initialize();
+            }
+        }
+
+        public override void OnNetworkDestroy()
+        {
+            base.OnNetworkDestroy();
+            if (player != null)
+            {
+                player.tank = null;
+            }
+
+            GameManager.s_Instance.RemoveTank(this);
+        }
 
 
 		private void Initialize()
@@ -156,13 +172,22 @@ namespace Tanks.TankControllers
             player.transform.position = transform.position;
             player.transform.rotation = transform.rotation;
             player.transform.SetParent(transform, true);
-
+            if (isServer)
+            {
+                AnalyticsHelper.PlayerUsedTankInGame(playerTankType.id);
+            }
 
 			movement = GetComponent<TankMovement>();
 			shooting = GetComponent<TankShooting>();
 			movement.Init(this);
-            
+        
 			GameManager.AddTank(this);
+
+            if (player.hasAuthority)
+            {
+                DisableShooting();
+                player.CmdSetReady();
+            }
 		}
 
 		public void DisableShooting()
@@ -277,6 +302,7 @@ namespace Tanks.TankControllers
 		}
 
 		#region SYNCVAR HOOKS
+
 		private void OnRankChanged(int rank)
 		{
 			this.m_Rank = rank;
@@ -294,46 +320,19 @@ namespace Tanks.TankControllers
 
 		#endregion
 
-		public void MarkTankAsRemoved()
-		{
-			removedTank = true;
-		}
-
 		#region Networking
-		private void RpcOnPickupCollected(string pickupName)
-		{
-			if (onPickupCollected != null)
-			{
-				onPickupCollected(pickupName);
-			}
-		}
-
+        [Server]
 		public void SetRank(int rank)
 		{
 			this.m_Rank = rank;
 		}
 
 
-		public void AddPickupName(string pickupName)
-		{
-			RpcOnPickupCollected(pickupName);
-		}
-
-
-		public void AddPickupCurrency(int addCurrency)
-		{
-			
-		}
-
-		public void SetAwardCurrency(int currency)
-		{
-			
-		}
-
-		public void SetPlayerId(int id)
-		{
-			m_PlayerId = id;
-		}
+        [Server]
+        public void SetPlayerId(int id)
+        {
+            m_PlayerId = id;
+        }
 
 		#endregion
 

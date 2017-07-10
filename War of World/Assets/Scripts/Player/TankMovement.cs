@@ -37,6 +37,8 @@ namespace Tanks.TankControllers
         public GameObject           AnimationObject;
         public float                minWalkSpeed = 2.0f;
         public float                maxIdleSpeed = 0.5f;
+
+        [SyncVar]
         private float               walkingSpeed = 5f;
 
         private float               Speed = 0;
