@@ -55,11 +55,71 @@ namespace Tanks.UI
 
 			ClearUi();
 
-			//Disable NO SERVER FOUND error message
 			m_NoServerFound.SetActive(false);
-
 			m_NextRefreshTime = Time.time;
+
+            if (m_NetManager != null)
+            {
+                m_NetManager.clientDisconnected += OnDisconnect;
+                m_NetManager.clientError        += OnError;
+                m_NetManager.serverError        += OnError;
+                m_NetManager.matchDropped       += OnDrop;
+            }
+
 		}
+
+        protected virtual void OnDisable()
+        {
+            if (m_NetManager != null)
+            {
+                m_NetManager.clientDisconnected -= OnDisconnect;
+                m_NetManager.clientError        -= OnError;
+                m_NetManager.serverError        -= OnError;
+                m_NetManager.matchDropped       -= OnDrop;
+            }
+        }
+
+        protected virtual void OnError(UnityEngine.Networking.NetworkConnection conn, int errorCode)
+        {
+            if (m_MenuUi != null)
+            {
+                m_MenuUi.ShowDefaultPanel();
+                m_MenuUi.ShowInfoPopup("A connection error occurred", null);
+            }
+
+            if (m_NetManager != null)
+            {
+                m_NetManager.Disconnect();
+            }
+        }
+
+        protected virtual void OnDisconnect(UnityEngine.Networking.NetworkConnection conn)
+        {
+            if (m_MenuUi != null)
+            {
+                m_MenuUi.ShowDefaultPanel();
+                m_MenuUi.ShowInfoPopup("Disconnected from server", null);
+            }
+
+            if (m_NetManager != null)
+            {
+                m_NetManager.Disconnect();
+            }
+        }
+
+        protected virtual void OnDrop()
+        {
+            if (m_MenuUi != null)
+            {
+                m_MenuUi.ShowDefaultPanel();
+                m_MenuUi.ShowInfoPopup("Disconnected from server", null);
+            }
+
+            if (m_NetManager != null)
+            {
+                m_NetManager.Disconnect();
+            }
+        }
 
 		protected void ClearUi()
 		{
@@ -75,7 +135,6 @@ namespace Tanks.UI
 			if (m_NextRefreshTime <= Time.time)
 			{
 				RequestPage(m_CurrentPage);
-
 				m_NextRefreshTime = Time.time + m_ListAutoRefreshTime;
 			}
 		}
@@ -138,9 +197,7 @@ namespace Tanks.UI
 			for (int i = 0; i < response.Count; ++i)
 			{
 				GameObject o = Instantiate(m_ServerEntryPrefab);
-
 				o.GetComponent<LobbyServerEntry>().Populate(response[i], (i % 2 == 0) ? s_OddServerColor : s_EvenServerColor);
-
 				o.transform.SetParent(m_ServerListRect, false);
 			}
 		}
@@ -161,7 +218,14 @@ namespace Tanks.UI
 		//Handle requests
 		public void RequestPage(int page)
 		{
-			
+            if (m_NetManager != null && m_NetManager.matchMaker != null)
+            {
+                m_NextButton.interactable = false;
+                m_PreviousButton.interactable = false;
+
+                Debug.Log("Requesting match list");
+                m_NetManager.matchMaker.ListMatches(page, m_PageSize, string.Empty, false, 0, 0, OnGuiMatchList);
+            }
 		}
 
 		//We just set the autorefresh time to RIGHT NOW when this button is pushed, triggering all the refresh logic in the next Update tick.

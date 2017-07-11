@@ -495,12 +495,12 @@ namespace Tanks.Networking
             ClearAllReadyStates();
 
             UnlistMatch();
-            /*
+            
             GameObject LocalPlayer = Instantiate(m_NetworkPlayerPrefab);
             NetworkPlayer newPlayer = LocalPlayer.GetComponent<NetworkPlayer>();
             DontDestroyOnLoad(LocalPlayer);
             newPlayer.StartLocalPlayer();
-            */
+            
 			m_SceneChangeMode = SceneChangeMode.Game;
 			for (int i = 0; i < connectedPlayers.Count; ++i)
 			{
