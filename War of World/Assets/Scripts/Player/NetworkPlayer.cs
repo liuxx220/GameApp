@@ -17,11 +17,8 @@ namespace Tanks.Networking
 	{
 
         [SerializeField]
-        protected GameObject                m_DisplayPrefab;
+        protected GameObject                m_LobbyPrefab;
 
-        public  GameObject                  m_FPS;
-        public  GameObject                  m_TPS;
-        public  GameObject                  m_Flag;
         [SyncVar]
         public int                          m_StartingHealth = 100;
         [SyncVar(hook = "OnCurrentHealthChanged")]
@@ -115,6 +112,16 @@ namespace Tanks.Networking
 		}
 
         /// <summary>
+        /// Gets the lobby object associated with this player
+        /// </summary>
+        public LobbyPlayer lobbyObject
+        {
+            get;
+            private set;
+        }
+
+
+        /// <summary>
         /// Gets the local NetworkPlayer object
         /// </summary>
         public static NetworkPlayer s_LocalPlayer
@@ -130,18 +137,18 @@ namespace Tanks.Networking
         /// -----------------------------------------------------------------------------------------------
         public void SetGameModel( PLAYGAMEMODEL model )
         {
-            if( model == PLAYGAMEMODEL.PLAYGAME_FPS )
-            {
-                m_FPS.SetActive(true);
-                m_TPS.SetActive(false);
-                m_Flag.SetActive(false);
-            }
-            else
-            {
-                m_FPS.SetActive(false);
-                m_TPS.SetActive(true);
-                m_Flag.SetActive(true);
-            }
+            //if( model == PLAYGAMEMODEL.PLAYGAME_FPS )
+            //{
+            //    m_FPS.SetActive(true);
+            //    m_TPS.SetActive(false);
+            //    m_Flag.SetActive(false);
+            //}
+            //else
+            //{
+            //    m_FPS.SetActive(false);
+            //    m_TPS.SetActive(true);
+            //    m_Flag.SetActive(true);
+            //}
         }
 
         void Awake()
@@ -168,6 +175,12 @@ namespace Tanks.Networking
         {
             base.OnNetworkDestroy();
             Debug.Log("Client Network Player OnNetworkDestroy");
+            
+            if( lobbyObject != null )
+            {
+                Destroy(lobbyObject.gameObject);
+            }
+
             if (m_NetManager != null)
             {
                 m_NetManager.DeregisterNetworkPlayer(this);
@@ -191,7 +204,8 @@ namespace Tanks.Networking
 
         private void CreateLobbyObject()
         {
-           
+            lobbyObject = Instantiate(m_LobbyPrefab).GetComponent<LobbyPlayer>();
+            lobbyObject.Init(this);
         }
 
         /// <summary>
@@ -308,7 +322,7 @@ namespace Tanks.Networking
         public void OnEnterLobbyScene()
         {
             Debug.Log("OnEnterLobbyScene");
-            if (m_Initialized )
+            if (m_Initialized && lobbyObject == null )
             {
                 CreateLobbyObject();
             }
@@ -326,8 +340,9 @@ namespace Tanks.Networking
             PlayerDataManager dataManager = PlayerDataManager.s_Instance;
             if (dataManager != null)
             {
-                m_PlayerTankType = dataManager.selectedPlayer;
-                m_PlayerName = dataManager.playerName;
+                m_PlayerTankType    = dataManager.selectedPlayer;
+                m_PlayerName        = dataManager.playerName;
+                CmdSetInitialValues(m_PlayerTankType, 0, 0, m_PlayerName);
             }
         }
 
@@ -389,9 +404,8 @@ namespace Tanks.Networking
         private void CmdClientReadyInScene()
         {
             Debug.Log("CmdClientReadyInScene");
-            GameObject tankObject = Instantiate(m_DisplayPrefab);
-            NetworkServer.SpawnWithClientAuthority(tankObject, connectionToClient);
-            tank = tankObject.GetComponent<TankManager>();
+            NetworkServer.SpawnWithClientAuthority(gameObject, connectionToClient);
+            tank = gameObject.GetComponent<TankManager>();
             tank.SetPlayerId(playerId);
         }
 

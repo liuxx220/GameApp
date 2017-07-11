@@ -40,6 +40,8 @@ namespace Tanks.UI
         [SerializeField]
         protected CanvasGroup       m_CreateGamePanel;
         [SerializeField]
+        protected CanvasGroup       m_ServerListPanel;
+        [SerializeField]
         protected CanvasGroup       m_LobbyPanel;
 		[SerializeField]
 		protected LobbyInfoPanel    m_InfoPanel;
@@ -189,6 +191,11 @@ namespace Tanks.UI
 			}
 		}
 
+        public void ShowServerListPanel()
+        {
+            ShowPanel(m_ServerListPanel);
+        }
+
 		//Event listener
 		private void OnClientStopped()
 		{
@@ -226,7 +233,8 @@ namespace Tanks.UI
 
         public void OnSaveGameClicked()
         {
-
+            ShowServerListPanel();
+            NetworkManager.s_Instance.StartMatchingmakingClient();
         }
 
         public void OnShowSettingsModal()

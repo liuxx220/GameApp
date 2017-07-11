@@ -31,8 +31,8 @@ namespace Tanks.UI
 			m_NetManager = NetworkManager.s_Instance;
 			if (m_NetManager != null)
 			{
-				m_NetManager.playerJoined += PlayerJoined;
-				m_NetManager.playerLeft += PlayerLeft;
+				m_NetManager.playerJoined   += PlayerJoined;
+				m_NetManager.playerLeft     += PlayerLeft;
 			}
 		}
 
@@ -41,8 +41,8 @@ namespace Tanks.UI
 		{
 			if (m_NetManager != null)
 			{
-				m_NetManager.playerJoined -= PlayerJoined;
-				m_NetManager.playerLeft -= PlayerLeft;
+				m_NetManager.playerJoined   -= PlayerJoined;
+				m_NetManager.playerLeft     -= PlayerLeft;
 			}
 		}
 		

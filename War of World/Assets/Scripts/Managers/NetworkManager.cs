@@ -492,18 +492,22 @@ namespace Tanks.Networking
 		/// </summary>
 		public void ProgressToGameScene()
 		{
+            ClearAllReadyStates();
+
+            UnlistMatch();
+            /*
             GameObject LocalPlayer = Instantiate(m_NetworkPlayerPrefab);
             NetworkPlayer newPlayer = LocalPlayer.GetComponent<NetworkPlayer>();
             DontDestroyOnLoad(LocalPlayer);
             newPlayer.StartLocalPlayer();
-
+            */
 			m_SceneChangeMode = SceneChangeMode.Game;
 			for (int i = 0; i < connectedPlayers.Count; ++i)
 			{
 				NetworkPlayer player = connectedPlayers[i];
 				if (player != null)
 				{
-                    ;// player.RpcPrepareForLoad();
+                    player.RpcPrepareForLoad();
 				}
 			}
 		}
@@ -565,7 +569,7 @@ namespace Tanks.Networking
             }
             else if (sceneName == s_LobbySceneName)
             {
-                ;// newPlayer.OnEnterLobbyScene();
+                newPlayer.OnEnterLobbyScene();
             }
 
             if( playerJoined != null )
@@ -596,10 +600,10 @@ namespace Tanks.Networking
 			}
 
             //removedPlayer.gameDetailsReady -= FireGameModeUpdated;
-            //if (removedPlayer != null)
-            //{
-            //    removedPlayer.becameReady -= OnPlayerSetReady;
-            //}
+            if (removedPlayer != null)
+            {
+                removedPlayer.becameReady -= OnPlayerSetReady;
+            }
 		}
 		#endregion
 

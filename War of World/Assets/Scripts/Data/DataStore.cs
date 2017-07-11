@@ -88,6 +88,7 @@ namespace Tanks.Data
             levels              = new List<LevelData>();
             settingsData        = new SettingsData();
             unlockedTanks       = new bool[3];
+            playerName          = "Player";
 		}
 
 		/// <summary>
