@@ -303,10 +303,6 @@ namespace Tanks.Networking
         [Client]
         public void OnEnterGameScene()
         {
-            tank = gameObject.GetComponent<TankManager>();
-            tank.SetPlayerId(playerId);
-            tank.OnStartClient();
-
             if( hasAuthority )
             {
                 CmdClientReadyInScene();

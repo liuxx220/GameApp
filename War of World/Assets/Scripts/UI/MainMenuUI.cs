@@ -209,6 +209,16 @@ namespace Tanks.UI
 			ShowPanel(m_SinglePlayerPanel);
 		}
 
+        /// -----------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// 开始单击模式
+        /// </summary>
+        /// -----------------------------------------------------------------------------------------------------------
+        private void GotoSingleplayerPanel()
+        {
+            ShowSingleplayerPanel();
+            NetworkManager.s_Instance.StartSinglePlayerMode(null);
+        }
 		#endregion
 
 
@@ -216,7 +226,7 @@ namespace Tanks.UI
 
         public void OnSingleplayerClicked()
         {
-            ShowSingleplayerPanel();
+            DoIfNetworkReady(GotoSingleplayerPanel);
         }
 
 

@@ -103,14 +103,6 @@ namespace Tanks.Hazards
 		protected virtual void Update()
 		{
 			GameManager gameManager = GameManager.s_Instance;
-			if (gameManager != null && gameManager.rulesProcessor != null)
-			{
-				if (gameManager.rulesProcessor.IsEndOfRound())
-				{
-					m_DisableFire = true;
-				}
-			}
-
 			if (m_FollowPlayer && !m_HasGotPlayer && gameManager != null)
 			{
 				if (GameManager.s_Tanks.Count > 0)

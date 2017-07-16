@@ -112,15 +112,6 @@ namespace Tanks
         private int m_LocalPlayerNumber = 0;
         //if the tanks are active
         private bool m_HazardsActive;
-
-        //The rules processor being used
-        private RulesProcessor m_RulesProcessor;
-
-        public RulesProcessor rulesProcessor
-        {
-            get { return m_RulesProcessor; }
-        }
-
         //The end game modal that is actually used
         protected EndGameModal m_EndGameModal;
 
@@ -246,10 +237,6 @@ namespace Tanks
 
             SetGameSettings();
 
-            //Instantiate the rules processor
-            m_RulesProcessor = Instantiate<RulesProcessor>(m_GameSettings.mode.rulesProcessor);
-            m_RulesProcessor.SetGameManager(this);
-
             //Instantiate the explosion manager
             if (m_ExplosionManagerPrefab != null)
             {
@@ -277,31 +264,31 @@ namespace Tanks
         private void SetupSinglePlayerModals()
         {
             //Cache the offline rules processor
-            OfflineRulesProcessor offlineRulesProcessor = m_RulesProcessor as OfflineRulesProcessor;
+            //OfflineRulesProcessor offlineRulesProcessor = m_RulesProcessor as OfflineRulesProcessor;
             //Get the end game modal
-            EndGameModal endGame = offlineRulesProcessor.endGameModal;
+            //EndGameModal endGame = offlineRulesProcessor.endGameModal;
 
             //If an end game modal is not specified then use the default
-            if (endGame == null)
-            {
-                endGame = m_DefaultSinglePlayerModal;
-            }
+            //if (endGame == null)
+            //{
+            //    endGame = m_DefaultSinglePlayerModal;
+            //}
 
-            InstantiateEndGameModal(endGame);
+            //InstantiateEndGameModal(endGame);
 
-            if (m_EndGameModal != null)
-            {
-                m_EndGameModal.SetRulesProcessor(m_RulesProcessor);
-            }
+            //if (m_EndGameModal != null)
+            //{
+            //    m_EndGameModal.SetRulesProcessor(m_RulesProcessor);
+            //}
 
             //Handle start game modal	
-            if (offlineRulesProcessor.startGameModal != null)
+            //if (offlineRulesProcessor.startGameModal != null)
             {
-                m_StartGameModal = Instantiate(offlineRulesProcessor.startGameModal);
-                m_StartGameModal.transform.SetParent(m_EndGameUiParent, false);
-                m_StartGameModal.gameObject.SetActive(false);
-                m_StartGameModal.Setup(offlineRulesProcessor);
-                m_StartGameModal.Show();
+                //m_StartGameModal = Instantiate(offlineRulesProcessor.startGameModal);
+                //m_StartGameModal.transform.SetParent(m_EndGameUiParent, false);
+                //m_StartGameModal.gameObject.SetActive(false);
+                //m_StartGameModal.Setup(offlineRulesProcessor);
+                //m_StartGameModal.Show();
                 LazyLoadLoadingPanel();
                 //The loading screen must always be the last sibling
                 m_LoadingScreen.transform.SetAsLastSibling();
@@ -355,11 +342,6 @@ namespace Tanks
             if (tankIndex >= 0)
             {
                 s_Tanks.RemoveAt(tankIndex);
-                if (m_RulesProcessor != null)
-                {
-                    m_RulesProcessor.TankDisconnected(tank);
-                }
-
                 m_NumberOfPlayers--;
             }
 
@@ -553,13 +535,8 @@ namespace Tanks
         /// </summary>
         protected void Preplay()
         {
-            if (!m_RulesProcessor.canStartGame)
-            {
-                return;
-            }
 
             RoundStarting();
-
             //notify clients that the round is now started, they should allow player to move.
             RpcRoundPlaying();
         }
@@ -575,11 +552,6 @@ namespace Tanks
                 ActivateHazards();
                 m_HazardsActive = true;
             }
-
-            if (m_RulesProcessor.IsEndOfRound())
-            {
-                m_State = GameState.RoundEnd;
-            }
         }
 
         /// <summary>
@@ -587,6 +559,7 @@ namespace Tanks
         /// </summary>
         protected void RoundEnd()
         {
+            /*
             m_RulesProcessor.HandleRoundEnd();
 
             if (m_RulesProcessor.matchOver)
@@ -595,11 +568,10 @@ namespace Tanks
             }
             else
             {
-                //notify client they should disable tank control
                 RpcRoundEnding(m_RulesProcessor.GetRoundEndText());
-
                 SetTimedTransition(GameState.Preplay, 2f);
             }
+            */
         }
 
         /// <summary>
@@ -619,36 +591,15 @@ namespace Tanks
                 //iterate
                 for (int i = 0; i < count; i++)
                 {
-                    //Cache tank element
-                    TankManager tank = s_Tanks[i];
-                    //Set the rank - this will be the same for all non-team based games
-                    int rank = m_RulesProcessor.GetRank(i);
-                    tank.SetRank(rank);
-                    //Add currency - NB! this is based on rank
-                    //tank.SetAwardCurrency(m_RulesProcessor.GetAwardAmount(rank));
+        
                 }
             }
 
             RpcGameEnd();
-
-            m_RulesProcessor.MatchEnd();
-
             if (m_GameSettings.isSinglePlayer)
             {
-                if (m_RulesProcessor.hasWinner)
-                {
-                    AnalyticsHelper.SinglePlayerLevelCompleted(m_GameSettings.map.id, 3);
-                }
-                else
-                {
-                    AnalyticsHelper.SinglePlayerLevelFailed(m_GameSettings.map.id);
-                }
+                AnalyticsHelper.SinglePlayerLevelCompleted(m_GameSettings.map.id, 3);
             }
-            else
-            {
-                AnalyticsHelper.MultiplayerGameCompleted(m_GameSettings.map.id, m_GameSettings.mode.id, m_NumberOfPlayers, Mathf.RoundToInt(Time.timeSinceLevelLoad), m_RulesProcessor.winnerId);
-            }
-
             m_State = GameState.PostGame;
         }
 
@@ -681,14 +632,9 @@ namespace Tanks
         /// </summary>
         private void RoundStarting()
         {
-            //we notify all clients that the round is starting
-            m_RulesProcessor.StartRound();
-            RpcRoundStarting(m_GameSettings.isSinglePlayer);
 
-            //Destroy any existing powerups
+            //RpcRoundStarting(m_GameSettings.isSinglePlayer);
             CleanupPowerups();
-
-            //Run round start reset code on all registered hazards
             ResetHazards();
 
             m_HazardsActive = false;
@@ -899,8 +845,6 @@ namespace Tanks
             }
             */
             s_Tanks.Sort(TankSort);
-
-            m_RulesProcessor.RegenerateHudScoreList();
         }
 
         /// <summary>
@@ -981,10 +925,7 @@ namespace Tanks
         /// <param name="showLeaderboard">If set to <c>true</c> show leaderboard</param>
         public void RespawnTank(int playerNumber, bool showLeaderboard = true)
         {
-            if (!m_RulesProcessor.matchOver)
-            {
-                RpcRespawnTank(playerNumber, showLeaderboard, SpawnManager.s_Instance.GetRandomEmptySpawnPointIndex());
-            }
+            RpcRespawnTank(playerNumber, showLeaderboard, SpawnManager.s_Instance.GetRandomEmptySpawnPointIndex());
         }
 
         /// <summary>
@@ -1154,8 +1095,6 @@ namespace Tanks
             {
                 return;
             }
-
-            m_SinglePlayerHud.ShowHud(m_RulesProcessor);
         }
 
         /// <summary>

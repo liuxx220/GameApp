@@ -47,8 +47,7 @@ namespace Tanks.Networking
 		private static readonly string          s_LobbySceneName = "LobbyScene";
 		#endregion
 
-        [SerializeField]
-        protected NetworkPlayer                 m_NetworkPlayerPrefab1;
+        public GameObject                       m_NetworkPlayerPrefab;
 
 		#region Events
 		public event Action<NetworkPlayer>      playerJoined;
@@ -88,7 +87,6 @@ namespace Tanks.Networking
 
         #region Fields
         [SerializeField]
-        protected GameObject                    m_NetworkPlayerPrefab;
 		protected GameSettings                  m_Settings;
 		private SceneChangeMode                 m_SceneChangeMode;
 		#endregion
@@ -250,9 +248,15 @@ namespace Tanks.Networking
         /// --------------------------------------------------------------------------------------------------------
 		public void StartSinglePlayerMode(Action callback)
 		{
+            if (state != NetworkState.Inactive)
+            {
+                throw new InvalidOperationException("Network currently active. Disconnect first.");
+            }
+
 			m_NextHostStartedCallback = callback;
 			state       = NetworkState.Pregame;
 			gameType    = NetworkGameType.Singleplayer;
+            StartHost();
 		}
 
         /// --------------------------------------------------------------------------------------------------------
@@ -495,12 +499,6 @@ namespace Tanks.Networking
             ClearAllReadyStates();
 
             UnlistMatch();
-            
-            GameObject LocalPlayer = Instantiate(m_NetworkPlayerPrefab);
-            NetworkPlayer newPlayer = LocalPlayer.GetComponent<NetworkPlayer>();
-            DontDestroyOnLoad(LocalPlayer);
-            newPlayer.StartLocalPlayer();
-            
 			m_SceneChangeMode = SceneChangeMode.Game;
 			for (int i = 0; i < connectedPlayers.Count; ++i)
 			{
@@ -555,7 +553,7 @@ namespace Tanks.Networking
 
 			MapDetails currentMap = m_Settings.map;
 			connectedPlayers.Add(newPlayer);
-            // newPlayer.becameReady += OnPlayerSetReady;
+            newPlayer.becameReady += OnPlayerSetReady;
 
             if (s_IsServer)
             {
@@ -612,6 +610,10 @@ namespace Tanks.Networking
         {
             if (m_Settings == null)
                 return;
+
+            if (connectedPlayers.Count < 1)
+                return;
+
 
             MapDetails currentMap = m_Settings.map;
             NetworkPlayer localPlayer = connectedPlayers[0];
@@ -775,9 +777,9 @@ namespace Tanks.Networking
         {
             Debug.Log("OnServerAddPlayer");
 
-            NetworkPlayer newPlayer = Instantiate<NetworkPlayer>(m_NetworkPlayerPrefab1);
+            GameObject newPlayer = Instantiate(m_NetworkPlayerPrefab);
             DontDestroyOnLoad(newPlayer);
-            NetworkServer.AddPlayerForConnection(conn, newPlayer.gameObject, playerControllerId);
+            NetworkServer.AddPlayerForConnection(conn, newPlayer, playerControllerId);
         }
 
         public override void OnServerRemovePlayer(NetworkConnection conn, PlayerController player)

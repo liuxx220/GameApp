@@ -52,11 +52,6 @@ namespace Tanks.SinglePlayer
 			{
 				return;
 			}       
-
-			if (GameManager.s_Instance != null)
-			{
-				m_RuleProcessor = GameManager.s_Instance.rulesProcessor as OfflineRulesProcessor;
-			}
 		}
 	}
 }

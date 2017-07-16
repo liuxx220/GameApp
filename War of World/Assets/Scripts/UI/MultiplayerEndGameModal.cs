@@ -153,12 +153,7 @@ namespace Tanks.UI
 		private void FinishedCountDown()
 		{
 			LazyLoad();
-			RulesProcessor rules = m_GameManager.rulesProcessor;
 			AwardTheCurrency();
-			if (rules != null)
-			{
-				rules.CompleteGame();
-			}
 		}
 
 		//Lazy load the game manager

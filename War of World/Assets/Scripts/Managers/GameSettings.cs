@@ -122,7 +122,7 @@ namespace Tanks
 		/// </summary>
 		/// <param name="map">Map.</param>
 		/// <param name="modeDetails">Mode details.</param>
-		public void SetupSinglePlayer(MapDetails map, ModeDetails modeDetails)
+        public void SetupSinglePlayer(MapDetails map, ModeDetails modeDetails)
 		{
 			this.map = map;
 			this.mapIndex = -1;
@@ -133,7 +133,7 @@ namespace Tanks
 
 			SetMode(modeDetails, -1);
 		}
-
+        
 		/// <summary>
 		/// Sets the mode.
 		/// </summary>
