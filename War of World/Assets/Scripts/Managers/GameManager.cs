@@ -196,9 +196,9 @@ namespace Tanks
             if (m_NetManager != null)
             {
                 m_NetManager.clientDisconnected += OnDisconnect;
-                m_NetManager.clientError += OnError;
-                m_NetManager.serverError += OnError;
-                m_NetManager.matchDropped += OnDrop;
+                m_NetManager.clientError        += OnError;
+                m_NetManager.serverError        += OnError;
+                m_NetManager.matchDropped       += OnDrop;
             }
         }
 
@@ -211,9 +211,9 @@ namespace Tanks
             if (m_NetManager != null)
             {
                 m_NetManager.clientDisconnected -= OnDisconnect;
-                m_NetManager.clientError -= OnError;
-                m_NetManager.serverError -= OnError;
-                m_NetManager.matchDropped -= OnDrop;
+                m_NetManager.clientError        -= OnError;
+                m_NetManager.serverError        -= OnError;
+                m_NetManager.matchDropped       -= OnDrop;
             }
 
             s_Tanks.Clear();
@@ -535,10 +535,10 @@ namespace Tanks
         /// </summary>
         protected void Preplay()
         {
-
             RoundStarting();
             //notify clients that the round is now started, they should allow player to move.
-            RpcRoundPlaying();
+            //RpcRoundPlaying();
+
         }
 
         /// <summary>
@@ -736,9 +736,9 @@ namespace Tanks
         void RpcRoundPlaying()
         {
             // As soon as the round begins playing let the players control the tanks
-            EnableTankControl();
-            LazyLoadAnnouncer();
-            m_Announcer.Hide();
+            //EnableTankControl();
+            //LazyLoadAnnouncer();
+            //m_Announcer.Hide();
         }
 
         /// <summary>

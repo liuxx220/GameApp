@@ -86,11 +86,17 @@ namespace Tanks.TankControllers
             muzzleFlash.SetActive(false);
             m_curLookatDeg      = transform.rotation.eulerAngles.y;
             m_fOldEulerAngles   = m_curLookatDeg;
+
         }
 
         [ClientCallback]
         private void Update()
         {
+            if (s_localTank == null)
+            {
+                s_localTank = this;
+            }
+
             m_shootRay.origin       = gunHead.transform.position;
             m_shootRay.direction    = gunHead.transform.forward;
             Physics.Raycast(m_shootRay, out m_shootHit, 100, shootableMask);
