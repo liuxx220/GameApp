@@ -16,7 +16,7 @@ namespace Tanks.UI
 		/// <param name="rulesProcessor">Rules processor.</param>
 		public virtual void Setup(OfflineRulesProcessor rulesProcessor)
 		{
-			this.m_RulesProcessor = rulesProcessor;
+			
 		}
 
 		/// <summary>
@@ -33,7 +33,7 @@ namespace Tanks.UI
 		/// </summary>
 		public void OnStartClick()
 		{
-			m_RulesProcessor.StartGame();
+            GameManager.s_Instance.StartGame();
 			Time.timeScale = 1f;
 			CloseModal();
 		}

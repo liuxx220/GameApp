@@ -87,7 +87,10 @@ namespace Tanks.Networking
 
         #region Fields
         [SerializeField]
+        protected int                           m_MultiplayerMaxPlayers = 4;
+
 		protected GameSettings                  m_Settings;
+
 		private SceneChangeMode                 m_SceneChangeMode;
 		#endregion
 

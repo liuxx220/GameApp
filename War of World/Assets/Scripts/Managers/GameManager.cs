@@ -17,6 +17,11 @@ using TanksNetworkPlayer = Tanks.Networking.NetworkPlayer;
 using Tanks.Audio;
 using System;
 
+
+
+
+
+
 namespace Tanks
 {
     /// <summary>
@@ -42,155 +47,66 @@ namespace Tanks
     public class GameManager : NetworkBehaviour
     {
         //Singleton reference
-        static public GameManager s_Instance;
+        static public GameManager           s_Instance;
 
-        //This list is ordered descending by player score.
-        static public List<TankManager> s_Tanks = new List<TankManager>();
+        static public List<TankManager>     s_Tanks = new List<TankManager>();
 
         //The explosion manager prefab
         [SerializeField]
-        protected ExplosionManager m_ExplosionManagerPrefab;
-
-        //Reference to the prefab the players will control.
+        protected ExplosionManager          m_ExplosionManagerPrefab;
         [SerializeField]
-        protected GameObject m_TankPrefab;
-
-        //End game modal references - set up in editor
+        protected EndGameModal              m_MultiplayerGameModal;
         [SerializeField]
-        protected EndGameModal m_MultiplayerGameModal, m_DefaultSinglePlayerModal;
-
-        //This is the game object that end game modal is instantiated under
+        protected StartGameModal            m_SinglePlayerModal;
         [SerializeField]
-        protected Transform m_EndGameUiParent;
-
-        //The singler player HUD
+        protected Transform                 m_EndGameUiParent;
         [SerializeField]
-        protected HUDSinglePlayer m_SinglePlayerHud;
+        protected FadingGroup               m_EndScreen;
 
-        //Prefab of the object that handles respawning of a tank
-        [SerializeField]
-        protected RespawningTank m_RespawningTankPrefab;
 
-        [SerializeField]
-        protected FadingGroup m_EndScreen;
-
-        //Caching the persistent singleton of game settings
-        protected GameSettings m_GameSettings;
-
-        //Current game state - starts inactive
-        protected GameState m_State = GameState.Inactive;
-
-        //Getter of current game state
-        public GameState state
-        {
-            get { return m_State; }
-        }
-
+        protected GameSettings              m_GameSettings;
+        protected GameState                 m_State = GameState.Inactive;
+        private   GameState                 m_NextState;
         //Transition state variables
-        private float m_TransitionTime = 0f;
-        private GameState m_NextState;
+        private float                       m_TransitionTime = 0f;
+       
 
         //synced variable for the game being finished
         [HideInInspector]
         [SyncVar]
-        protected bool m_GameIsFinished = false;
+        protected bool                      m_GameIsFinished = false;
 
         //Various UI references to hide the screen between rounds.
-        private FadingGroup m_LoadingScreen;
+        private FadingGroup                 m_LoadingScreen;
 
         //The local player
-        private TankManager m_LocalPlayer;
+        private TankManager                 m_LocalPlayer;
+        private int                         m_LocalPlayerNumber = 0;
+        private bool                        m_HazardsActive;
+        protected EndGameModal              m_EndGameModal;
 
-        public TankManager localPlayer
-        {
-            get
-            {
-                return m_LocalPlayer;
-            }
-        }
-
-        private int m_LocalPlayerNumber = 0;
-        //if the tanks are active
-        private bool m_HazardsActive;
-        //The end game modal that is actually used
-        protected EndGameModal m_EndGameModal;
-
-        public EndGameModal endGameModal
-        {
-            get
-            {
-                return m_EndGameModal;
-            }
-        }
 
         //Number of players in game
-        private int m_NumberOfPlayers = 0;
+        private int                         m_NumberOfPlayers = 0;
+        private bool                        m_AllBailHandled = false;
+        protected bool                      m_CanStartGame = false;
+        protected StartGameModal            m_StartGameModal;
+        private TanksNetworkManager         m_NetManager;
+        private int                         m_Round = 0;
+        protected InGameLeaderboardModal    m_Leaderboard;
+        protected AnnouncerModal            m_Announcer;
 
-        //if everyone bailing has been handled
-        private bool m_AllBailHandled = false;
-
-        //if everyone has bailed
-        private bool m_HasEveryoneBailed = false;
-
-        public bool hasEveryoneBailed
-        {
-            get
-            {
-                return m_HasEveryoneBailed;
-            }
-        }
-
-        //The score display for multiplayer
-        private HUDMultiplayerScore m_MpScoreDisplay;
-
-        public HUDMultiplayerScore mpScoreDisplay
-        {
-            get
-            {
-                return m_MpScoreDisplay;
-            }
-        }
-
-        //The modal displayed at the beginning of the game
-        protected StartGameModal m_StartGameModal;
-
-        //Cached network manager
-        private TanksNetworkManager m_NetManager;
-
-        //Round number. Non-round based games only have one round. Zero indexed
-        private int m_Round = 0;
-
-        //Cached reference to singleton InGameLeaderboardModal
-        protected InGameLeaderboardModal m_Leaderboard;
-
-        //Cached reference to singleton AnnouncerModal
-        protected AnnouncerModal m_Announcer;
-
-        //Dictionary used for reconciling score and color
-        protected Dictionary<Color, int> m_ColorScoreDictionary = new Dictionary<Color, int>();
-
-        public Dictionary<Color, int> colorScoreDictionary
-        {
-            get
-            {
-                return m_ColorScoreDictionary;
-            }
-        }
-
+       
+        
         #region Initialisation
-
         /// <summary>
         /// Unity message: Awake
         /// </summary>
         private void Awake()
         {
-            //Sets up the singleton instance
-            s_Instance = this;
-            //Handles instantiating the endgamemodal
+            s_Instance      = this;
             InstantiateEndGameModal(m_MultiplayerGameModal);
-
-            //Cache the NetworkManager instance
-            m_NetManager = TanksNetworkManager.s_Instance;
+            m_NetManager    = TanksNetworkManager.s_Instance;
 
             //Subscribe to events on the Network Manager
             if (m_NetManager != null)
@@ -207,7 +123,6 @@ namespace Tanks
         /// </summary>
         private void OnDestroy()
         {
-            //Unsubscribe
             if (m_NetManager != null)
             {
                 m_NetManager.clientDisconnected -= OnDisconnect;
@@ -215,29 +130,27 @@ namespace Tanks
                 m_NetManager.serverError        -= OnError;
                 m_NetManager.matchDropped       -= OnDrop;
             }
-
             s_Tanks.Clear();
         }
 
-        //Cache the game setting
+        /// <summary>
+        /// Cache the game setting
+        /// </summary>
         private void SetGameSettings()
         {
             m_GameSettings = GameSettings.s_Instance;
         }
 
         /// <summary>
-        /// Unity message: Start
-        /// Only called on server
+        /// Unity message: Start ,   Only called on server
         /// </summary>
         [ServerCallback]
         private void Start()
         {
             //Set the state to startup
             m_State = GameState.StartUp;
-
             SetGameSettings();
 
-            //Instantiate the explosion manager
             if (m_ExplosionManagerPrefab != null)
             {
                 ExplosionManager explosionManager = Instantiate<ExplosionManager>(m_ExplosionManagerPrefab);
@@ -246,16 +159,19 @@ namespace Tanks
 
             if (m_GameSettings.isSinglePlayer)
             {
-                //Single player level has started
                 AnalyticsHelper.SinglePlayerLevelStarted(m_GameSettings.map.id);
-                //Set up single player modal
                 SetupSinglePlayerModals();
             }
             else
             {
-                //Multiplayer game has started
                 AnalyticsHelper.MultiplayerGameStarted(m_GameSettings.map.id, m_GameSettings.mode.id, m_NetManager.playerCount);
             }
+        }
+
+
+        public void StartGame()
+        {
+            m_CanStartGame = true;
         }
 
         /// <summary>
@@ -263,42 +179,19 @@ namespace Tanks
         /// </summary>
         private void SetupSinglePlayerModals()
         {
-            //Cache the offline rules processor
-            //OfflineRulesProcessor offlineRulesProcessor = m_RulesProcessor as OfflineRulesProcessor;
-            //Get the end game modal
-            //EndGameModal endGame = offlineRulesProcessor.endGameModal;
-
-            //If an end game modal is not specified then use the default
-            //if (endGame == null)
-            //{
-            //    endGame = m_DefaultSinglePlayerModal;
-            //}
-
-            //InstantiateEndGameModal(endGame);
-
-            //if (m_EndGameModal != null)
-            //{
-            //    m_EndGameModal.SetRulesProcessor(m_RulesProcessor);
-            //}
-
-            //Handle start game modal	
-            //if (offlineRulesProcessor.startGameModal != null)
-            {
-                //m_StartGameModal = Instantiate(offlineRulesProcessor.startGameModal);
-                //m_StartGameModal.transform.SetParent(m_EndGameUiParent, false);
-                //m_StartGameModal.gameObject.SetActive(false);
-                //m_StartGameModal.Setup(offlineRulesProcessor);
-                //m_StartGameModal.Show();
-                LazyLoadLoadingPanel();
-                //The loading screen must always be the last sibling
-                m_LoadingScreen.transform.SetAsLastSibling();
-            }
+            m_StartGameModal = Instantiate(m_SinglePlayerModal);
+            m_StartGameModal.transform.SetParent(m_EndGameUiParent, false);
+            m_StartGameModal.gameObject.SetActive(false);
+            m_StartGameModal.Setup(null);
+            m_StartGameModal.Show();
+            //The loading screen must always be the last sibling
+            LazyLoadLoadingPanel();
+            m_LoadingScreen.transform.SetAsLastSibling();
         }
 
         /// <summary>
         /// Instantiates the end game modal.
         /// </summary>
-        /// <param name="endGame">End game.</param>
         private void InstantiateEndGameModal(EndGameModal endGame)
         {
             if (endGame == null)
@@ -332,7 +225,6 @@ namespace Tanks
         /// <summary>
         /// Removes the tank.
         /// </summary>
-        /// <param name="tank">Tank.</param>
         public void RemoveTank(TankManager tank)
         {
             Debug.Log("Removing tank");
@@ -350,7 +242,6 @@ namespace Tanks
                 HandleEveryoneBailed();
             }
         }
-
         #endregion
 
         /// <summary>
@@ -367,7 +258,6 @@ namespace Tanks
             {
                 m_AllBailHandled = true;
                 RpcDisplayEveryoneBailed();
-                m_HasEveryoneBailed = true;
                 SetTimedTransition(GameState.EveryoneBailed, 3f);
             }
         }
@@ -385,7 +275,6 @@ namespace Tanks
         /// <summary>
         /// Exits the game.
         /// </summary>
-        /// <param name="returnPage">Return page.</param>
         public void ExitGame(MenuPage returnPage)
         {
             for (int i = 0; i < s_Tanks.Count; i++)
@@ -393,7 +282,6 @@ namespace Tanks
                 TankManager tank = s_Tanks[i];
                 if (tank != null)
                 {
-                    Debug.Log("Destroying tank!!!");
                     TanksNetworkPlayer player = tank.player;
                     if (player != null)
                     {
@@ -411,27 +299,22 @@ namespace Tanks
         /// <summary>
         /// Convenience function wrapping the announcer modal
         /// </summary>
-        /// <param name="heading">Heading.</param>
-        /// <param name="body">Body.</param>
         private void SetMessageText(string heading, string body)
         {
-            LazyLoadAnnouncer();
-            m_Announcer.Show(heading, body);
+            
         }
 
        
         /// <summary>
         /// Gets the local player ID.
         /// </summary>
-        /// <returns>The local player ID.</returns>
         public int GetLocalPlayerId()
         {
             return m_LocalPlayerNumber;
         }
 
         /// <summary>
-        /// Unity message: Update
-        /// Runs only on server
+        /// Unity message: Update , Runs only on server
         /// </summary>
         [ServerCallback]
         protected void Update()
@@ -448,7 +331,7 @@ namespace Tanks
 			if (paused)
 			{
 				Time.timeScale = 1f;
-				m_NetManager.DisconnectAndReturnToMenu();
+				m_NetManager.Disconnect();
 			}
 		}
 #endif
@@ -535,10 +418,13 @@ namespace Tanks
         /// </summary>
         protected void Preplay()
         {
-            RoundStarting();
-            //notify clients that the round is now started, they should allow player to move.
-            //RpcRoundPlaying();
+            if (!m_CanStartGame)
+                return;
 
+            RoundStarting();
+            
+            //notify clients that the round is now started, they should allow player to move.
+            RpcRoundPlaying();
         }
 
         /// <summary>
@@ -546,10 +432,8 @@ namespace Tanks
         /// </summary>
         protected void Playing()
         {
-            //We want to activate hazards the second we enter the gameplay loop, no earlier (to prevent bizarre premature hazard triggering due to rubberbanding on laggy connections).
             if (!m_HazardsActive)
             {
-                ActivateHazards();
                 m_HazardsActive = true;
             }
         }
@@ -559,19 +443,8 @@ namespace Tanks
         /// </summary>
         protected void RoundEnd()
         {
-            /*
-            m_RulesProcessor.HandleRoundEnd();
-
-            if (m_RulesProcessor.matchOver)
-            {
-                SetTimedTransition(GameState.EndGame, 1f);
-            }
-            else
-            {
-                RpcRoundEnding(m_RulesProcessor.GetRoundEndText());
-                SetTimedTransition(GameState.Preplay, 2f);
-            }
-            */
+            RpcRoundEnding("Round End!!!");
+            SetTimedTransition(GameState.Preplay, 2f);
         }
 
         /// <summary>
@@ -579,22 +452,7 @@ namespace Tanks
         /// </summary>
         protected void EndGame()
         {
-            // If there is a game winner, wait for certain amount or all player confirmed to start a game again
             m_GameIsFinished = true;
-
-            if (!m_GameSettings.isSinglePlayer)
-            {
-                //Ensure tanks are sorted correctly
-                s_Tanks.Sort(TankSort);
-                //Cache the length of the list
-                int count = s_Tanks.Count;
-                //iterate
-                for (int i = 0; i < count; i++)
-                {
-        
-                }
-            }
-
             RpcGameEnd();
             if (m_GameSettings.isSinglePlayer)
             {
@@ -608,16 +466,13 @@ namespace Tanks
         /// </summary>
         protected void EveryoneBailed()
         {
-           // m_NetManager.DisconnectAndReturnToMenu();
-
+            //m_NetManager.DisconnectAndReturnToMenu();
             m_State = GameState.Inactive;
         }
 
         /// <summary>
         /// Sets the timed transition
         /// </summary>
-        /// <param name="nextState">Next state</param>
-        /// <param name="transitionTime">Transition time</param>
         protected void SetTimedTransition(GameState nextState, float transitionTime)
         {
             this.m_NextState = nextState;
@@ -632,37 +487,9 @@ namespace Tanks
         /// </summary>
         private void RoundStarting()
         {
-
-            //RpcRoundStarting(m_GameSettings.isSinglePlayer);
-            CleanupPowerups();
-            ResetHazards();
-
             m_HazardsActive = false;
+            RpcRoundStarting(m_GameSettings.isSinglePlayer);
             SetTimedTransition(GameState.Playing, 2f);
-        }
-
-        /// <summary>
-        /// Cleanups the powerups
-        /// </summary>
-        private void CleanupPowerups()
-        {
-            
-        }
-
-        /// <summary>
-        /// Resets the hazards
-        /// </summary>
-        private void ResetHazards()
-        {
-           
-        }
-
-        /// <summary>
-        /// Activates the hazards
-        /// </summary>
-        private void ActivateHazards()
-        {
-           
         }
 
         /// <summary>
@@ -715,7 +542,6 @@ namespace Tanks
             else
             {
                 UIAudioManager.s_Instance.PlayRoundStartSound();
-
                 LazyLoadLoadingPanel();
                 m_LoadingScreen.StartFadeOrFireEvent(Fade.Out, 0.5f, EnableHUD);
             }
@@ -736,9 +562,8 @@ namespace Tanks
         void RpcRoundPlaying()
         {
             // As soon as the round begins playing let the players control the tanks
-            //EnableTankControl();
-            //LazyLoadAnnouncer();
-            //m_Announcer.Hide();
+            EnableTankControl();
+            m_Announcer.Hide();
         }
 
         /// <summary>
@@ -786,29 +611,15 @@ namespace Tanks
                 Everyplay.StopRecording();
             }
 
-            // Tell menu UI that we'll be returning to the lobby scene
             MainMenuUI.s_ReturnPage = MenuPage.Lobby;
-
             LazyLoadLoadingPanel();
             m_LoadingScreen.transform.SetAsLastSibling();
         }
 
-        /// <summary>
-        /// Assigns the money
-        /// </summary>
-        public void AssignMoney()
-        {
-            //Iterate through tanks and let them decide whether to assign their collected currency to the local player.
-            for (int i = 0; i < s_Tanks.Count; i++)
-            {
-                s_Tanks[i].AssignMoneyToPlayerData();
-            }
-        }
 
         /// <summary>
         /// Handles the kill
         /// </summary>
-        /// <param name="killed">Killed</param>
         public void HandleKill(TankManager killed)
         {
             /*
@@ -850,9 +661,6 @@ namespace Tanks
         /// <summary>
         /// Sort for tanks list
         /// </summary>
-        /// <returns>The sort.</returns>
-        /// <param name="tank1">Tank1</param>
-        /// <param name="tank2">Tank2</param>
         private int TankSort(TankManager tank1, TankManager tank2)
         {
             return tank2.score - tank1.score;
@@ -861,7 +669,6 @@ namespace Tanks
         /// <summary>
         /// Rpc wrapper for InGameNotificationManager
         /// </summary>
-        /// <param name="msg">Message</param>
         [ClientRpc]
         private void RpcAnnounceKill(string msg)
         {
@@ -871,7 +678,6 @@ namespace Tanks
         /// <summary>
         /// Gets the local player position
         /// </summary>
-        /// <returns>The local player position</returns>
         public int GetLocalPlayerPosition()
         {
             return GetPlayerPosition(m_LocalPlayer);
@@ -880,8 +686,6 @@ namespace Tanks
         /// <summary>
         /// Gets the player position
         /// </summary>
-        /// <returns>The player position</returns>
-        /// <param name="tank">Tank</param>
         public int GetPlayerPosition(TankManager tank)
         {
             if (!isServer)
@@ -921,8 +725,6 @@ namespace Tanks
         /// <summary>
         /// Respawns the tank
         /// </summary>
-        /// <param name="playerNumber">Player number</param>
-        /// <param name="showLeaderboard">If set to <c>true</c> show leaderboard</param>
         public void RespawnTank(int playerNumber, bool showLeaderboard = true)
         {
             RpcRespawnTank(playerNumber, showLeaderboard, SpawnManager.s_Instance.GetRandomEmptySpawnPointIndex());
@@ -931,9 +733,6 @@ namespace Tanks
         /// <summary>
         /// Rpc for respawning the tank
         /// </summary>
-        /// <param name="playerNumber">Player number</param>
-        /// <param name="showLeaderboard">If set to <c>true</c> show leaderboard</param>
-        /// <param name="spawnPointIndex">Spawn point index</param>
         [ClientRpc]
         public void RpcRespawnTank(int playerNumber, bool showLeaderboard, int spawnPointIndex)
         {
@@ -950,43 +749,12 @@ namespace Tanks
         /// <summary>
         /// Locals the respawn
         /// </summary>
-        /// <param name="tank">Tank</param>
-        /// <param name="showLeaderboard">If set to <c>true</c> show leaderboard</param>
-        /// <param name="respawnPoint">Respawn point</param>
         protected void LocalRespawn(TankManager tank, bool showLeaderboard, Transform respawnPoint)
         {
-            RespawningTank respawningTank = Instantiate<RespawningTank>(m_RespawningTankPrefab);
-            respawningTank.StartRespawnCycle(tank, this, showLeaderboard, respawnPoint);
+            
         }
 
         #endregion
-
-        /// <summary>
-        /// Convenience function for showing the leaderboard
-        /// </summary>
-        /// <param name="tank">Tank</param>
-        /// <param name="heading">Heading</param>
-        public void ShowLeaderboard(TankManager tank, string heading)
-        {
-            if (tank != null && !tank.removedTank && tank.hasAuthority && !m_GameIsFinished)
-            {
-                LazyLoadLeaderboard();
-                m_Leaderboard.Show(heading);
-            }
-        }
-
-        /// <summary>
-        /// Convenience function for hiding the leaderboard
-        /// </summary>
-        /// <param name="tank">Tank</param>
-        public void ClearLeaderboard(TankManager tank)
-        {
-            if (!tank.removedTank && tank.hasAuthority && !m_GameIsFinished)
-            {
-                LazyLoadLeaderboard();
-                m_Leaderboard.Hide();
-            }
-        }
 
         /// <summary>
         /// Clients the ready
@@ -1037,7 +805,7 @@ namespace Tanks
         [ClientRpc]
         void RpcInstantiateHudScore()
         {
-            m_MpScoreDisplay = HUDController.s_Instance.CreateScoreDisplay();
+            
         }
 
         //Called by the current Rules Manager to update the multiplayer score on all clients via RPC
@@ -1054,7 +822,6 @@ namespace Tanks
         [ClientRpc]
         void RpcUpdateHudScore(Color[] teamColours, int[] scores)
         {
-            m_MpScoreDisplay.UpdateScoreDisplay(teamColours, scores);
             if (scores.Length != teamColours.Length)
             {
                 Debug.LogWarning("Score arrays different size");
@@ -1067,41 +834,15 @@ namespace Tanks
         /// <summary>
         /// Updates the score dictionary
         /// </summary>
-        /// <param name="teamColours">Team colours</param>
-        /// <param name="scores">Scores</param>
         void UpdateScoreDictionary(Color[] teamColours, int[] scores)
         {
-            for (int i = 0; i < teamColours.Length; i++)
-            {
-                Color color = teamColours[i];
-
-                if (m_ColorScoreDictionary.ContainsKey(color))
-                {
-                    m_ColorScoreDictionary[color] = scores[i];
-                }
-                else
-                {
-                    m_ColorScoreDictionary.Add(color, scores[i]);
-                }
-            }
+            
         }
 
-        /// <summary>
-        /// Setups the single player HUD
-        /// </summary>
-        public void SetupSinglePlayerHud()
-        {
-            if (m_SinglePlayerHud == null)
-            {
-                return;
-            }
-        }
 
         /// <summary>
         /// Gets the tank by player number
         /// </summary>
-        /// <returns>The tank by player number</returns>
-        /// <param name="playerNumber">Player number</param>
         private TankManager GetTankByPlayerNumber(int playerNumber)
         {
             int length = s_Tanks.Count;
@@ -1125,14 +866,12 @@ namespace Tanks
         /// </summary>
         private void ShowErrorPanel()
         {
-            //TimedModal.s_Instance.SetupTimer(2f, m_NetManager.DisconnectAndReturnToMenu);
             TimedModal.s_Instance.Show();
         }
 
         /// <summary>
         /// Raised by disconnect event
         /// </summary>
-        /// <param name="connection">Connection</param>
         private void OnDisconnect(NetworkConnection connection)
         {
             ShowErrorPanel();
@@ -1141,8 +880,6 @@ namespace Tanks
         /// <summary>
         /// Raised by error event
         /// </summary>
-        /// <param name="connection">Connection</param>
-        /// <param name="errorCode">Error code</param>
         private void OnError(NetworkConnection connection, int errorCode)
         {
             ShowErrorPanel();
@@ -1158,7 +895,6 @@ namespace Tanks
 
         #endregion
 
-        #region Lazy Loaders
 
         /// <summary>
         /// Lazy loads the loading panel
@@ -1172,33 +908,5 @@ namespace Tanks
 
             m_LoadingScreen = LoadingModal.s_Instance.fader;
         }
-
-        /// <summary>
-        /// Lazy loads the leaderboard
-        /// </summary>
-        protected void LazyLoadLeaderboard()
-        {
-            if (m_Leaderboard != null)
-            {
-                return;
-            }
-
-            m_Leaderboard = InGameLeaderboardModal.s_Instance;
-        }
-
-        /// <summary>
-        /// Lazy loads the announcer
-        /// </summary>
-        protected void LazyLoadAnnouncer()
-        {
-            if (m_Announcer != null)
-            {
-                return;
-            }
-
-            m_Announcer = AnnouncerModal.s_Instance;
-        }
-
-        #endregion
     }
 }
