@@ -192,7 +192,7 @@ namespace Tanks.TankControllers
         {
             if (move.joystickName == "Right_Joystick")
             {
-                if (m_Shooting.IsShootPressup() && (Time.realtimeSinceStartup - fTouchAndUpTime < 0.25f ) )
+                if (m_Shooting.IsShootPressup() /*&& (Time.realtimeSinceStartup - fTouchAndUpTime < 0.25f ) */ )
                 {
                     SetFireIsHeld(true);
                 }

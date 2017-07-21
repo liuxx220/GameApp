@@ -53,6 +53,8 @@ namespace Tanks.TankControllers
         private bool            m_FireInput;
         public  float           m_curLookatDeg;
         private float           m_fOldEulerAngles = 0;
+        private int             m_ContinuousShoots = 0;
+        private int             m_currShoots = 0;
 
         [SyncVar]
         private float           m_TurretHeading;
@@ -87,6 +89,11 @@ namespace Tanks.TankControllers
             m_curLookatDeg      = transform.rotation.eulerAngles.y;
             m_fOldEulerAngles   = m_curLookatDeg;
 
+            if (m_ShootMode == SHOOTINGMODE.Shoot_pressUp)
+                m_ContinuousShoots = 2;
+            else
+                m_ContinuousShoots = 1;
+            m_currShoots = 1;
         }
 
         [ClientCallback]
@@ -112,7 +119,7 @@ namespace Tanks.TankControllers
             }
             else
             {
-                if (m_FireInput && Esplasetimer >= 0.15f && Time.timeScale != 0)
+                if (m_FireInput && Esplasetimer >= 0.1f && Time.timeScale != 0)
                 {
                     Shoot();
                 }
@@ -234,25 +241,6 @@ namespace Tanks.TankControllers
             // 随机种子
             int randSeed        = UnityEngine.Random.Range(int.MinValue, int.MaxValue);
             CmdFire(shotVector, position, randSeed);
-            if (m_ShootMode == SHOOTINGMODE.Shoot_continued)
-            {
-                FireEffect1( shotVector, position, randSeed );
-            }
-            if (m_ShootMode == SHOOTINGMODE.Shoot_pressUp)
-            {
-                FireEffect2(shotVector, position, randSeed );
-                m_FireInput = false;
-            }
-            if(m_ShootMode == SHOOTINGMODE.Shoot_pulse)
-            {
-                FireEffect3(shotVector, position, randSeed );
-                m_FireInput = false;
-            }
-            if( m_ShootMode == SHOOTINGMODE.Shoot_Rocket )
-            {
-                FireEffect4(shotVector, position, randSeed );
-                m_FireInput = false;
-            }
         }
 
         public void SetFireIsHeld(bool fireHeld)
@@ -395,6 +383,14 @@ namespace Tanks.TankControllers
                 fired();
             }
 
+            /// 处理子弹的连射次数
+            m_currShoots++;
+            if (m_currShoots > m_ContinuousShoots )
+            {
+                m_FireInput  = false;
+                m_currShoots = 0;
+                return;
+            }
             // If this fire message is for our own local player id, we skip. We already spawned a projectile
             if (playerId != TankShooting.s_LocalTank.m_PlayerNumber)
             {
@@ -405,17 +401,14 @@ namespace Tanks.TankControllers
                 if (m_ShootMode == SHOOTINGMODE.Shoot_pressUp)
                 {
                     FireEffect2(shotVector, position, randSeed);
-                    m_FireInput = false;
                 }
                 if (m_ShootMode == SHOOTINGMODE.Shoot_pulse)
                 {
                     FireEffect3(shotVector, position, randSeed);
-                    m_FireInput = false;
                 }
                 if (m_ShootMode == SHOOTINGMODE.Shoot_Rocket)
                 {
                     FireEffect4(shotVector, position, randSeed);
-                    m_FireInput = false;
                 }
             }
         }

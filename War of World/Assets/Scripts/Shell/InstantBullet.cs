@@ -21,7 +21,7 @@ namespace Tanks.Shells
         /// <summary>
         /// 寿命
         /// </summary>
-        public float            m_lifeTime = 0.5f;
+        public float            m_lifeTime = 0.3f;
 
         /// <summary>
         /// 子弹重生事件

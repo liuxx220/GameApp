@@ -16,7 +16,7 @@ namespace Tanks.Shells
         /// <summary>
         /// 移动速度
         /// </summary>
-        private float           m_speed = 65;
+        private float           m_speed = 85f;
 
         /// <summary>
         /// 寿命
@@ -64,12 +64,6 @@ namespace Tanks.Shells
         /// </summary>
         private void Update()
         {
-            if (m_boxCollider != null)
-            {
-                m_ModifySize.x += 3 * Time.deltaTime;
-                m_boxCollider.size = m_ModifySize;
-            }
-
             transform.position += transform.forward * m_speed * Time.deltaTime;
             if (Time.time > m_spawnTime + m_lifeTime )
             {
