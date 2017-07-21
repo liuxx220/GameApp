@@ -4,30 +4,39 @@ using UnityEngine.Networking.Match;
 using Tanks.Networking;
 using UnityEngine.UI;
 
+
+
+
+
+
 namespace Tanks.UI
 {
 	//UI view list of available games
 	public class LobbyServerList : MonoBehaviour
 	{
-		//Number of games per page
-		private int m_PageSize = 6;
+        [SerializeField]
+		private int             m_PageSize = 6;
 
-		//Editor configurable time
-		private float m_ListAutoRefreshTime = 60f;
-		private float m_NextRefreshTime;
-		
-		//Reference to paging buttons
-		protected Button m_NextButton, m_PreviousButton;
-		protected Text m_PageNumber;
+        [SerializeField]
+		private float           m_ListAutoRefreshTime = 60f;
+		private float           m_NextRefreshTime;
 
+        [SerializeField]
+		protected Button        m_NextButton, m_PreviousButton;
+        [SerializeField]
+		protected Text          m_PageNumber;
+
+        [SerializeField]
 		protected RectTransform m_ServerListRect;
-		protected GameObject m_ServerEntryPrefab;
-		protected GameObject m_NoServerFound;
+        [SerializeField]
+		protected GameObject    m_ServerEntryPrefab;
+        [SerializeField]
+		protected GameObject    m_NoServerFound;
 
 		//Page tracking
-		protected int m_CurrentPage = 0;
-		protected int m_PreviousPage = 0;
-		protected int m_NewPage = 0;
+		protected int           m_CurrentPage = 0;
+		protected int           m_PreviousPage = 0;
+		protected int           m_NewPage = 0;
 
 		static Color s_OddServerColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
 		static Color s_EvenServerColor = new Color(.94f, .94f, .94f, 1.0f);
@@ -142,6 +151,7 @@ namespace Tanks.UI
 		//On click of back button
 		public void OnBackClick()
 		{
+            m_NetManager.Disconnect();
 			m_MenuUi.ShowDefaultPanel();
 		}
 		

@@ -3,9 +3,10 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using Tanks.Data;
 using Tanks.Networking;
-using TankNetworkPlayer     = Tanks.Networking.NetworkPlayer;
-using TanksNetworkManager   = Tanks.Networking.NetworkManager;
-
+using TanksNetworkManager = Tanks.Networking.NetworkManager;
+using TanksNetworkPlayer = Tanks.Networking.NetworkPlayer;
+using Tanks.Data;
+using Tanks.Networking;
 
 
 
@@ -20,37 +21,46 @@ namespace Tanks.UI
 	public class LobbyPlayer : MonoBehaviour
 	{
 		[SerializeField]
-		protected Button m_ColorButton;
+		protected Button        m_ColorButton;
 		[SerializeField]
-		protected Image m_ColorTag;
+		protected Image         m_ColorTag;
 		[SerializeField]
-		protected InputField m_NameInput;
+		protected InputField    m_NameInput;
 		[SerializeField]
-		protected Button m_ReadyButton;
+		protected Button        m_ReadyButton;
 		[SerializeField]
-		protected Transform m_WaitingLabel;
+		protected Transform     m_WaitingLabel;
 		[SerializeField]
-		protected Transform m_ReadyLabel;
+		protected Transform     m_ReadyLabel;
 		[SerializeField]
-		protected Button m_TankSelectButton;
+		protected Button        m_TankSelectButton;
 		[SerializeField]
-		protected Text m_TankIndexText;
+		protected Text          m_TankIndexText;
 		[SerializeField]
-		protected Image m_ColorButtonImage;
+		protected Image         m_ColorButtonImage;
 
 		/// <summary>
 		/// Associated NetworkPlayer object
 		/// </summary>
-        private TankNetworkPlayer       m_NetPlayer;
+        private TanksNetworkPlayer      m_NetPlayer;
         private TanksNetworkManager     m_NetManager;
 
-        public void Init(TankNetworkPlayer netPlayer)
+        public void Init(TanksNetworkPlayer netPlayer)
 		{
 			Debug.LogFormat("Initializing lobby player - Ready {0}", netPlayer.ready);
 			this.m_NetPlayer = netPlayer;
-			
+            if (netPlayer != null)
+            {
+                netPlayer.syncVarsChanged   += OnNetworkPlayerSyncvarChanged;
+            }
 
-			m_NetManager = TanksNetworkManager.s_Instance;
+            m_NetManager = TanksNetworkManager.s_Instance;
+            if (m_NetManager != null)
+            {
+                m_NetManager.playerJoined   += PlayerJoined;
+                m_NetManager.playerLeft     += PlayerLeft;
+            }
+
 			m_ReadyLabel.gameObject.SetActive(false);
 			m_WaitingLabel.gameObject.SetActive(false);
 			m_ReadyButton.gameObject.SetActive(true);
@@ -62,11 +72,15 @@ namespace Tanks.UI
 			}
 			
 			MainMenuUI mainMenu = MainMenuUI.s_Instance;
-			
 			mainMenu.playerList.AddPlayer(this);
+            if( netPlayer.hasAuthority)
 			{
 				SetupLocalPlayer();
 			}
+            else
+            {
+                SetupRemotePlayer();
+            }
 			
 			UpdateValues();
 		}
@@ -81,25 +95,53 @@ namespace Tanks.UI
 				m_ReadyLabel.gameObject.SetActive(true);
 
 				// Make everything else non-interactive
-				m_ColorButton.interactable = false;
-				m_ColorButtonImage.enabled = false;
-				m_NameInput.interactable = false;
-				m_NameInput.image.enabled = false;
+				m_ColorButton.interactable  = false;
+				m_ColorButtonImage.enabled  = false;
+				m_NameInput.interactable    = false;
+				m_NameInput.image.enabled   = false;
 			}
 			else
 			{
-				// Toggle ready button
-				{
-					m_ReadyButton.gameObject.SetActive(true);
-					m_ReadyButton.interactable = m_NetManager.hasSufficientPlayers;
-				}
-				m_ReadyLabel.gameObject.SetActive(false);
+                if (m_NetPlayer.hasAuthority)
+                {
+                    m_ReadyButton.gameObject.SetActive(true);
+                    m_ReadyButton.interactable = m_NetManager.hasSufficientPlayers;
+                }
+                else
+                {
+                    m_WaitingLabel.gameObject.SetActive(true);
+                }
+                m_ReadyLabel.gameObject.SetActive(false);
+
+                m_ColorButton.interactable = m_NetPlayer.hasAuthority;
+                m_ColorButtonImage.enabled = m_NetPlayer.hasAuthority;
+                m_NameInput.interactable = m_NetPlayer.hasAuthority;
+                m_NameInput.image.enabled = m_NetPlayer.hasAuthority;
 			}
 		}
 
+        protected virtual void PlayerJoined(TanksNetworkPlayer player)
+        {
+            RefreshJoinButton();
+        }
+
+        protected virtual void PlayerLeft(TanksNetworkPlayer player)
+        {
+            RefreshJoinButton();
+        }
+
 		protected virtual void OnDestroy()
 		{
+            if (m_NetPlayer != null)
+            {
+                m_NetPlayer.syncVarsChanged -= OnNetworkPlayerSyncvarChanged;
+            }
 
+            if (m_NetManager != null)
+            {
+                m_NetManager.playerJoined   -= PlayerJoined;
+                m_NetManager.playerLeft     -= PlayerLeft;
+            }
 		}
 
 		private void ChangeReadyButtonColor(Color c)
@@ -109,9 +151,8 @@ namespace Tanks.UI
 
 		private void UpdateValues()
 		{
-			m_NameInput.text = m_NetPlayer.playerName;
-			m_TankIndexText.text = TankLibrary.s_Instance.GetTankDataForIndex(m_NetPlayer.tankType).name.ToUpperInvariant();
-
+            m_NameInput.text = m_NetPlayer.playerName;
+            m_TankIndexText.text = TankLibrary.s_Instance.GetTankDataForIndex(m_NetPlayer.tankType).name.ToUpperInvariant();
 			RefreshJoinButton();
 		}
 
@@ -148,28 +189,33 @@ namespace Tanks.UI
 			m_ReadyButton.onClick.AddListener(OnReadyClicked);
 		}
 
+        private void OnNetworkPlayerSyncvarChanged(TanksNetworkPlayer player)
+        {
+            // Update everything
+            UpdateValues();
+        }
 
 		//Note that those handler use Command function, as we need to change the value on the server not locally
 		//so that all client get the new value throught syncvar
 		public void OnColorClicked()
 		{
-			
+
 		}
 
 		public void OnReadyClicked()
 		{
-			
+            m_NetPlayer.CmdSetReady();
 			DeactivateInteractables();
 		}
 
 		public void OnNameChanged(string str)
 		{
-			
+
 		}
 
 		public void OnTankClicked()
 		{
-			
+
 		}
 
 		private void DeactivateInteractables()

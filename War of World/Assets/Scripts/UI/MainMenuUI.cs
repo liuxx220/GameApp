@@ -154,6 +154,13 @@ namespace Tanks.UI
             });
         }
 
+        public void ShowLobbyPanelForConnection()
+        {
+            ShowPanel(m_LobbyPanel);
+            NetworkManager.s_Instance.gameModeUpdated -= ShowLobbyPanelForConnection;
+            HideInfoPopup();
+        }
+
 		public void ShowDefaultPanel()
 		{
 			ShowPanel(m_DefaultPanel);
@@ -219,6 +226,17 @@ namespace Tanks.UI
             ShowSingleplayerPanel();
             NetworkManager.s_Instance.StartSinglePlayerMode(null);
         }
+
+        /// -----------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// ·þÎñÆ÷ÁÑ±ä
+        /// </summary>
+        /// -----------------------------------------------------------------------------------------------------------
+        private void GoToFindGamePanel()
+        {
+            ShowServerListPanel();
+            NetworkManager.s_Instance.StartMatchingmakingClient();
+        }
 		#endregion
 
 
@@ -243,8 +261,7 @@ namespace Tanks.UI
 
         public void OnSaveGameClicked()
         {
-            ShowServerListPanel();
-            NetworkManager.s_Instance.StartMatchingmakingClient();
+            DoIfNetworkReady(GoToFindGamePanel);
         }
 
         public void OnShowSettingsModal()

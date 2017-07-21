@@ -60,7 +60,23 @@ namespace Tanks.UI
 		//Fired when player clicks join
 		private void JoinMatch(NetworkID networkId)
 		{
-			
+            MainMenuUI menuUi = MainMenuUI.s_Instance;
+
+            menuUi.ShowConnectingModal(true);
+
+            m_NetManager.JoinMatchmakingGame(networkId, (success, matchInfo) =>
+            {
+                if (!success)
+                {
+                    menuUi.ShowInfoPopup("Failed to join game.", null);
+                }
+                else
+                {
+                    menuUi.HideInfoPopup();
+                    menuUi.ShowInfoPopup("Entering lobby...");
+                    m_NetManager.gameModeUpdated += menuUi.ShowLobbyPanelForConnection;
+                }
+            });
 		}
 	}
 }

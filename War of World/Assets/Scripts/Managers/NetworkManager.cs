@@ -234,15 +234,30 @@ namespace Tanks.Networking
             switch( gameType )
             {
                 case NetworkGameType.Direct:
+                    StopDirectMultiplayerGame();
                     break;
 
                 case NetworkGameType.Matchmaking:
+                    StopMatchmakingGame();
                     break;
 
                 case NetworkGameType.Singleplayer:
+                    StopSingleplayerGame();
                     break;
             }
         }
+
+        /// --------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// 断开链接并返回主界面
+        /// </summary>
+        /// --------------------------------------------------------------------------------------------------------
+        public void DisconnectAndReturnToMenu()
+        {
+            Disconnect();
+            ReturnToMenu(MenuPage.Home);
+        }
+
 
         /// --------------------------------------------------------------------------------------------------------
 		/// <summary>
@@ -356,6 +371,7 @@ namespace Tanks.Networking
                     StopHost();
                     break;
             }
+            state = NetworkState.Inactive;
         }
 
 
@@ -372,10 +388,14 @@ namespace Tanks.Networking
                 case NetworkState.Pregame:
                 case NetworkState.InGame:
                     {
-                        StopHost();
+                        if (s_IsServer)
+                            StopHost();
+                        else
+                            StopClient();
                     }
                     break;
             }
+            state = NetworkState.Inactive;
         }
 
         /// --------------------------------------------------------------------------------------------------------
