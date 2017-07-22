@@ -31,8 +31,9 @@ namespace Tanks.UI
 			m_NetManager = NetworkManager.s_Instance;
 			if (m_NetManager != null)
 			{
-				m_NetManager.playerJoined   += PlayerJoined;
-				m_NetManager.playerLeft     += PlayerLeft;
+				m_NetManager.playerJoined         += PlayerJoined;
+				m_NetManager.playerLeft           += PlayerLeft;
+                m_NetManager.serverPlayersReadied += PlayersReadied;
 			}
 		}
 
@@ -41,8 +42,9 @@ namespace Tanks.UI
 		{
 			if (m_NetManager != null)
 			{
-				m_NetManager.playerJoined   -= PlayerJoined;
-				m_NetManager.playerLeft     -= PlayerLeft;
+				m_NetManager.playerJoined         -= PlayerJoined;
+				m_NetManager.playerLeft           -= PlayerLeft;
+                m_NetManager.serverPlayersReadied -= PlayersReadied;
 			}
 		}
 		
@@ -71,5 +73,10 @@ namespace Tanks.UI
 		{
 			Debug.LogFormat("Player left {0}", player.name);
 		}
+
+        protected virtual void PlayersReadied()
+        {
+            m_NetManager.ProgressToGameScene();
+        }
 	}
 }

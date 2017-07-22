@@ -567,6 +567,20 @@ namespace Tanks.Networking
 		}
 
         /// --------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// 游戏状态更新
+        /// </summary>
+        /// --------------------------------------------------------------------------------------------------------
+        protected void FireGameModeUpdated()
+        {
+            if (gameModeUpdated != null)
+            {
+                gameModeUpdated();
+            }
+        }
+
+
+        /// --------------------------------------------------------------------------------------------------------
 		/// <summary>
 		/// 增加一个玩家到本地游戏中
 		/// </summary>
@@ -598,7 +612,7 @@ namespace Tanks.Networking
                 playerJoined(newPlayer);
             }
 
-            //newPlayer.gameDetailsReady += FireGameModeUpdated;
+            newPlayer.gameDetailsReady += FireGameModeUpdated;
 		}
 
         /// --------------------------------------------------------------------------------------------------------
@@ -620,7 +634,7 @@ namespace Tanks.Networking
 				playerLeft(removedPlayer);
 			}
 
-            //removedPlayer.gameDetailsReady -= FireGameModeUpdated;
+            removedPlayer.gameDetailsReady -= FireGameModeUpdated;
             if (removedPlayer != null)
             {
                 removedPlayer.becameReady -= OnPlayerSetReady;

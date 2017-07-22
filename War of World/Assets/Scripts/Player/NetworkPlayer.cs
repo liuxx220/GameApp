@@ -285,6 +285,11 @@ namespace Tanks.Networking
         public override void OnStartClient()
         {
             DontDestroyOnLoad(this);
+            if (m_Settings == null)
+            {
+                m_Settings = GameSettings.s_Instance;
+            }
+
             if (m_NetManager == null)
             {
                 m_NetManager = TanksNetworkManager.s_Instance;
