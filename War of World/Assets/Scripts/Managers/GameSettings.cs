@@ -39,6 +39,12 @@ namespace Tanks
 		[SerializeField]
 		protected ModeList                  m_ModeList;
 
+        /// <summary>
+        /// 武器配置数据
+        /// </summary>
+        [SerializeField]
+        protected WeaponList                m_WeaponList;
+
 		public MapDetails map
 		{
 			get;

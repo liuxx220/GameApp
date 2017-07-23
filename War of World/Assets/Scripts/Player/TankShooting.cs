@@ -7,6 +7,7 @@ using Tanks.CameraControl;
 using Tanks.Shells;
 using Tanks.Explosions;
 using Tanks.SinglePlayer;
+using Tanks.Rules;
 using Random = UnityEngine.Random;
 
 
@@ -16,17 +17,6 @@ using Random = UnityEngine.Random;
 
 namespace Tanks.TankControllers
 {
-    /// <summary>
-    /// 武器的射击模式
-    /// </summary>
-	enum SHOOTINGMODE
-    {
-        Shoot_continued,        // 连续射击
-        Shoot_pressUp,          // 释放射击
-        Shoot_pulse,            // 脉冲式发射
-        Shoot_Rocket,           // 火箭弹
-    };
-
 
     public class TankShooting : NetworkBehaviour
     {
@@ -79,7 +69,7 @@ namespace Tanks.TankControllers
             get { return s_localTank; }
         }
 
-
+        private TankWeaponDefinition    m_WeaponProtol;
         void Awake()
         {
             shootableMask       = LayerMask.GetMask("Shootable");

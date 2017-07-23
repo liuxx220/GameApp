@@ -144,7 +144,8 @@ namespace Tanks.TankControllers
                 player.tank = null;
             }
 
-            GameManager.s_Instance.RemoveTank(this);
+            if (GameManager.s_Instance != null )
+                GameManager.s_Instance.RemoveTank(this);
         }
 
 
