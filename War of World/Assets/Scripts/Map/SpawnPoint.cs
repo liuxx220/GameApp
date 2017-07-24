@@ -49,12 +49,7 @@ namespace Tanks.Map
 		/// <param name="c">C.</param>
 		private void OnTriggerEnter(Collider c)
 		{
-            //TankHealth tankHealth = c.GetComponentInParent<TankHealth>();
-            
-            //if (tankHealth != null)
-            //{
-            //    m_NumberOfTanksInZone++;
-            //}
+
 		}
 
 		/// <summary>
@@ -63,12 +58,7 @@ namespace Tanks.Map
 		/// <param name="c">C.</param>
 		private void OnTriggerExit(Collider c)
 		{
-            //TankHealth tankHealth = c.GetComponentInParent<TankHealth>();
-            
-            //if (tankHealth != null)
-            //{
-            //    Decrement();
-            //}
+
 		}
 
 		/// <summary>
