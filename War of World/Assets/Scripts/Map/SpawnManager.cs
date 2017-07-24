@@ -13,6 +13,8 @@ using Tanks.TankControllers;
 
 namespace Tanks.Map
 {
+
+
 	/// <summary>
 	/// Spawn manager - used to get an unoccupied spawn point
 	/// </summary>
@@ -21,9 +23,13 @@ namespace Tanks.Map
 
         public GameObject           enemy;
         public float                spawnTime = 3f;
-		private List<SpawnPoint>    spawnPoints = new List<SpawnPoint>();
-        private List<GameObject>    mapObjectList = new List<GameObject>();
+		private List<SpawnPoint>    spawnPoints     = new List<SpawnPoint>();
+        private List<GameObject>    mapObjectList   = new List<GameObject>();
 
+        /// <summary>
+        /// 武器刷新点列表
+        /// </summary>
+        private List<SpawnPoint>    weaponPoints    = new List<SpawnPoint>();
 
 		protected override void Awake()
 		{
