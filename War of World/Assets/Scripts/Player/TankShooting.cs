@@ -27,6 +27,8 @@ namespace Tanks.TankControllers
         public  event Action            fired;
         #endregion
 
+        [SerializeField]
+        protected GameObject    m_WeaponHP;         // 武器挂点
 
         public GameObject       gunHead;
         public GameObject       muzzleFlash;
@@ -40,7 +42,6 @@ namespace Tanks.TankControllers
         private SHOOTINGMODE    m_ShootMode = SHOOTINGMODE.Shoot_continued;
         private bool            m_FireInput;
         public  float           m_curLookatDeg = 0;
-        private float           m_fOldEulerAngles = 0;
         private int             m_ContinuousShoots = 0;
         private int             m_currShoots = 0;
 
@@ -58,23 +59,45 @@ namespace Tanks.TankControllers
         /// </summary>
         private LineRenderer    m_LineRender;
 
-
+        /// <summary>
+        /// 当前武器的配置信息
+        /// </summary>
         private TankWeaponDefinition    m_WeaponProtol;
+
         void Awake()
         {
             shootableMask       = LayerMask.GetMask("Shootable");
             m_LineRender        = gameObject.GetComponent<LineRenderer>();
-            muzzleFlash.SetActive(false);
-            m_LineRender.enabled = false;
             m_curLookatDeg      = transform.rotation.eulerAngles.y;
-            m_fOldEulerAngles   = m_curLookatDeg;
             m_TurretHeading     = m_curLookatDeg;
-            if (m_ShootMode == SHOOTINGMODE.Shoot_pressUp)
-                m_ContinuousShoots = 2;
-            else
-                m_ContinuousShoots = 1;
-            m_currShoots = 1;
+
+            RedPoint.SetActive(false);
+            muzzleFlash.SetActive(false);
+            m_LineRender.enabled= false;
+            m_currShoots        = 1;
         }
+
+
+        /// -----------------------------------------------------------------------------------------------
+        /// <summary>
+        /// 角色安装武器，应该通知其他客户端
+        /// </summary>
+        /// -----------------------------------------------------------------------------------------------
+        public void SetPlayerWeapon(int nWeaponID)
+        {
+            if (nWeaponID < 0)
+                return;
+
+            TankWeaponDefinition def = GameSettings.s_Instance.GetWeaponbyID(nWeaponID);
+            if (def != null)
+            {
+                m_WeaponProtol            = def;
+                UnityEngine.Object weapon = AssetManager.s_Instance.GetResources(def.perfab);
+                GameObject gameobj        = GameObject.Instantiate(weapon) as GameObject;
+                gameobj.transform.parent  = m_WeaponHP.transform;
+            }
+        }
+
 
         [ClientCallback]
         private void Update()
@@ -135,17 +158,6 @@ namespace Tanks.TankControllers
             }
         }
 
-        /// ----------------------------------------------------------------------------------------------
-        /// <summary>
-        /// 判断是否可以攻击
-        /// </summary>
-        /// ----------------------------------------------------------------------------------------------
-        public void BackShootingAngles( float fAngles )
-        {
-            m_fOldEulerAngles = fAngles;
-            m_curLookatDeg    = fAngles;
-            m_TurretHeading   = fAngles;
-        }
 
         /// ----------------------------------------------------------------------------------------------
         /// <summary>
@@ -221,7 +233,7 @@ namespace Tanks.TankControllers
         public void SetDesiredFirePosition( Vector3 facedir )
         {
             float angle     = 90f - Mathf.Atan2(facedir.y, facedir.x) * Mathf.Rad2Deg;
-            CmdSetLook(angle + m_fOldEulerAngles);
+            CmdSetLook(angle + m_curLookatDeg);
         }
 
         /// ------------------------------------------------------------------------------------------

@@ -15,7 +15,7 @@ namespace Tanks.Rules
     /// <summary>
     /// 武器的射击模式
     /// </summary>
-    enum SHOOTINGMODE
+    public enum SHOOTINGMODE
     {
         Shoot_continued,        // 连续射击
         Shoot_pressUp,          // 释放射击
@@ -29,7 +29,7 @@ namespace Tanks.Rules
     public class TankWeaponDefinition
     {
         [SerializeField]
-        public string       weaponID;
+        public int          weaponID;
         [SerializeField]
         public string       name;
         [SerializeField]
@@ -38,6 +38,8 @@ namespace Tanks.Rules
         public string       icon;
         [SerializeField]
         public string       perfab;
+        [SerializeField]
+        public SHOOTINGMODE ShootMode;
         [SerializeField]
         public int          MaxDamage;
         [SerializeField]

@@ -3,6 +3,7 @@ using UnityEngine;
 using Tanks.Data;
 using Tanks.TankControllers;
 using Tanks.UI;
+using Tanks.Rules;
 using Tanks.Explosions;
 using UnityEngine.Networking;
 using TanksNetworkManager = Tanks.Networking.NetworkManager;
@@ -151,6 +152,11 @@ namespace Tanks.Networking
             //}
         }
 
+        /// ----------------------------------------------------------------------------------------------
+        /// <summary>
+        /// 
+        /// </summary>
+        /// ----------------------------------------------------------------------------------------------
         void Awake()
         {
             m_IsDead            = false;
@@ -160,9 +166,12 @@ namespace Tanks.Networking
             m_BehitParticles    = GetComponentInChildren<ParticleSystem>();
         }
 
-		/// <summary>
-		/// Clean up lobby object for us
-		/// </summary>
+
+        /// ----------------------------------------------------------------------------------------------
+        /// <summary>
+        /// 
+        /// </summary>
+        /// ----------------------------------------------------------------------------------------------
 		protected virtual void OnDestroy()
 		{
             if (s_LocalPlayer != null)
@@ -171,11 +180,15 @@ namespace Tanks.Networking
 			}
 		}
 
+
+        /// ----------------------------------------------------------------------------------------------
+        /// <summary>
+        /// 
+        /// </summary>
+        /// ----------------------------------------------------------------------------------------------
         public override void OnNetworkDestroy()
         {
             base.OnNetworkDestroy();
-            Debug.Log("Client Network Player OnNetworkDestroy");
-            
             if( lobbyObject != null )
             {
                 Destroy(lobbyObject.gameObject);
@@ -188,6 +201,11 @@ namespace Tanks.Networking
         }
 
 
+        /// ----------------------------------------------------------------------------------------------
+        /// <summary>
+        /// 开始本地玩家
+        /// </summary>
+        /// ----------------------------------------------------------------------------------------------
         public void StartLocalPlayer()
         {
             if (m_Settings == null)
@@ -199,18 +217,26 @@ namespace Tanks.Networking
             {
                 m_NetManager = TanksNetworkManager.s_Instance;
             }
+
             m_NetManager.RegisterNetworkPlayer(this);
         }
 
+        /// ----------------------------------------------------------------------------------------------
+        /// <summary>
+        /// 创建一个 LobbyPlayer 对象，主要玩家的描述信息
+        /// </summary>
+        /// ----------------------------------------------------------------------------------------------
         private void CreateLobbyObject()
         {
             lobbyObject = Instantiate(m_LobbyPrefab).GetComponent<LobbyPlayer>();
             lobbyObject.Init(this);
         }
 
+        /// ----------------------------------------------------------------------------------------------
         /// <summary>
         /// 处理角色被攻击
         /// </summary>
+        /// ----------------------------------------------------------------------------------------------
         public void TakeDamage(int amount, Vector3 hitPoint)
         {
             if (m_IsDead)
@@ -226,9 +252,11 @@ namespace Tanks.Networking
             }
         }
 
+        /// ----------------------------------------------------------------------------------------------
         /// <summary>
         /// 处理角色被攻击
         /// </summary>
+        /// ----------------------------------------------------------------------------------------------
         public void TakeDamage(int amount)
         {
             if (m_IsDead)
@@ -242,10 +270,11 @@ namespace Tanks.Networking
             }
         }
 
-
+        /// ----------------------------------------------------------------------------------------------
         /// <summary>
         /// 处理角色死亡
         /// </summary>
+        /// ----------------------------------------------------------------------------------------------
         void Death()
         {
             m_IsDead = true;
@@ -254,8 +283,6 @@ namespace Tanks.Networking
             m_AudioSource.Play();
         }
 
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // 网络层，客户端逻辑
 
         /// -----------------------------------------------------------------------------------------------------
         /// <summary>
@@ -347,7 +374,11 @@ namespace Tanks.Networking
             }
         }
 
-
+        /// -----------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Set up our player choices, changing local values too
+        /// </summary>
+        /// -----------------------------------------------------------------------------------------------------
         [ClientRpc]
         public void RpcSetGameSettings(int mapIndex, int modeIndex)
         {
@@ -363,6 +394,11 @@ namespace Tanks.Networking
             }
         }
 
+        /// -----------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Set up our player choices, changing local values too
+        /// </summary>
+        /// -----------------------------------------------------------------------------------------------------
         [ClientRpc]
         public void RpcPrepareForLoad()
         {
@@ -470,7 +506,10 @@ namespace Tanks.Networking
         }
 
         ///----------------------------------------------------------------------------------------------------------------------
+        /// <summary>
         /// Syncvar call backs
+        /// <summary>
+        ///----------------------------------------------------------------------------------------------------------------------
         private void OnMyName( string newName )
         {
             m_PlayerName = newName;

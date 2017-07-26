@@ -106,11 +106,12 @@ namespace Tanks
 			SetMode(m_ModeList[index], index);
 		}
 
-		/// <summary>
-		/// Sets up single player
-		/// </summary>
-		/// <param name="mapIndex">Map index.</param>
-		/// <param name="modeDetails">Mode details.</param>
+
+        /// ---------------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Sets up single player
+        /// </summary>
+        /// ---------------------------------------------------------------------------------------------------------------
 		public void SetupSinglePlayer(int mapIndex, ModeDetails modeDetails)
 		{
 			this.map = m_SinglePlayerMapList[mapIndex];
@@ -123,11 +124,11 @@ namespace Tanks
 			SetMode(modeDetails, -1);
 		}
 
-		/// <summary>
-		/// Sets up single player
-		/// </summary>
-		/// <param name="map">Map.</param>
-		/// <param name="modeDetails">Mode details.</param>
+        /// ---------------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Sets up single player
+        /// </summary>
+        /// ---------------------------------------------------------------------------------------------------------------
         public void SetupSinglePlayer(MapDetails map, ModeDetails modeDetails)
 		{
 			this.map = map;
@@ -140,11 +141,11 @@ namespace Tanks
 			SetMode(modeDetails, -1);
 		}
         
+        /// ---------------------------------------------------------------------------------------------------------------
 		/// <summary>
 		/// Sets the mode.
 		/// </summary>
-		/// <param name="mode">Mode.</param>
-		/// <param name="modeIndex">Mode index.</param>
+        /// ---------------------------------------------------------------------------------------------------------------
 		private void SetMode(ModeDetails mode, int modeIndex)
 		{
 			this.mode = mode;
@@ -157,5 +158,21 @@ namespace Tanks
             if (mode.rulesProcessor != null )
 			    scoreTarget = mode.rulesProcessor.scoreTarget;
 		}
+
+
+        /// ---------------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// 得到某个武器的配置信息
+        /// </summary>
+        /// ---------------------------------------------------------------------------------------------------------------
+        public TankWeaponDefinition GetWeaponbyID( int nWeaponID )
+        {
+            for (int i = 0; i < m_WeaponList.Count; i++ )
+            {
+                if (m_WeaponList[i].weaponID == nWeaponID)
+                    return m_WeaponList[i];
+            }
+            return null;
+        }
 	}
 }
