@@ -88,16 +88,6 @@ namespace Tanks.TankControllers
 			get { return m_PlayerId; }
 		}
 
-		public int score
-		{
-			get { return m_Score; }
-		}
-
-		public int rank
-		{
-			get { return m_Rank; }
-		}
-
 		public TankTypeDefinition playerTankType
 		{
 			get;
@@ -171,7 +161,7 @@ namespace Tanks.TankControllers
 
 			// Create visual tank
             player.transform.position = transform.position;
-            player.transform.rotation = transform.rotation;
+            //player.transform.rotation = transform.rotation;
             player.transform.SetParent(transform, true);
             if (isServer)
             {
@@ -225,8 +215,8 @@ namespace Tanks.TankControllers
 			movement.transform.position = m_AssignedSpawnPoint.position;
 			
 			//movement.Rigidbody.rotation = m_AssignedSpawnPoint.rotation;
-			movement.transform.rotation = m_AssignedSpawnPoint.rotation;
-            shooting.BackShootingAngles(movement.transform.rotation.eulerAngles.y);
+			//movement.transform.rotation = m_AssignedSpawnPoint.rotation;
+            //shooting.BackShootingAngles(movement.transform.rotation.eulerAngles.y);
 		}
 
 		/// <summary>
@@ -263,7 +253,7 @@ namespace Tanks.TankControllers
 			movement.transform.position = position;
 
 			//movement.Rigidbody.rotation = rotation;
-			movement.transform.rotation = rotation;
+			//movement.transform.rotation = rotation;
 		}
 
 		/// <summary>

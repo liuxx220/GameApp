@@ -93,7 +93,7 @@ namespace Tanks.Shells
 		private void OnCollisionEnter(Collision c)
 		{
             // 计算对对方的伤害
-            Vector3 hitNormal = c.contacts.Length > 0 ? c.contacts[0].normal : Vector3.up;
+            // Vector3 hitNormal = c.contacts.Length > 0 ? c.contacts[0].normal : Vector3.up;
             Vector3 hitPos    = c.contacts.Length > 0 ? c.contacts[0].point : transform.position;
             if( c.gameObject != null )
             {

@@ -180,7 +180,7 @@ namespace Tanks.Rules
 			for (int i = 0; i < tankCount; ++i)
 			{
 				TankManager currentTank = matchTanks[i];
-				LeaderboardElement leaderboardElement = new LeaderboardElement(currentTank.playerName, Color.gray, currentTank.score);
+				LeaderboardElement leaderboardElement = new LeaderboardElement(currentTank.playerName, Color.gray, 1);
 				leaderboardElements.Add(leaderboardElement);
 			}
 
@@ -242,7 +242,7 @@ namespace Tanks.Rules
 			for (int i = 0; i < totalTanks; i++)
 			{
 				colorList[i] = Color.white;
-				scoreList[i] = GameManager.s_Tanks[i].score;
+				scoreList[i] = 0;
 			}
 
 			//m_GameManager.UpdateHudScore(colorList, scoreList);

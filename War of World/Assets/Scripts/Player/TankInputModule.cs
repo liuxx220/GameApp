@@ -169,7 +169,6 @@ namespace Tanks.TankControllers
         }
 
 
-        private float fTouchAndUpTime = 0f;
         /// --------------------------------------------------------------------------------------------------------
         /// <summary>
         /// 这里用来处理，操纵杆拖动抬起攻击技能
@@ -177,10 +176,10 @@ namespace Tanks.TankControllers
         /// --------------------------------------------------------------------------------------------------------
         protected void OnJoystickTouchStart(MovingJoystick move)
         {
-            if (move.joystickName == "Right_Joystick")
-            {
-                fTouchAndUpTime = Time.realtimeSinceStartup;
-            }
+            //if (move.joystickName == "Right_Joystick")
+            //{
+                
+            //}
         }
 
         /// --------------------------------------------------------------------------------------------------------

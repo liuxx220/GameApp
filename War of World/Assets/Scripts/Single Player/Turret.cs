@@ -65,8 +65,7 @@ namespace Tanks.Hazards
 		[SerializeField]
 		protected GameObject m_MuzzleFlashPrefab;
 
-		private TankMovement m_TankToFollowMovement = null;
-
+		
 		private float m_CurrentFireTimerCount;
 		private float m_SqrSafetyRange;
 			
@@ -110,7 +109,6 @@ namespace Tanks.Hazards
 					TankManager tank = GameManager.s_Tanks[0];
 					
 					m_FollowTransforms.Add(tank.transform);
-					m_TankToFollowMovement = tank.movement;
 					m_PlayerTankIndex = m_FollowTransforms.Count - 1;
 					m_HasGotPlayer = true;
 				}

@@ -191,7 +191,6 @@ namespace Tanks.Rules.SinglePlayer
 		/// </summary>
 		protected virtual void Awake()
 		{
-			bool levelDataChanged = false;
 			m_Settings = GameSettings.s_Instance;
 			string levelId = m_Settings.map.id;
 			
@@ -214,7 +213,6 @@ namespace Tanks.Rules.SinglePlayer
 				if (i >= numberOfObjectivesInDataStore)
 				{
 					m_LevelData.objectivesAchieved.Add(false);
-					levelDataChanged = true;
 				}
 				//Yes
 				else

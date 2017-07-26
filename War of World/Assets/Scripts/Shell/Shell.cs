@@ -45,9 +45,6 @@ namespace Tanks.Shells
 		private Collider m_TempIgnoreCollider;
 		private int m_TempIgnoreColliderTime = 2;
 
-		//Random seed for spawning debris.
-		private int m_RandSeed;
-
 		//The current rotation of the shell.
 		private float m_CurrentSpinRot;
 
@@ -86,7 +83,6 @@ namespace Tanks.Shells
 				m_TempIgnoreColliderTime = 2;
 			}
 
-			m_RandSeed = seed;
 			if (m_SpeedModifier != 1)
 			{
 				ConstantForce force = gameObject.AddComponent<ConstantForce>();
@@ -127,7 +123,7 @@ namespace Tanks.Shells
 		private void OnCollisionEnter(Collision c)
 		{
             Vector3 explosionNormal = c.contacts.Length > 0 ? c.contacts[0].normal : Vector3.up;
-            Vector3 explosionPosition = c.contacts.Length > 0 ? c.contacts[0].point : transform.position;
+            //Vector3 explosionPosition = c.contacts.Length > 0 ? c.contacts[0].point : transform.position;
             if (ExplosionManager.s_InstanceExists)
             {
               

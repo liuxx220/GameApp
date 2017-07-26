@@ -39,7 +39,7 @@ namespace Tanks.TankControllers
         public float                maxIdleSpeed = 0.5f;
 
         [SyncVar]
-        private float               walkingSpeed = 5f;
+        private float               walkingSpeed = 8f;
 
         private float               Speed = 0;
         private float               Angle = 0f;
@@ -216,23 +216,23 @@ namespace Tanks.TankControllers
                                                   HorizontalAngle(transform.rotation * animatedLocalVelocity),
                                                   HorizontalAngle(m_Velocity));
 
-                lowerBodyDeltAngle      = Mathf.LerpAngle(lowerBodyDeltAngle, lowerBodyDeltaAngleTarget, Time.deltaTime);
-                lowerBodyForwardTarget  = transform.forward;
-                lowerBodyForward        = Quaternion.Euler(0, lowerBodyDeltAngle, 0) * lowerBodyForwardTarget;
+                lowerBodyDeltAngle              = Mathf.LerpAngle(lowerBodyDeltAngle, lowerBodyDeltaAngleTarget, Time.deltaTime);
+                lowerBodyForwardTarget          = transform.forward;
+                lowerBodyForward                = Quaternion.Euler(0, lowerBodyDeltAngle, 0) * lowerBodyForwardTarget;
             }
             else
             {
-                lowerBodyForward   = Vector3.RotateTowards(lowerBodyForward, lowerBodyForwardTarget, Time.deltaTime * 520 * Mathf.Deg2Rad, 1);
-                lowerBodyDeltAngle = Mathf.DeltaAngle( HorizontalAngle(transform.forward),
-                                                       HorizontalAngle(lowerBodyForward));
+                lowerBodyForward                = Vector3.RotateTowards(lowerBodyForward, lowerBodyForwardTarget, Time.deltaTime * 520 * Mathf.Deg2Rad, 1);
+                lowerBodyDeltAngle              = Mathf.DeltaAngle( HorizontalAngle(transform.forward),
+                                                                    HorizontalAngle(lowerBodyForward));
 
                 if (Mathf.Abs(lowerBodyDeltAngle) > 80)
                     lowerBodyForwardTarget = transform.forward;
             }
 
-            Quaternion lowerBodyDeltaRotation = Quaternion.Euler(0, lowerBodyDeltAngle, 0);
-            rootBone.rotation                 = lowerBodyDeltaRotation * rootBone.rotation;
-            upperBodyBone.rotation            = Quaternion.Inverse(lowerBodyDeltaRotation) * upperBodyBone.rotation;
+            Quaternion lowerBodyDeltaRotation   = Quaternion.Euler(0, lowerBodyDeltAngle, 0);
+            rootBone.rotation                   = lowerBodyDeltaRotation * rootBone.rotation;
+            upperBodyBone.rotation              = Quaternion.Inverse(lowerBodyDeltaRotation) * upperBodyBone.rotation;
         }
 
 
@@ -240,11 +240,10 @@ namespace Tanks.TankControllers
         {
             if (isMoving)
             {
-                CollisionFlags flag;
                 Vector3 targetVelocity = m_DesiredDirection * walkingSpeed * Time.deltaTime;
                 if (m_Controller != null)
                 {
-                    flag = m_Controller.Move(targetVelocity);
+                    m_Controller.Move(targetVelocity);
                 }
             }
         }

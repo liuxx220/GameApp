@@ -108,9 +108,9 @@ namespace Tanks.UI
 		private void SetupAwardDisplay()
 		{
 			m_RewardParent.SetActive(true);
-			m_AwardText.text = m_RulesProcessor.GetAwardText(m_LocalTank.rank);
-			m_AwardCurrency = m_RulesProcessor.GetAwardAmount(m_LocalTank.rank);
-			m_AwardAmountText.text = m_AwardCurrency.ToString();
+			m_AwardText.text        = m_RulesProcessor.GetAwardText(0);
+			m_AwardCurrency         = m_RulesProcessor.GetAwardAmount(0);
+			m_AwardAmountText.text  = m_AwardCurrency.ToString();
 
 			if (m_TotalCurrency < 0)
 			{

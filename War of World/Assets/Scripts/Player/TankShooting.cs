@@ -22,7 +22,7 @@ namespace Tanks.TankControllers
     {
 
         #region ActionEvent
-        public  event Action<int>       ammoQtyChanged;
+        //public  event Action<int>       ammoQtyChanged;
         public  event Action<int>       overrideShellChanged;
         public  event Action            fired;
         #endregion
@@ -41,12 +41,12 @@ namespace Tanks.TankControllers
 
         private SHOOTINGMODE    m_ShootMode = SHOOTINGMODE.Shoot_continued;
         private bool            m_FireInput;
-        public  float           m_curLookatDeg;
+        public  float           m_curLookatDeg = 0;
         private float           m_fOldEulerAngles = 0;
         private int             m_ContinuousShoots = 0;
         private int             m_currShoots = 0;
 
-        [SyncVar]
+        //[SyncVar]
         private float           m_TurretHeading;
 
         /// <summary>
@@ -76,9 +76,10 @@ namespace Tanks.TankControllers
             m_LineRender        = gameObject.GetComponent<LineRenderer>();
             fireDirection.SetActive(false);
             muzzleFlash.SetActive(false);
+            m_LineRender.enabled = false;
             m_curLookatDeg      = transform.rotation.eulerAngles.y;
             m_fOldEulerAngles   = m_curLookatDeg;
-
+            m_TurretHeading     = m_curLookatDeg;
             if (m_ShootMode == SHOOTINGMODE.Shoot_pressUp)
                 m_ContinuousShoots = 2;
             else
@@ -96,8 +97,8 @@ namespace Tanks.TankControllers
 
             m_shootRay.origin       = gunHead.transform.position;
             m_shootRay.direction    = gunHead.transform.forward;
-            Physics.Raycast(m_shootRay, out m_shootHit, 100, shootableMask);
-            DrawPulseLine();
+            //Physics.Raycast(m_shootRay, out m_shootHit, 100, shootableMask);
+            //DrawPulseLine();
 
             Esplasetimer += Time.deltaTime;
             if (m_ShootMode == SHOOTINGMODE.Shoot_pulse)
@@ -220,7 +221,6 @@ namespace Tanks.TankControllers
         /// ----------------------------------------------------------------------------------------------
         void Shoot()
         {
-
             Esplasetimer = 0f;
             muzzleFlash.SetActive(true);
             effectsDisplayTime = 0;

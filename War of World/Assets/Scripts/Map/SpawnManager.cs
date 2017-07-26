@@ -29,8 +29,8 @@ namespace Tanks.Map
         /// <summary>
         /// 武器刷新点列表
         /// </summary>
-        private List<SpawnPoint>    weaponPoints    = new List<SpawnPoint>();
-
+        private List<WeaponSpawnPoint> weaponPoints = new List<WeaponSpawnPoint>();
+        private List<GameObject>       weaponlist   = new List<GameObject>();
 		protected override void Awake()
 		{
 			base.Awake();
@@ -44,8 +44,8 @@ namespace Tanks.Map
 		}
 
 		/// <summary>
-		/// Lazy load the spawn points - this assumes that all spawn points are children of the SpawnManager
-		/// </summary>
+		/// 初始各个刷新点和武器刷新点
+        /// </summary>
 		private void LazyLoadSpawnPoints()
 		{
 			if (spawnPoints != null && spawnPoints.Count > 0)
@@ -55,12 +55,23 @@ namespace Tanks.Map
 
 			SpawnPoint[] foundSpawnPoints = GetComponentsInChildren<SpawnPoint>();
 			spawnPoints.AddRange(foundSpawnPoints);
+
+            if (weaponPoints != null && weaponPoints.Count > 0)
+                return;
+            WeaponSpawnPoint[] foundPoints = GetComponentsInChildren<WeaponSpawnPoint>();
+            weaponPoints.AddRange(foundPoints);
+
+            for( int i = 0; i < weaponPoints.Count; i++ )
+            {
+                GameObject weapon = Instantiate(weaponPoints[i].m_WeaponPerfab, weaponPoints[i].transform.position, weaponPoints[i].transform.rotation);
+                weapon.transform.parent = weaponPoints[i].gameObject.transform;
+                weaponlist.Add(weapon);
+            }
 		}
 
 		/// <summary>
 		/// Gets index of a random empty spawn point
 		/// </summary>
-		/// <returns>The random empty spawn point index.</returns>
 		public int GetRandomEmptySpawnPointIndex()
 		{
 			LazyLoadSpawnPoints();
@@ -124,8 +135,19 @@ namespace Tanks.Map
         void Spawn()
         {
             int spawnPointIndex = Random.Range(0, spawnPoints.Count);
-            GameObject pEnemy = Instantiate(enemy, spawnPoints[spawnPointIndex].transform.position, spawnPoints[spawnPointIndex].transform.rotation);
+            GameObject pEnemy   = Instantiate(enemy, spawnPoints[spawnPointIndex].transform.position, spawnPoints[spawnPointIndex].transform.rotation);
             mapObjectList.Add(pEnemy);
+        }
+
+        /// <summary>
+        /// 刷新武器
+        /// </summary>
+        void SpawnWeapon()
+        {
+            int nIndex        = Random.Range(0, spawnPoints.Count);
+            GameObject weapon = Instantiate(weaponPoints[nIndex].m_WeaponPerfab, weaponPoints[nIndex].transform.position, weaponPoints[nIndex].transform.rotation);
+            weapon.transform.parent = weaponPoints[nIndex].gameObject.transform;
+            weaponlist.Add(weapon);
         }
 
 

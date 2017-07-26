@@ -663,7 +663,7 @@ namespace Tanks
         /// </summary>
         private int TankSort(TankManager tank1, TankManager tank2)
         {
-            return tank2.score - tank1.score;
+            return 1;
         }
 
         /// <summary>
