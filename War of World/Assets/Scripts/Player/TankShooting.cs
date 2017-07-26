@@ -28,16 +28,14 @@ namespace Tanks.TankControllers
         #endregion
 
 
-        public GameObject       fireDirection;
         public GameObject       gunHead;
         public GameObject       muzzleFlash;
         public GameObject       RedPoint;
 
-        public float            coneAngle = 1.5f;
-        int                     shootableMask;
+
         protected int           m_PlayerNumber = 1;
         float                   Esplasetimer;
-        float                   effectsDisplayTime = 0;
+        int                     shootableMask;
 
         private SHOOTINGMODE    m_ShootMode = SHOOTINGMODE.Shoot_continued;
         private bool            m_FireInput;
@@ -59,22 +57,13 @@ namespace Tanks.TankControllers
         /// 屏幕射线相关的数据
         /// </summary>
         private LineRenderer    m_LineRender;
-        public  float           m_pulseSpeed = 1.5f;
-        public  float           m_maxWidth = 0.5f;
-        public  float           m_minWidth = 0.2f;
 
-        private static TankShooting s_localTank;
-        public static TankShooting s_LocalTank
-        {
-            get { return s_localTank; }
-        }
 
         private TankWeaponDefinition    m_WeaponProtol;
         void Awake()
         {
             shootableMask       = LayerMask.GetMask("Shootable");
             m_LineRender        = gameObject.GetComponent<LineRenderer>();
-            fireDirection.SetActive(false);
             muzzleFlash.SetActive(false);
             m_LineRender.enabled = false;
             m_curLookatDeg      = transform.rotation.eulerAngles.y;
@@ -90,15 +79,10 @@ namespace Tanks.TankControllers
         [ClientCallback]
         private void Update()
         {
-            if (s_localTank == null)
-            {
-                s_localTank = this;
-            }
-
             m_shootRay.origin       = gunHead.transform.position;
             m_shootRay.direction    = gunHead.transform.forward;
-            //Physics.Raycast(m_shootRay, out m_shootHit, 100, shootableMask);
-            //DrawPulseLine();
+            Physics.Raycast(m_shootRay, out m_shootHit, 50, shootableMask);
+            DrawPulseLine();
 
             Esplasetimer += Time.deltaTime;
             if (m_ShootMode == SHOOTINGMODE.Shoot_pulse)
@@ -116,12 +100,6 @@ namespace Tanks.TankControllers
                 }
             }
             SmoothFaceDirection();
-
-            effectsDisplayTime += Time.deltaTime;
-            if (effectsDisplayTime >= 0.2f)
-            {
-                muzzleFlash.SetActive(false);
-            }
         }
 
         /// ----------------------------------------------------------------------------------------------
@@ -132,8 +110,8 @@ namespace Tanks.TankControllers
         void DrawPulseLine()
         {
            
-            float aniFactor = Mathf.PingPong(Time.time * m_pulseSpeed, 1.0f);
-            aniFactor       = Mathf.Max( m_minWidth, aniFactor ) * m_maxWidth;
+            float aniFactor = Mathf.PingPong(Time.time * 1.5f, 1.0f);
+            aniFactor       = Mathf.Max( 0.2f, aniFactor ) * 0.5f;
             m_LineRender.SetWidth(aniFactor, aniFactor );
 
             if( m_shootHit.transform )
@@ -221,10 +199,7 @@ namespace Tanks.TankControllers
         /// ----------------------------------------------------------------------------------------------
         void Shoot()
         {
-            Esplasetimer = 0f;
-            muzzleFlash.SetActive(true);
-            effectsDisplayTime = 0;
-
+            Esplasetimer        = 0f;
             Vector3 position    = gunHead.transform.position;
             Vector3 shotVector  = gunHead.transform.forward;
 
@@ -382,7 +357,7 @@ namespace Tanks.TankControllers
                 return;
             }
             // If this fire message is for our own local player id, we skip. We already spawned a projectile
-            if (playerId != TankShooting.s_LocalTank.m_PlayerNumber)
+            if (playerId != m_PlayerNumber)
             {
                 if (m_ShootMode == SHOOTINGMODE.Shoot_continued)
                 {

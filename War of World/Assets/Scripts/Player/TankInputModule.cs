@@ -205,19 +205,19 @@ namespace Tanks.TankControllers
         /// --------------------------------------------------------------------------------------------------------
         protected void OnJoystickMoveStart( MovingJoystick move )
         {
-            if( m_Shooting == null || m_Shooting.fireDirection == null )
+            if( m_Shooting == null /*|| m_Shooting.fireDirection == null */ )
                 return;
 
             if (move.joystickName == "Right_Joystick")
             {
                 m_bJoystickInputR = true;
-                m_Shooting.fireDirection.SetActive(true);
+                //m_Shooting.fireDirection.SetActive(true);
             }
 
             else if (move.joystickName == "Left_Joystick")
             {
                 m_bJoystickInputL = true;
-                m_Shooting.fireDirection.SetActive(false);
+                //m_Shooting.fireDirection.SetActive(false);
             }
         }
 
@@ -232,7 +232,7 @@ namespace Tanks.TankControllers
             if (move.joystickName == "Right_Joystick")
             {
                 m_bJoystickInputR = false;
-                m_Shooting.fireDirection.SetActive(false);
+                //m_Shooting.fireDirection.SetActive(false);
                 if (m_Shooting.IsShootContinued())
                 {
                     SetFireIsHeld(false);
