@@ -9,11 +9,11 @@ using Tanks.Utilities;
 
 namespace Tanks
 {
-    public class AssetManager : Singleton<AssetManager>
+    public class AssetManager : CustomSingleton<AssetManager>
     {
         const string SOUND_PATH     = "sounds/";
         const string SPRITE_PATH    = "Sprites/";
-        const string PERFAB_PATH    = "Prefabs";
+        const string PERFAB_PATH    = "Prefabs/";
         const string SCRIPT_PATH    = "lua/";
         const string UI_PATH        = "UI/";
 
@@ -22,7 +22,7 @@ namespace Tanks
         public void Init()
         {
             /////////////////////////////////////////
-            AddScript("pvp");
+            LoadBattleResources();
         }
 
         /// -----------------------------------------------------------------------------------------------------
@@ -37,8 +37,15 @@ namespace Tanks
         {
             /////////////////////////////////////////
             /// 建筑
-            AddSprite("Entity_Castle");
             
+
+            /////////////////////////////////////////
+            /// 武器
+            AddSprite("Weapon001");
+            AddSprite("Weapon002");
+            AddSprite("Weapon003");
+            AddSprite("Weapon004");
+
             ////////////////////////////////////////
             /// 声音
             AddSound("explosion01");
@@ -55,7 +62,13 @@ namespace Tanks
         {
             /////////////////////////////////////////
             /// 建筑
-            RemoveResources("Entity_Castle");
+
+            /////////////////////////////////////////
+            /// 武器
+            RemoveResources("Weapon001");
+            RemoveResources("Weapon002");
+            RemoveResources("Weapon003");
+            RemoveResources("Weapon004");
 
             ////////////////////////////////////////
             /// 声音

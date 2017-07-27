@@ -82,6 +82,11 @@ namespace Tanks
 			get { return NetworkManager.s_Instance.isSinglePlayer; }
 		}
 
+        private void Start()
+        {
+            AssetManager.Get().Init();
+        }
+
 		/// <summary>
 		/// Sets the index of the map.
 		/// </summary>
@@ -169,7 +174,7 @@ namespace Tanks
         {
             for (int i = 0; i < m_WeaponList.Count; i++ )
             {
-                if (m_WeaponList[i].weaponID == nWeaponID)
+                if (m_WeaponList[i].m_ID == nWeaponID)
                     return m_WeaponList[i];
             }
             return null;

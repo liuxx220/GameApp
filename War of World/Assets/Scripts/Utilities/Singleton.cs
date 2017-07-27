@@ -1,12 +1,10 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 
 namespace Tanks.Utilities
 {
-	/// <summary>
-	/// Singleton class
-	/// </summary>
-	/// <typeparam name="T">Type of the singleton</typeparam>
+
 	public abstract class Singleton<T> : MonoBehaviour where T : Singleton<T>
 	{
 		private static T s_instance;
@@ -57,4 +55,20 @@ namespace Tanks.Utilities
 			}
 		}
 	}
+
+    public class CustomSingleton<T>
+    {
+        class SingletonCreator
+        {
+            internal static readonly T instance = Activator.CreateInstance<T>();
+        }
+
+        /// <summary>
+        /// The static reference to the instance
+        /// </summary>
+        public static T Get()
+        {
+            return SingletonCreator.instance;
+        }
+    }
 }

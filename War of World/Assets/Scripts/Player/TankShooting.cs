@@ -42,6 +42,7 @@ namespace Tanks.TankControllers
         private SHOOTINGMODE    m_ShootMode = SHOOTINGMODE.Shoot_continued;
         private bool            m_FireInput;
         public  float           m_curLookatDeg = 0;
+        private float           m_fOldEulerAngles = 0;
         private int             m_ContinuousShoots = 0;
         private int             m_currShoots = 0;
 
@@ -70,7 +71,7 @@ namespace Tanks.TankControllers
             m_LineRender        = gameObject.GetComponent<LineRenderer>();
             m_curLookatDeg      = transform.rotation.eulerAngles.y;
             m_TurretHeading     = m_curLookatDeg;
-
+            m_fOldEulerAngles   = m_curLookatDeg;
             RedPoint.SetActive(false);
             muzzleFlash.SetActive(false);
             m_LineRender.enabled= false;
@@ -92,9 +93,12 @@ namespace Tanks.TankControllers
             if (def != null)
             {
                 m_WeaponProtol            = def;
-                UnityEngine.Object weapon = AssetManager.s_Instance.GetResources(def.perfab);
+                UnityEngine.Object weapon = AssetManager.Get().GetResources(def.perfab);
                 GameObject gameobj        = GameObject.Instantiate(weapon) as GameObject;
                 gameobj.transform.parent  = m_WeaponHP.transform;
+                gameobj.transform.localPosition = Vector3.zero;
+                gameobj.transform.localRotation = Quaternion.identity;
+                gameobj.transform.localScale    = Vector3.one;
             }
         }
 
@@ -233,7 +237,7 @@ namespace Tanks.TankControllers
         public void SetDesiredFirePosition( Vector3 facedir )
         {
             float angle     = 90f - Mathf.Atan2(facedir.y, facedir.x) * Mathf.Rad2Deg;
-            CmdSetLook(angle + m_curLookatDeg);
+            CmdSetLook(angle + m_fOldEulerAngles);
         }
 
         /// ------------------------------------------------------------------------------------------
@@ -360,14 +364,7 @@ namespace Tanks.TankControllers
                 fired();
             }
 
-            /// 处理子弹的连射次数
-            m_currShoots++;
-            if (m_currShoots > m_ContinuousShoots )
-            {
-                m_FireInput  = false;
-                m_currShoots = 0;
-                return;
-            }
+
             // If this fire message is for our own local player id, we skip. We already spawned a projectile
             if (playerId != m_PlayerNumber)
             {

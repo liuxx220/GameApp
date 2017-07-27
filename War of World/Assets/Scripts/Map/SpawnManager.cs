@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Tanks.Utilities;
 using System.Linq;
+using Tanks.Rules;
 using Tanks.TankControllers;
 
 
@@ -21,16 +22,22 @@ namespace Tanks.Map
 	public class SpawnManager : Singleton<SpawnManager>
 	{
 
-        public GameObject           enemy;
-        public float                spawnTime = 3f;
-		private List<SpawnPoint>    spawnPoints     = new List<SpawnPoint>();
-        private List<GameObject>    mapObjectList   = new List<GameObject>();
+        public GameObject               enemy;
+        public float                    spawnTime = 3f;
+
+        /// <summary>
+        /// NPC刷新点列表
+        /// </summary>
+		private List<SpawnPoint>        spawnPoints     = new List<SpawnPoint>();
+        private List<GameObject>        mapObjectList   = new List<GameObject>();
 
         /// <summary>
         /// 武器刷新点列表
         /// </summary>
-        private List<WeaponSpawnPoint> weaponPoints = new List<WeaponSpawnPoint>();
-        private List<GameObject>       weaponlist   = new List<GameObject>();
+        private List<WeaponSpawnPoint>  weaponPoints    = new List<WeaponSpawnPoint>();
+        private List<GameObject>        weaponlist      = new List<GameObject>();
+
+
 		protected override void Awake()
 		{
 			base.Awake();
@@ -41,6 +48,7 @@ namespace Tanks.Map
 		{
 			LazyLoadSpawnPoints();
             InvokeRepeating("Spawn", spawnTime, spawnTime);
+            InvokeRepeating("SpawnWeapon", 20, 20);
 		}
 
 		/// <summary>
@@ -61,10 +69,19 @@ namespace Tanks.Map
             WeaponSpawnPoint[] foundPoints = GetComponentsInChildren<WeaponSpawnPoint>();
             weaponPoints.AddRange(foundPoints);
 
-            for( int i = 0; i < weaponPoints.Count; i++ )
+            for (int i = 0; i < weaponPoints.Count; i++)
             {
-                GameObject weapon = Instantiate(weaponPoints[i].m_WeaponPerfab, weaponPoints[i].transform.position, weaponPoints[i].transform.rotation);
+                TankWeaponDefinition def = GameSettings.s_Instance.GetWeaponbyID(0);
+                if (def == null)
+                    continue;
+
+                UnityEngine.Object obj = AssetManager.Get().GetResources(def.perfab);
+                GameObject weapon = GameObject.Instantiate(obj) as GameObject;
                 weapon.transform.parent = weaponPoints[i].gameObject.transform;
+                weaponPoints[i].m_PerviewObj    = weapon;
+                weapon.transform.localPosition  = Vector3.zero;
+                weapon.transform.localRotation  = Quaternion.identity;
+                weapon.transform.localScale     = new Vector3(1.5f, 1.5f, 1.5f);
                 weaponlist.Add(weapon);
             }
 		}
@@ -98,23 +115,30 @@ namespace Tanks.Map
 			return GetSpawnPointByIndex(i).spawnPointTransform;
 		}
 
-		/// <summary>
-		/// Cleans up the spawn points.
-		/// </summary>
+        /// ------------------------------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Cleans up the spawn points.
+        /// </summary>
+        /// ------------------------------------------------------------------------------------------------------------------------------
 		public void CleanupSpawnPoints()
 		{
 			for (int i = 0; i < spawnPoints.Count(); i++)
 			{
 				spawnPoints[i].Cleanup();
 			}
+
+            for( int i = 0; i < weaponPoints.Count; i++ )
+            {
+                weaponPoints[i].Cleanup();
+            }
 		}
 
 
-        /// -------------------------------------------------------------------------------------------------
+        /// ------------------------------------------------------------------------------------------------------------------------------
         /// <summary>
         /// 找到附近最近的敌人
         /// </summary>
-        /// -------------------------------------------------------------------------------------------------
+        /// ------------------------------------------------------------------------------------------------------------------------------
         public Transform GetLastestEnemy( Vector3 player )
         {
             Vector3 dir     = Vector3.zero;
@@ -132,31 +156,72 @@ namespace Tanks.Map
             return tform;
         }
 
+        /// ------------------------------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// 刷新怪物
+        /// </summary>
+        /// ------------------------------------------------------------------------------------------------------------------------------
         void Spawn()
         {
-            int spawnPointIndex = Random.Range(0, spawnPoints.Count);
-            GameObject pEnemy   = Instantiate(enemy, spawnPoints[spawnPointIndex].transform.position, spawnPoints[spawnPointIndex].transform.rotation);
+            int i                       = Random.Range(0, spawnPoints.Count);
+            GameObject pEnemy           = Instantiate(enemy, spawnPoints[i].transform.position, spawnPoints[i].transform.rotation);
             mapObjectList.Add(pEnemy);
         }
 
+        /// ------------------------------------------------------------------------------------------------------------------------------
         /// <summary>
         /// 刷新武器
         /// </summary>
+        /// ------------------------------------------------------------------------------------------------------------------------------
         void SpawnWeapon()
         {
-            int nIndex        = Random.Range(0, spawnPoints.Count);
-            GameObject weapon = Instantiate(weaponPoints[nIndex].m_WeaponPerfab, weaponPoints[nIndex].transform.position, weaponPoints[nIndex].transform.rotation);
-            weapon.transform.parent = weaponPoints[nIndex].gameObject.transform;
-            weaponlist.Add(weapon);
+            for (int i = 0; i < weaponPoints.Count; i++)
+            {
+                if (!weaponPoints[i].IsDirty() )
+                    continue;
+
+                TankWeaponDefinition def= GameSettings.s_Instance.GetWeaponbyID(0);
+                if (def == null)
+                    continue;
+
+                UnityEngine.Object obj  = AssetManager.Get().GetResources(def.perfab);
+                GameObject weapon       = GameObject.Instantiate(obj) as GameObject;
+                weapon.transform.parent = weaponPoints[i].gameObject.transform;
+                weaponPoints[i].m_PerviewObj    = weapon;
+                weapon.transform.localPosition  = Vector3.zero;
+                weapon.transform.localRotation  = Quaternion.identity;
+                weapon.transform.localScale     = new Vector3( 1.5f, 1.5f, 1.5f );
+                weaponlist.Add(weapon);
+            }
         }
 
-
+        /// ------------------------------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// 销毁所有管理的对象
+        /// </summary>
+        /// ------------------------------------------------------------------------------------------------------------------------------   
         public bool DestoryEnemy( GameObject pEnemy )
         {
             bool ret = mapObjectList.Remove(pEnemy);
             if( ret )
             {
                 GameObject.Destroy(pEnemy, 2f);
+            }
+
+            return ret;
+        }
+
+        /// ------------------------------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// 销毁所有管理的武器
+        /// </summary>
+        /// ------------------------------------------------------------------------------------------------------------------------------
+        public bool DestoryWeapon(GameObject pWeapon )
+        {
+            bool ret = weaponlist.Remove(pWeapon);
+            if (ret)
+            {
+                GameObject.DestroyImmediate(pWeapon);
             }
             return ret;
         }

@@ -24,56 +24,83 @@ namespace Tanks.Map
         protected float         m_XAnimatingRotationSpeed = 20f;
         private float           m_YRotationDirection = 1;
 
-        public GameObject       m_WeaponPerfab;
-
+        public GameObject       m_PerviewObj;
+        private int             m_WeaponID = 0;
         private bool            m_IsDirty = false;
 
 
+        /// ------------------------------------------------------------------------------------------------------------------------------
         /// <summary>
-        /// Raises the trigger enter event - if the collider is a tank then increase the number of tanks in zone
+        /// 进入武器刷新点
         /// </summary>
-        /// <param name="c">C.</param>
+        /// ------------------------------------------------------------------------------------------------------------------------------
         private void OnTriggerEnter(Collider c)
         {
-            if( c.gameObject != null )
+            if( c.gameObject != null && !IsDirty() )
             {
                 TankShooting player = c.gameObject.GetComponent<TankShooting>();
                 if( player != null )
                 {
-                    player.SetPlayerWeapon(0);
+                    player.SetPlayerWeapon(m_WeaponID);
                     SetDirty();
+                    SpawnManager.s_Instance.DestoryWeapon(m_PerviewObj);
+                    m_PerviewObj = null;
                 }
             }
         }
 
+        /// ------------------------------------------------------------------------------------------------------------------------------
         /// <summary>
-        /// Raises the trigger exit event - if the collider is a tank then decrease the number of tanks in zone
+        /// 离开武器刷新点
         /// </summary>
-        /// <param name="c">C.</param>
+        /// ------------------------------------------------------------------------------------------------------------------------------
         private void OnTriggerExit(Collider c)
         {
 
         }
 
-
+        /// ------------------------------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// 设置脏标记
+        /// </summary>
+        /// ------------------------------------------------------------------------------------------------------------------------------
         public void SetDirty()
         {
             m_IsDirty = true;
         }
 
+
+        public bool IsDirty()
+        {
+            return m_IsDirty;
+        }
+
+        /// ------------------------------------------------------------------------------------------------------------------------------
         /// <summary>
         /// Resets/cleans up the spawn point
         /// </summary>
+        /// ------------------------------------------------------------------------------------------------------------------------------   
         public void Cleanup()
         {
             m_IsDirty = false;
+            m_WeaponID= 0;
         }
 
+        /// ------------------------------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// 绕Y轴旋转
+        /// </summary>
+        /// ------------------------------------------------------------------------------------------------------------------------------   
         private void SetYRotation(float y)
         {
             transform.rotation = Quaternion.Euler(new Vector3(transform.rotation.eulerAngles.x, y, transform.rotation.eulerAngles.z));
         }
 
+        /// ------------------------------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// 心跳
+        /// </summary>
+        /// ------------------------------------------------------------------------------------------------------------------------------   
         private void Update()
         {
             if (!m_IsRotator)
