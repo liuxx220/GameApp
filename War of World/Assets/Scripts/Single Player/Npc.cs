@@ -31,6 +31,8 @@ namespace Tanks.SinglePlayer
         public AudioClip    deathClip;                 
         public float        timeBetweenAttacks = 0.5f;
         public int          attackDamage = 2;
+		public float 		warningRadius = 10f;//警戒半径
+		public float		traceRadius = 15f;//追踪半径
 
         Transform           player;
         TanksNetworkPlayer  playerHealth;
@@ -39,6 +41,7 @@ namespace Tanks.SinglePlayer
         ParticleSystem      hitParticles;  
         CapsuleCollider     capsuleCollider;           
         UnityEngine.AI.NavMeshAgent navagent;
+
 
 
         bool playerInRange;
@@ -55,6 +58,8 @@ namespace Tanks.SinglePlayer
             enemyAudio      = GetComponent<AudioSource>();
             hitParticles    = hitObject.GetComponentInChildren<ParticleSystem>();
             capsuleCollider = GetComponent<CapsuleCollider>();
+
+			navagent.enabled = false;
 		}
 
         void OnTriggerEnter(Collider other)
@@ -85,6 +90,10 @@ namespace Tanks.SinglePlayer
             }
 
             Vector3 dir = transform.position - player.position;
+
+
+
+
             if( dir.magnitude <= 2.5f )
             {
                 navagent.enabled = false;
@@ -92,8 +101,16 @@ namespace Tanks.SinglePlayer
             }
             else if ( !navagent.enabled  )
             {
-                navagent.enabled = true;
+                //navagent.enabled = true;
+				if (dir.magnitude <= warningRadius) 
+				{
+					navagent.enabled = true;
+				}
             }
+			else if (dir.magnitude > warningRadius) 
+			{
+				navagent.enabled = false;
+			}
 
             else if (m_CurrentHealth > 0 && playerHealth.m_CurrentHealth > 0)
             {
