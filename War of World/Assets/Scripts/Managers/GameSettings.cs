@@ -43,7 +43,7 @@ namespace Tanks
         /// 武器配置数据
         /// </summary>
         [SerializeField]
-        protected WeaponList                m_WeaponList;
+        protected WeaponLibrary             m_WeaponList;
 
 		public MapDetails map
 		{

@@ -28,23 +28,21 @@ namespace Tanks.TankControllers
         #endregion
 
         [SerializeField]
-        protected GameObject    m_WeaponHP;         // 武器挂点
-
+        protected GameObject    m_WeaponHP;             // 武器挂点
+        protected GameObject    m_EquipWeapon = null;  // 当前装备的武器
         public GameObject       gunHead;
         public GameObject       muzzleFlash;
         public GameObject       RedPoint;
 
 
-        protected int           m_PlayerNumber = 1;
         float                   Esplasetimer;
         int                     shootableMask;
 
-        private SHOOTINGMODE    m_ShootMode = SHOOTINGMODE.Shoot_continued;
+ 
         private bool            m_FireInput;
         public  float           m_curLookatDeg = 0;
         private float           m_fOldEulerAngles = 0;
-        private int             m_ContinuousShoots = 0;
-        private int             m_currShoots = 0;
+
 
         //[SyncVar]
         private float           m_TurretHeading;
@@ -75,7 +73,6 @@ namespace Tanks.TankControllers
             RedPoint.SetActive(false);
             muzzleFlash.SetActive(false);
             m_LineRender.enabled= false;
-            m_currShoots        = 1;
         }
 
 
@@ -92,13 +89,21 @@ namespace Tanks.TankControllers
             TankWeaponDefinition def = GameSettings.s_Instance.GetWeaponbyID(nWeaponID);
             if (def != null)
             {
-                m_WeaponProtol            = def;
-                UnityEngine.Object weapon = AssetManager.Get().GetResources(def.perfab);
-                GameObject gameobj        = GameObject.Instantiate(weapon) as GameObject;
-                gameobj.transform.parent  = m_WeaponHP.transform;
-                gameobj.transform.localPosition = Vector3.zero;
-                gameobj.transform.localRotation = Quaternion.identity;
-                gameobj.transform.localScale    = Vector3.one;
+                if( m_EquipWeapon != null )
+                {
+                    m_EquipWeapon.transform.parent = null;
+                    GameObject.DestroyImmediate(m_EquipWeapon);
+                }
+
+                UnityEngine.Object obj          = AssetManager.Get().GetResources(def.perfab);
+                GameObject weapon               = GameObject.Instantiate(obj) as GameObject;
+                weapon.transform.parent         = m_WeaponHP.transform;
+                weapon.transform.localPosition  = Vector3.zero;
+                weapon.transform.localRotation  = Quaternion.identity;
+                weapon.transform.localScale     = Vector3.one;
+                m_WeaponProtol = def;
+                m_EquipWeapon  = weapon;
+                
             }
         }
 
@@ -112,7 +117,7 @@ namespace Tanks.TankControllers
             DrawPulseLine();
 
             Esplasetimer += Time.deltaTime;
-            if (m_ShootMode == SHOOTINGMODE.Shoot_pulse)
+            if (m_WeaponProtol.m_ShootMode == SHOOTINGMODE.Shoot_pulse)
             {
                 if (m_FireInput && Esplasetimer >= 1.0f && Time.timeScale != 0)
                 {
@@ -170,7 +175,7 @@ namespace Tanks.TankControllers
         /// ----------------------------------------------------------------------------------------------
         public bool IsShootContinued()
         {
-            return m_ShootMode == SHOOTINGMODE.Shoot_continued;
+            return m_WeaponProtol.m_ShootMode == SHOOTINGMODE.Shoot_continued;
         }
 
         /// ----------------------------------------------------------------------------------------------
@@ -180,7 +185,7 @@ namespace Tanks.TankControllers
         /// ----------------------------------------------------------------------------------------------
         public bool IsShootPressup()
         {
-            return m_ShootMode == SHOOTINGMODE.Shoot_pressUp || m_ShootMode == SHOOTINGMODE.Shoot_pulse; 
+            return m_WeaponProtol.m_ShootMode == SHOOTINGMODE.Shoot_pressUp || m_WeaponProtol.m_ShootMode == SHOOTINGMODE.Shoot_pulse; 
         }
 
         /// ----------------------------------------------------------------------------------------------
@@ -190,7 +195,7 @@ namespace Tanks.TankControllers
         /// ----------------------------------------------------------------------------------------------
         public bool IsShootPulse()
         {
-            return m_ShootMode == SHOOTINGMODE.Shoot_pulse;
+            return m_WeaponProtol.m_ShootMode == SHOOTINGMODE.Shoot_pulse;
         }
 
         /// ----------------------------------------------------------------------------------------------
@@ -366,24 +371,21 @@ namespace Tanks.TankControllers
 
 
             // If this fire message is for our own local player id, we skip. We already spawned a projectile
-            if (playerId != m_PlayerNumber)
+            if (m_WeaponProtol.m_ShootMode == SHOOTINGMODE.Shoot_continued)
             {
-                if (m_ShootMode == SHOOTINGMODE.Shoot_continued)
-                {
-                    FireEffect1(shotVector, position, randSeed);
-                }
-                if (m_ShootMode == SHOOTINGMODE.Shoot_pressUp)
-                {
-                    FireEffect2(shotVector, position, randSeed);
-                }
-                if (m_ShootMode == SHOOTINGMODE.Shoot_pulse)
-                {
-                    FireEffect3(shotVector, position, randSeed);
-                }
-                if (m_ShootMode == SHOOTINGMODE.Shoot_Rocket)
-                {
-                    FireEffect4(shotVector, position, randSeed);
-                }
+                FireEffect1(shotVector, position, randSeed);
+            }
+            if (m_WeaponProtol.m_ShootMode == SHOOTINGMODE.Shoot_pressUp)
+            {
+                FireEffect2(shotVector, position, randSeed);
+            }
+            if (m_WeaponProtol.m_ShootMode == SHOOTINGMODE.Shoot_pulse)
+            {
+                FireEffect3(shotVector, position, randSeed);
+            }
+            if (m_WeaponProtol.m_ShootMode == SHOOTINGMODE.Shoot_Rocket)
+            {
+                FireEffect4(shotVector, position, randSeed);
             }
         }
 	}

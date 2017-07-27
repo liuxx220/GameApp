@@ -14,7 +14,7 @@ namespace Tanks.Rules
 {
    
     [CreateAssetMenu(fileName = "WeaponList", menuName = "Modes/Weapons/Create List", order = 1)]
-    public class WeaponList : WeaponListBase<TankWeaponDefinition>
+    public class WeaponLibrary : WeaponListBase<TankWeaponDefinition>
     {
 
     }
