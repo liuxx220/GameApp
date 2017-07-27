@@ -33,6 +33,7 @@ namespace Tanks.SinglePlayer
         public int          attackDamage = 2;
 		public float 		warningRadius = 10f;//警戒半径
 		public float		traceRadius = 15f;//追踪半径
+		public float		attackRadius = 3f;	// 攻击半径
 
         Transform           player;
         TanksNetworkPlayer  playerHealth;
@@ -83,19 +84,23 @@ namespace Tanks.SinglePlayer
 		void Update()
 		{
             timer += Time.deltaTime;
-            if (timer >= timeBetweenAttacks && playerInRange  && m_CurrentHealth > 0)
-            {
-                // ... attack.
-                Attack();
-            }
+//            if (timer >= timeBetweenAttacks && playerInRange  && m_CurrentHealth > 0)
+//            {
+//                // ... attack.
+//                Attack();
+//            }
 
             Vector3 dir = transform.position - player.position;
 
-
-
-
             if( dir.magnitude <= 2.5f )
             {
+
+				if (timer >= timeBetweenAttacks  && m_CurrentHealth > 0)
+				{
+					// ... attack.
+					Attack();
+				}
+
                 navagent.enabled = false;
                 return;
             }

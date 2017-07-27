@@ -262,7 +262,7 @@ namespace Tanks.Networking
             if (m_IsDead)
                 return;
 
-            m_AudioSource.Play();
+            //m_AudioSource.Play();
             m_CurrentHealth -= amount;
             if (m_CurrentHealth <= 0)
             {
