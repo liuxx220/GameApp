@@ -111,6 +111,9 @@ namespace Tanks.TankControllers
         [ClientCallback]
         private void Update()
         {
+            if (m_WeaponProtol == null)
+                return;
+
             m_shootRay.origin       = gunHead.transform.position;
             m_shootRay.direction    = gunHead.transform.forward;
             Physics.Raycast(m_shootRay, out m_shootHit, 50, shootableMask);
