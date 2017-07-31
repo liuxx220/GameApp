@@ -20,7 +20,7 @@ namespace AIToolkit
         private float _nextTimeToGenMovingTarget;
         public AIEntity Init()
         {
-            _behaviorTree = AIEntityBehaviorTreeFactory.GetBehaviorTreeDemo1();
+			_behaviorTree = AIEntityBehaviorTreeFactory.GetBehaviorTreeAction();
 
             _behaviorWorkingData = new AIEntityWorkingData();
             _behaviorWorkingData.entity = this;
