@@ -212,6 +212,7 @@ namespace Tanks.Map
             bool ret = mapObjectList.Remove(pEnemy);
             if( ret )
             {
+				AIToolkit.AIEnityManager.instance.RemoveEntity (pEnemy.GetComponent<AIToolkit.AIEntity>());
                 GameObject.Destroy(pEnemy, 2f);
             }
 

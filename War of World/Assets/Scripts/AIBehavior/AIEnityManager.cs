@@ -18,6 +18,10 @@ namespace AIToolkit
         {
             _entites.Add(e);
         }
+		public void RemoveEntity(AIEntity e)
+		{
+			_entites.Remove (e);
+		}
         public void IteratorDo(AIEntityUpdater updater, float gameTime, float deltaTime)
         {
             foreach (AIEntity e in _entites)

@@ -66,6 +66,7 @@ namespace AIToolkit
                 if (userData.attackingTime <= 0)
                 {
                     thisData.entityAnimator.CrossFade(ENDING_ANIM[Random.Range(0, ENDING_ANIM.Length)], 0.2f);
+					return TBTRunningStatus.FINISHED;
                 }
             }
             return TBTRunningStatus.EXECUTING;
