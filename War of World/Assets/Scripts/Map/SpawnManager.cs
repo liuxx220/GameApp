@@ -165,7 +165,14 @@ namespace Tanks.Map
         {
             int i                       = Random.Range(0, spawnPoints.Count);
             GameObject pEnemy           = Instantiate(enemy, spawnPoints[i].transform.position, spawnPoints[i].transform.rotation);
-            mapObjectList.Add(pEnemy);
+
+			//添加行为树AI
+
+			//GameObject.FindGameObjectWithTag ("Player");
+			AIToolkit.AIEntity pAIEntity = pEnemy.AddComponent<AIToolkit.AIEntity> ().Init (GameObject.FindGameObjectWithTag ("Player"));
+			AIToolkit.AIEnityManager.instance.AddEntity (pAIEntity);
+
+			mapObjectList.Add(pEnemy);
         }
 
         /// ------------------------------------------------------------------------------------------------------------------------------

@@ -77,6 +77,8 @@ namespace AIToolkit
         {
             AIEntityWorkingData thisData = wData.As<AIEntityWorkingData>();
             thisData.entityAnimator.CrossFade("walk", 0.2f);
+
+			thisData.entity.EnabledAutoMove (true);
         }
         protected override int onExecute(TBTWorkingData wData)
         {
@@ -86,20 +88,23 @@ namespace AIToolkit
             float distToTarget = TMathUtils.GetDistance2D(targetPos, currentPos);
             if (distToTarget < 1f)
             {
-                thisData.entityTF.position = targetPos;
+                //thisData.entityTF.position = targetPos;
+				thisData.entity.EnabledAutoMove (false);
                 return TBTRunningStatus.FINISHED;
             }
             else
             {
                 int ret = TBTRunningStatus.EXECUTING;
-                Vector3 toTarget = TMathUtils.GetDirection2D(targetPos, currentPos);
-                float movingStep = 0.5f * thisData.deltaTime;
-                if(movingStep > distToTarget)
-                {
-                    movingStep = distToTarget;
-                    ret = TBTRunningStatus.FINISHED;
-                }
-                thisData.entityTF.position = thisData.entityTF.position + toTarget * movingStep;
+//                Vector3 toTarget = TMathUtils.GetDirection2D(targetPos, currentPos);
+//                float movingStep = 0.5f * thisData.deltaTime;
+//                if(movingStep > distToTarget)
+//                {
+//                    movingStep = distToTarget;
+//                    ret = TBTRunningStatus.FINISHED;
+//                }
+//                thisData.entityTF.position = thisData.entityTF.position + toTarget * movingStep;
+				thisData.entity.AutoMove (targetPos);
+
                 return ret;
             }
         }
