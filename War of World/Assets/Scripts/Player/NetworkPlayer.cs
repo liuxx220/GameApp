@@ -133,23 +133,17 @@ namespace Tanks.Networking
 
         /// -----------------------------------------------------------------------------------------------
         /// <summary>
-        /// 设置游戏的模式
+        /// 血量改变
         /// </summary>
         /// -----------------------------------------------------------------------------------------------
-        public void SetGameModel( PLAYGAMEMODEL model )
+        public void UpdateHpChange( byte reason, int curHp )
         {
-            //if( model == PLAYGAMEMODEL.PLAYGAME_FPS )
-            //{
-            //    m_FPS.SetActive(true);
-            //    m_TPS.SetActive(false);
-            //    m_Flag.SetActive(false);
-            //}
-            //else
-            //{
-            //    m_FPS.SetActive(false);
-            //    m_TPS.SetActive(true);
-            //    m_Flag.SetActive(true);
-            //}
+           if( tank != null && tank.hudPlayer != null )
+           {
+               tank.hudPlayer.AddHUD(curHp, Color.red, 0f);
+               tank.hudPlayer.SetProcess(m_CurrentHealth / 100.0f);
+               tank.hudPlayer.XueTiaoDmgShow(m_CurrentHealth, curHp, 100 );
+           }
         }
 
         /// ----------------------------------------------------------------------------------------------
@@ -246,6 +240,7 @@ namespace Tanks.Networking
             m_CurrentHealth -= amount;
             m_BehitParticles.transform.position = hitPoint;
             m_BehitParticles.Play();
+            UpdateHpChange( 0, amount );
             if (m_CurrentHealth <= 0)
             {
                 Death();
@@ -262,8 +257,8 @@ namespace Tanks.Networking
             if (m_IsDead)
                 return;
 
-            //m_AudioSource.Play();
             m_CurrentHealth -= amount;
+            UpdateHpChange(0, amount);
             if (m_CurrentHealth <= 0)
             {
                 Death();
@@ -281,6 +276,7 @@ namespace Tanks.Networking
             m_CtrlAnimator.SetTrigger("Dead");
             m_AudioSource.clip = m_DeathClip;
             m_AudioSource.Play();
+            tank.hudPlayer.gameObject.SetActive(false);
         }
 
 
@@ -338,6 +334,7 @@ namespace Tanks.Networking
             if( hasAuthority )
             {
                 CmdClientReadyInScene();
+                HUDPlayerManager.Get().CreateHUDPlayerPrefab( transform );
             }
         }
 

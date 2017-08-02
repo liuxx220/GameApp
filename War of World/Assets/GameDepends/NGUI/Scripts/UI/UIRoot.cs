@@ -239,14 +239,17 @@ public class UIRoot : MonoBehaviour
 
 	Transform mTrans;
 
-	protected virtual void Awake () { mTrans = transform; }
+	protected virtual void Awake () 
+    { 
+        mTrans = transform;
+    }
+
 	protected virtual void OnEnable () { list.Add(this); }
 	protected virtual void OnDisable () { list.Remove(this); }
 
 	protected virtual void Start ()
 	{
 		UIOrthoCamera oc = GetComponentInChildren<UIOrthoCamera>();
-
 		if (oc != null)
 		{
 			Debug.LogWarning("UIRoot should not be active at the same time as UIOrthoCamera. Disabling UIOrthoCamera.", oc);

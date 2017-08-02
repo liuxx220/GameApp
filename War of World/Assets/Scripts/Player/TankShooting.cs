@@ -66,13 +66,12 @@ namespace Tanks.TankControllers
         void Awake()
         {
             shootableMask       = LayerMask.GetMask("Shootable");
-            m_LineRender        = gameObject.GetComponent<LineRenderer>();
+            //m_LineRender        = gameObject.GetComponent<LineRenderer>();
             m_curLookatDeg      = transform.rotation.eulerAngles.y;
             m_TurretHeading     = m_curLookatDeg;
             m_fOldEulerAngles   = m_curLookatDeg;
             RedPoint.SetActive(false);
             muzzleFlash.SetActive(false);
-            m_LineRender.enabled= false;
         }
 
 
@@ -92,7 +91,8 @@ namespace Tanks.TankControllers
                 if( m_EquipWeapon != null )
                 {
                     m_EquipWeapon.transform.parent = null;
-                    GameObject.DestroyImmediate(m_EquipWeapon);
+                    m_EquipWeapon.SetActive(false);
+                    GameObject.Destroy(m_EquipWeapon, 2f);
                 }
 
                 UnityEngine.Object obj          = AssetManager.Get().GetResources(def.perfab);
@@ -116,8 +116,8 @@ namespace Tanks.TankControllers
 
             m_shootRay.origin       = gunHead.transform.position;
             m_shootRay.direction    = gunHead.transform.forward;
-            Physics.Raycast(m_shootRay, out m_shootHit, 50, shootableMask);
-            DrawPulseLine();
+            //Physics.Raycast(m_shootRay, out m_shootHit, 50, shootableMask);
+            //DrawPulseLine();
 
             Esplasetimer += Time.deltaTime;
             if (m_WeaponProtol.m_ShootMode == SHOOTINGMODE.Shoot_pulse)

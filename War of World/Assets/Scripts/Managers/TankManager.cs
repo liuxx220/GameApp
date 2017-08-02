@@ -78,6 +78,12 @@ namespace Tanks.TankControllers
 			protected set;
 		}
 
+        public HUDPlayer hudPlayer
+        {
+            get;
+            protected set;
+        }
+
 		public string playerName
 		{
 			get { return player.playerName; }
@@ -168,8 +174,9 @@ namespace Tanks.TankControllers
                 AnalyticsHelper.PlayerUsedTankInGame(playerTankType.id);
             }
 
-			movement = GetComponent<TankMovement>();
-			shooting = GetComponent<TankShooting>();
+			movement        = GetComponent<TankMovement>();
+			shooting        = GetComponent<TankShooting>();
+            hudPlayer       = GetComponent<HUDPlayer>();
 			movement.Init(this);
 
             shooting.SetPlayerWeapon(0);
@@ -267,30 +274,6 @@ namespace Tanks.TankControllers
 				return;
 			}
 			movement.SetDefaults();
-		}
-
-		/// <summary>
-		/// Convenience function for increasing the player score
-		/// </summary>
-		public void IncrementScore()
-		{
-			m_Score++;
-		}
-
-		/// <summary>
-		/// Convenience function for decreasing the player score
-		/// </summary>
-		public void DecrementScore()
-		{
-			m_Score--;
-		}
-
-		/// <summary>
-		/// Helper function for awarding the player money (sum of round currency and award currency)
-		/// </summary>
-		public void AssignMoneyToPlayerData()
-		{
-
 		}
 
 		#region SYNCVAR HOOKS

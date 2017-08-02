@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using Tanks.Utilities;
 using System.Linq;
 using Tanks.Rules;
+using Tanks.Data;
+using Tanks.SinglePlayer;
 using Tanks.TankControllers;
 
 
@@ -165,6 +167,15 @@ namespace Tanks.Map
         {
             int i                       = Random.Range(0, spawnPoints.Count);
             GameObject pEnemy           = Instantiate(enemy, spawnPoints[i].transform.position, spawnPoints[i].transform.rotation);
+            HUDPlayer hud               = HUDPlayerManager.Get().CreateHUDPlayerPrefab(pEnemy.transform);
+            if( hud != null )
+            {
+                Npc pNpc                = pEnemy.GetComponent<Npc>();
+                if( pNpc != null )
+                {
+                    pNpc.hudPlayer      = hud;
+                }
+            }
             mapObjectList.Add(pEnemy);
         }
 

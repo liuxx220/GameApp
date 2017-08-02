@@ -15,7 +15,7 @@ namespace Tanks
         const string SPRITE_PATH    = "Sprites/";
         const string PERFAB_PATH    = "Prefabs/";
         const string SCRIPT_PATH    = "lua/";
-        const string UI_PATH        = "UI/";
+        const string UI_PATH        = "Prefabs/UI/";
 
         Dictionary<string, Object> resources = new Dictionary<string, Object>();
 
@@ -50,7 +50,10 @@ namespace Tanks
             /// 声音
             AddSound("explosion01");
 
-
+            ////////////////////////////////////////
+            /// UI
+            AddUI("HUDPlayer");
+            AddUI("HUDText");
         }
 
         /// -----------------------------------------------------------------------------------------------------

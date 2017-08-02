@@ -91,7 +91,12 @@ namespace Tanks.TankControllers
             SetDefaults();
         }
 
- 
+
+        /// -------------------------------------------------------------------------------------------
+        /// <summary>
+        /// 设置移动方向
+        /// </summary>
+        /// -------------------------------------------------------------------------------------------
         public void SetMovementDirection( Vector3 moveDir )
         {
             m_DesiredDirection = moveDir;
@@ -99,6 +104,16 @@ namespace Tanks.TankControllers
             {
                 m_DesiredDirection.Normalize();
             }
+        }
+
+        /// -------------------------------------------------------------------------------------------
+        /// <summary>
+        /// 得到移动方向
+        /// </summary>
+        /// -------------------------------------------------------------------------------------------
+        public Vector3 GetMovementDirection( )
+        {
+            return m_DesiredDirection;
         }
 
         private void Awake()

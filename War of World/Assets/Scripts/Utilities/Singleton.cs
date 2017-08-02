@@ -24,6 +24,11 @@ namespace Tanks.Utilities
 			}
 		}
 
+        public static T Get()
+        {
+            return s_instance;
+        }
+
 		/// <summary>
 		/// Gets whether an instance of this singleton exists
 		/// </summary>

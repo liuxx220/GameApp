@@ -28,7 +28,8 @@ namespace Tanks.SinglePlayer
 
         public GameObject   hitObject;
         public GameObject   deathObject;
-        public AudioClip    deathClip;                 
+        public AudioClip    deathClip;   
+        public HUDPlayer    hudPlayer = null;      
         public float        timeBetweenAttacks = 0.5f;
         public int          attackDamage = 2;
 		public float 		warningRadius = 10f;//警戒半径
@@ -137,6 +138,8 @@ namespace Tanks.SinglePlayer
 
             enemyAudio.clip = deathClip;
             enemyAudio.Play();
+            hudPlayer.gameObject.SetActive(false);
+            hudPlayer       = null;
             SpawnManager.s_Instance.DestoryEnemy(gameObject);
 		}
 
@@ -158,7 +161,7 @@ namespace Tanks.SinglePlayer
             m_CurrentHealth -= amount;
             hitParticles.transform.position = hitPoint;
             hitParticles.Play();
-
+            UpdateHpChange(0, amount);
             if (m_CurrentHealth <= 0)
             {
                 OnDied();
@@ -168,6 +171,16 @@ namespace Tanks.SinglePlayer
         public void StartSinking()
         {
            // 爲東中有事件保留
+        }
+
+        /// -----------------------------------------------------------------------------------------------
+        /// <summary>
+        /// 血量改变
+        /// </summary>
+        /// -----------------------------------------------------------------------------------------------
+        public void UpdateHpChange(byte reason, int curHp)
+        {
+            hudPlayer.AddHUD( curHp, Color.red, 0f );
         }
 	}
 }
