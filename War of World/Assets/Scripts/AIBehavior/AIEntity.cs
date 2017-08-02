@@ -102,7 +102,7 @@ namespace AIToolkit
 
 		public void AutoMove(Vector3 v3)
 		{
-			if (_navagent.enabled )
+			if (_navagent.enabled)
 				_navagent.SetDestination(v3);
 		}
 
