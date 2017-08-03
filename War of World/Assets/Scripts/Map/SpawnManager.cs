@@ -179,7 +179,9 @@ namespace Tanks.Map
             mapObjectList.Add(pEnemy);
 
 			//添加行为树AI
-			AIToolkit.AIEntity pAIEntity = pEnemy.AddComponent<AIToolkit.AIEntity> ().Init (GameObject.FindGameObjectWithTag ("Player"));
+
+			GameObject obj = Tanks.Networking.NetworkManager.s_Instance.m_newPlayer;
+			AIToolkit.AIEntity pAIEntity = pEnemy.AddComponent<AIToolkit.AIEntity> ().Init (obj);//GameObject.FindGameObjectWithTag ("Player"));
 			AIToolkit.AIEnityManager.instance.AddEntity (pAIEntity);
         }
 
