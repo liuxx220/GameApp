@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
 using Tanks.Rules.SinglePlayer;
 using Tanks;
+using Tanks.Shells;
 using Tanks.Map;
-using Tanks.Effects;
+using Tanks.Rules;
 using Tanks.Data;
 using Tanks.Networking;
-using UnityEngine.UI;
 using Tanks.Explosions;
 using Tanks.TankControllers;
 using TanksNetworkPlayer = Tanks.Networking.NetworkPlayer;
@@ -17,141 +17,73 @@ using TanksNetworkPlayer = Tanks.Networking.NetworkPlayer;
 
 namespace Tanks.SinglePlayer
 {
-	/// <summary>
-	/// Npc base class that registers death with single player rules processor
-	/// </summary>
 	public class Npc : MonoBehaviour
 	{
-		protected float     m_MaximumHealth = 50;
-		private float       m_CurrentHealth;
-		private bool        m_IsDead = false;
+		protected float         m_MaximumHealth = 50;
+		private float           m_CurrentHealth;
+		private bool            m_IsDead = false;
 
-        public GameObject   hitObject;
-        public GameObject   deathObject;
-        public AudioClip    deathClip;   
-        public HUDPlayer    hudPlayer = null;      
-        public float        timeBetweenAttacks = 0.5f;
-        public int          attackDamage = 2;
-		public float 		warningRadius = 10f;//警戒半径
-		public float		traceRadius = 15f;//追踪半径
-		public float		attackRadius = 3f;	// 攻击半径
+        public AudioClip        deathClip;   
+        public HUDPlayer        hudPlayer = null;      
+        public int              attackDamage = 2;
 
-        Transform           player;
-        TanksNetworkPlayer  playerHealth;
-        Animator            anim;
-        AudioSource         enemyAudio;                     
-        ParticleSystem      hitParticles;  
-        CapsuleCollider     capsuleCollider;           
-        UnityEngine.AI.NavMeshAgent navagent;
+        TanksNetworkPlayer      TargetPlayer;
+        Animator                entityAnimator;
+        AudioSource             enemyAudio;
+        public GameObject       gunHead;
 
+        /// <summary>
+        /// 当前武器的配置信息
+        /// </summary>
+        private TankWeaponDefinition m_Weapon = null;
 
-
-        bool playerInRange;
-        float timer;
-		public bool isAlive { get { return !m_IsDead; } }
-		
 		void Awake()
 		{
-            m_CurrentHealth = m_MaximumHealth;
-            player          = GameObject.FindGameObjectWithTag("Player").transform;
-            playerHealth    = player.GetComponent<TanksNetworkPlayer>();
-            navagent        = GetComponent<UnityEngine.AI.NavMeshAgent>();
-            anim            = GetComponent<Animator>();
-            enemyAudio      = GetComponent<AudioSource>();
-            hitParticles    = hitObject.GetComponentInChildren<ParticleSystem>();
-            capsuleCollider = GetComponent<CapsuleCollider>();
-
-			navagent.enabled = false;
+            m_CurrentHealth     = m_MaximumHealth;
+            TargetPlayer        = GameObject.FindGameObjectWithTag("Player").transform.GetComponent<TanksNetworkPlayer>();
+            entityAnimator      = GetComponent<Animator>();
+            enemyAudio          = GetComponent<AudioSource>();
 		}
 
-        void OnTriggerEnter(Collider other)
-        {
-            if (other.gameObject == player)
-            {
-                playerInRange = true;
-            }
-        }
-
-
-        void OnTriggerExit(Collider other)
-        {
-            if (other.gameObject == player)
-            {
-                playerInRange = false;
-            }
-        }
-
-
-		void Update()
-		{
-            timer += Time.deltaTime;
-//            if (timer >= timeBetweenAttacks && playerInRange  && m_CurrentHealth > 0)
-//            {
-//                // ... attack.
-//                Attack();
-//            }
-
-            Vector3 dir = transform.position - player.position;
-
-            if( dir.magnitude <= 2.5f )
-            {
-
-				if (timer >= timeBetweenAttacks  && m_CurrentHealth > 0)
-				{
-					// ... attack.
-					Attack();
-				}
-
-                navagent.enabled = false;
-                return;
-            }
-            else if ( !navagent.enabled  )
-            {
-                //navagent.enabled = true;
-				if (dir.magnitude <= warningRadius) 
-				{
-					navagent.enabled = true;
-				}
-            }
-			else if (dir.magnitude > warningRadius) 
-			{
-				navagent.enabled = false;
-			}
-
-            else if (m_CurrentHealth > 0 && playerHealth.m_CurrentHealth > 0)
-            {
-                if (navagent.enabled )
-                    navagent.SetDestination(player.position);
-            }
-            else
-            {
-                navagent.enabled = false;
-            }
-		}
-
+        /// -----------------------------------------------------------------------------------------------
+        /// <summary>
+        /// 死亡
+        /// </summary>
+        /// -----------------------------------------------------------------------------------------------
 		protected virtual void OnDied()
 		{
-            m_IsDead = true;
-            capsuleCollider.isTrigger = true;
-
-            anim.SetTrigger("Dead");
-
+            m_IsDead    = true;
+            entityAnimator.SetTrigger("Dead");
             enemyAudio.clip = deathClip;
             enemyAudio.Play();
+
             hudPlayer.gameObject.SetActive(false);
-            hudPlayer       = null;
+            hudPlayer   = null;
             SpawnManager.s_Instance.DestoryEnemy(gameObject);
 		}
 
-        void Attack()
+        /// -----------------------------------------------------------------------------------------------
+        /// <summary>
+        /// 攻击
+        /// </summary>
+        /// -----------------------------------------------------------------------------------------------
+        void Shoot()
         {
-            timer = 0f;
-            if (playerHealth.m_CurrentHealth > 0)
+            if (TargetPlayer.m_CurrentHealth > 0 && gunHead != null )
             {
-                playerHealth.TakeDamage(attackDamage);
+                Vector3 position    = gunHead.transform.position;
+                Vector3 shotVector  = gunHead.transform.forward;
+                TargetPlayer.TakeDamage(attackDamage);
+                FireEffect1(shotVector, position);
             }
         }
 
+
+        /// -----------------------------------------------------------------------------------------------
+        /// <summary>
+        /// 伤害
+        /// </summary>
+        /// -----------------------------------------------------------------------------------------------
         public void TakeDamage(int amount, Vector3 hitPoint)
         {
             if (m_IsDead)
@@ -159,8 +91,6 @@ namespace Tanks.SinglePlayer
 
             enemyAudio.Play();
             m_CurrentHealth -= amount;
-            hitParticles.transform.position = hitPoint;
-            hitParticles.Play();
             UpdateHpChange(0, amount);
             if (m_CurrentHealth <= 0)
             {
@@ -181,6 +111,47 @@ namespace Tanks.SinglePlayer
         public void UpdateHpChange(byte reason, int curHp)
         {
             hudPlayer.AddHUD( curHp, Color.red, 0f );
+        }
+
+        /// ------------------------------------------------------------------------------------------
+        /// <summary>
+        /// 这里暂时先这么实现各种子弹，子弹1射击的效果
+        /// </summary>
+        /// ------------------------------------------------------------------------------------------
+        private void FireEffect1(Vector3 shootVector, Vector3 position)
+        {
+            GameObject shellInstance = null;
+            if (ExplosionManager.s_InstanceExists)
+            {
+                shellInstance = ExplosionManager.s_Instance.CreateVisualBullet(position, shootVector, 0, BulletClass.FiringExplosion);
+            }
+
+            shellInstance.SetActive(true);
+            shellInstance.transform.localScale  = Vector3.one;
+            shellInstance.transform.position    = position;
+            shellInstance.transform.forward     = shootVector;
+
+            // 忽略与自身的碰撞
+            Physics.IgnoreCollision(shellInstance.GetComponent<Collider>(), GetComponentInChildren<Collider>(), true);
+            InstantBullet shell = shellInstance.GetComponent<InstantBullet>();
+            shell.Setup(0, null, 100);
+        }
+
+        /// -----------------------------------------------------------------------------------------------
+        /// <summary>
+        /// 角色安装武器，应该通知其他客户端
+        /// </summary>
+        /// -----------------------------------------------------------------------------------------------
+        public void SetPlayerWeapon(int nWeaponID)
+        {
+            if (nWeaponID < 0)
+                return;
+
+            TankWeaponDefinition def = GameSettings.s_Instance.GetWeaponbyID(nWeaponID);
+            if (def != null)
+            {
+                m_Weapon = def;
+            }
         }
 	}
 }

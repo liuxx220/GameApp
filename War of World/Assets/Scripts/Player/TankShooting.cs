@@ -66,7 +66,6 @@ namespace Tanks.TankControllers
         void Awake()
         {
             shootableMask       = LayerMask.GetMask("Shootable");
-            //m_LineRender        = gameObject.GetComponent<LineRenderer>();
             m_curLookatDeg      = transform.rotation.eulerAngles.y;
             m_TurretHeading     = m_curLookatDeg;
             m_fOldEulerAngles   = m_curLookatDeg;
@@ -270,7 +269,7 @@ namespace Tanks.TankControllers
             Physics.IgnoreCollision(shellInstance.GetComponent<Collider>(), GetComponentInChildren<Collider>(), true);
             InstantBullet shell = shellInstance.GetComponent<InstantBullet>();
             shell.Setup(0, null, 100);
-            shell.transform.rotation = Quaternion.Euler(new Vector3(transform.rotation.eulerAngles.x, m_curLookatDeg, transform.rotation.eulerAngles.z));
+            //shell.transform.rotation = Quaternion.Euler(new Vector3(transform.rotation.eulerAngles.x, m_curLookatDeg, transform.rotation.eulerAngles.z));
         }
 
         /// ------------------------------------------------------------------------------------------

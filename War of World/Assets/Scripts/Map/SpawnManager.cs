@@ -170,7 +170,11 @@ namespace Tanks.Map
             HUDPlayer hud               = HUDPlayerManager.Get().CreateHUDPlayerPrefab(pEnemy.transform);
             if( hud != null )
             {
-              
+                Npc pNpc = pEnemy.GetComponent<Npc>();
+                if( pNpc != null )
+                {
+                    pNpc.SetPlayerWeapon(0);
+                }
             }
             mapObjectList.Add(pEnemy);
 			GameObject obj = Tanks.Networking.NetworkManager.s_Instance.m_newPlayer;
