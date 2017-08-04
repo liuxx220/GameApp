@@ -54,7 +54,8 @@ namespace AIToolkit
             AIEntityWorkingData thisData = wData.As<AIEntityWorkingData>();
             UserContextData userData = getUserContexData<UserContextData>(wData);
             userData.attackingTime = DEFAULT_WAITING_TIME;
-            thisData.entityAnimator.CrossFade("attack", 0.2f);
+			if(thisData.entityAnimator)
+				thisData.entityAnimator.CrossFade("attack", 0.2f);
         }
         protected override int onExecute(TBTWorkingData wData)
         {
@@ -65,6 +66,7 @@ namespace AIToolkit
                 userData.attackingTime -= thisData.deltaTime;
                 if (userData.attackingTime <= 0)
                 {
+					if(thisData.entityAnimator)
                     thisData.entityAnimator.CrossFade(ENDING_ANIM[Random.Range(0, ENDING_ANIM.Length)], 0.2f);
 					return TBTRunningStatus.FINISHED;
                 }
@@ -77,6 +79,7 @@ namespace AIToolkit
         protected override void onEnter(TBTWorkingData wData)
         {
             AIEntityWorkingData thisData = wData.As<AIEntityWorkingData>();
+			if(thisData.entityAnimator)
             thisData.entityAnimator.CrossFade("walk", 0.2f);
 
 			thisData.entity.EnabledAutoMove (true);
@@ -115,6 +118,7 @@ namespace AIToolkit
         protected override void onEnter(TBTWorkingData wData)
         {
             AIEntityWorkingData thisData = wData.As<AIEntityWorkingData>();
+			if(thisData.entityAnimator)
             thisData.entityAnimator.CrossFade("walk", 0.2f);
         }
         protected override int onExecute(TBTWorkingData wData)

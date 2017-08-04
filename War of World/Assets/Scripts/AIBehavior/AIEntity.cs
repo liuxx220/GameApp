@@ -79,7 +79,11 @@ namespace AIToolkit
                 return 0;
             }
             //update working data
-            _behaviorWorkingData.entityAnimator.speed = AITimer.instance.timeScale;
+			if (null != _behaviorWorkingData.entityAnimator) 
+			{
+				_behaviorWorkingData.entityAnimator.speed = AITimer.instance.timeScale;
+			}
+            
             _behaviorWorkingData.gameTime  = gameTime;
             _behaviorWorkingData.deltaTime = deltaTime;
 
