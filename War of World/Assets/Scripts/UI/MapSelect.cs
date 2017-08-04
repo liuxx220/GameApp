@@ -86,13 +86,6 @@ namespace Tanks.UI
 
 			//We determine whether a level should be displayed as locked. We assume it's unlocked by default.
 			bool levelLocked = false;
-
-			//If the map details specify that this is a locked level, we do a check vs. purchased maps and temp unlocks to determine whether it should remain so.
-			if (details.isLocked)
-			{
-				levelLocked = (!PlayerDataManager.s_Instance.IsMapUnlocked(m_MapId) && (!DailyUnlockManager.s_Instance.IsItemTempUnlocked(details.id)));
-			}
-
 			if (m_CostParent != null)
 			{
 				m_CostParent.gameObject.SetActive(levelLocked);
@@ -106,23 +99,6 @@ namespace Tanks.UI
 				}
 			}
 			m_CreateButton.interactable = !levelLocked;
-		}
-
-		public void OnUnlockClicked()
-		{
-			
-		}
-
-		private void OnMapBuy()
-		{
-			PlayerDataManager.s_Instance.SetMapUnlocked(m_MapId);
-			AssignByIndex();
-		}
-
-		private void OnMapUnlock()
-		{
-			DailyUnlockManager.s_Instance.SetDailyUnlock(m_MapId);
-			AssignByIndex();
 		}
 	}
 }

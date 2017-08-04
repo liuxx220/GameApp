@@ -70,8 +70,7 @@ namespace  Tanks.UI
 		{
 			this.m_CurrencyReward = currencyReward;
 			SetCurrencyRewardText(currencyReward);
-			this.m_PlayerCurrency = playerCurrency;
-			PlayerDataManager.s_Instance.AddCurrency(currencyReward);
+            this.m_PlayerCurrency = playerCurrency;
 			this.m_CurrentCurrency = currentCurrency;
 		}
 

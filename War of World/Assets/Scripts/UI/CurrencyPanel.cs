@@ -52,7 +52,7 @@ namespace Tanks.UI
 			PlayerDataManager playerData = PlayerDataManager.s_Instance;
 			if (playerData != null)
 			{
-				m_CurrencyText.text = playerData.currency.ToString();
+				m_CurrencyText.text = "";
 			}
 		}
 	}

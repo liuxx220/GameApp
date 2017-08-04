@@ -89,8 +89,7 @@ namespace Tanks.UI
 		{
 			if (!m_HasAwardedCurrency)
 			{
-				m_TotalCurrency = PlayerDataManager.s_Instance.currency;
-				//m_GameManager.AssignMoney();
+				m_TotalCurrency = 0;
 				m_HasAwardedCurrency = true;
 			}
 		}
@@ -114,7 +113,7 @@ namespace Tanks.UI
 
 			if (m_TotalCurrency < 0)
 			{
-				m_TotalCurrency = PlayerDataManager.s_Instance.currency;
+				m_TotalCurrency = 0;
 			}
 			
 			m_CurrencyDisplay.GetComponent<Text>().text = m_TotalCurrency.ToString();

@@ -54,27 +54,6 @@ namespace Tanks.UI
 			}
 		}
 
-		//As this class is recreated each time we enter the menu from another scene, we can rely on Start to refresh our selections.
-		private IEnumerator Start()
-		{
-			//Alas, we must wait for the Daily unlock manager to be initialized before we can poll it for temp unlock data.
-			while (!DailyUnlockManager.s_Instance.IsInitialized())
-				yield return null;			
-			
-			//Check if the last selected tank is still valid for selection. If not, reset to default.
-			int testIndex = PlayerDataManager.s_Instance.selectedPlayer;
-			TankTypeDefinition tankData = TankLibrary.s_Instance.GetTankDataForIndex(1);
-
-			if (!PlayerDataManager.s_Instance.IsTankUnlocked(testIndex) && !DailyUnlockManager.s_Instance.IsItemTempUnlocked(tankData.id))
-			{
-				testIndex = 0;
-                PlayerDataManager.s_Instance.selectedPlayer = 0;
-			}
-			
-			//Loads correct tank
-			LoadModelForTankIndex(1);
-		}
-
 		private void Update()
 		{
 			//Auto-resize camera based on bounds

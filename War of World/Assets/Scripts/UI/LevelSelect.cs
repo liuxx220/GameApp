@@ -76,9 +76,7 @@ namespace Tanks.UI
             m_NetManager    = NetworkManager.s_Instance;
 			m_MenuUi        = MainMenuUI.s_Instance;
 
-			//Get current medals earned from player data and assign to the counter on screen.
-			m_TotalMedalCount = PlayerDataManager.s_Instance.GetTotalMedalCount();
-			m_MedalCount.text = m_TotalMedalCount.ToString();
+			m_MedalCount.text = "";
 		
 			if (PlayerDataManager.s_Instance.lastLevelSelected < 0)
 			{

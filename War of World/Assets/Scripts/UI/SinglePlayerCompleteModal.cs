@@ -119,10 +119,9 @@ namespace Tanks.UI
 				m_ContinueButtonPrompt.text = m_ContinueButtonFailMessage;
 			}
 				
-			m_CurrencyAmountDisplay.GetComponent<Text>().text = PlayerDataManager.s_Instance.currency.ToString();
+			m_CurrencyAmountDisplay.GetComponent<Text>().text = "";
 
-			int currentCurrency = PlayerDataManager.s_Instance.currency;
-
+			int currentCurrency = 0;
 			for (int i = 0; i < length; i++)
 			{
 				Objective objective = objectives[i];

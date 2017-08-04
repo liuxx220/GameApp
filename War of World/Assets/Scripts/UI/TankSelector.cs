@@ -64,29 +64,9 @@ namespace Tanks.UI
 			if (dataManager != null)
 			{
 				m_CurrentIndex = dataManager.selectedPlayer;
-				m_CurrentDecoration = dataManager.selectedDecoration;
+				m_CurrentDecoration = 0;
 				m_CurrentDecorationMaterial = 0;
 			}
-		}
-		
-		//Called by next/previous tank button
-		public void ChangeTankButton(int direction)
-		{
-			int next = Wrap(m_CurrentIndex + direction, TankLibrary.s_Instance.GetNumberOfDefinitions());
-
-			if (m_FilterLockedItems)
-			{
-				while (!PlayerDataManager.s_Instance.IsTankUnlocked(next) || DailyUnlockManager.s_Instance.IsItemTempUnlocked(TankLibrary.s_Instance.GetTankDataForIndex(next).id))
-				{
-					next = Wrap(next + direction, TankLibrary.s_Instance.GetNumberOfDefinitions());
-				}
-			}
-
-			m_CurrentIndex = next;
-
-			UpdateTankStats(next);
-
-			TankRotator.s_Instance.LoadModelForTankIndex(m_CurrentIndex);
 		}
 
 		//Changes attached decoration
@@ -102,16 +82,6 @@ namespace Tanks.UI
 
 		}
 
-		//returns index of decoration
-		public int GetCurrentPreviewDecoration()
-		{
-			if (m_CurrentDecoration < 0 && PlayerDataManager.s_InstanceExists)
-			{
-				return PlayerDataManager.s_Instance.selectedDecoration;
-			}
-			
-			return m_CurrentDecoration;
-		}
 
 		//Updates the UI
 		protected virtual void UpdateTankStats(int index)

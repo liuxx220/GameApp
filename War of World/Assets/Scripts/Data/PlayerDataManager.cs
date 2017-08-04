@@ -25,11 +25,6 @@ namespace Tanks.Data
 
 
 		#region Properties
-		public int currency
-		{
-			get { return m_Data.currency;}
-		}
-
 		/// <summary>
 		/// 选择的英雄
 		/// </summary>
@@ -38,16 +33,6 @@ namespace Tanks.Data
             get { return m_Data.selectedPlayer; }
             set { m_Data.selectedPlayer = value; }
 		}
-
-        /// <summary>
-        /// 选择的英雄的装饰
-        /// </summary>
-		public int selectedDecoration
-		{
-			get { return m_Data.selectedDecoration; }
-			set { m_Data.selectedDecoration = value; }
-		}
-
 
 		//The player's chosen name.
 		public string playerName
@@ -131,50 +116,6 @@ namespace Tanks.Data
 			}
 		}
 
-		protected override void OnDestroy()
-		{
-			base.OnDestroy();
-		}
-
-
-		//Adds currency to the player's currency pool
-		public void AddCurrency(int currencyToAdd)
-		{
-			if (currencyToAdd >= 0)
-			{
-				m_Data.currency += currencyToAdd;
-				if (onCurrencyChanged != null)
-				{
-					onCurrencyChanged(m_Data.currency);
-				}
-			}
-			else
-			{
-				Debug.Log("<color=red>Attempting to add negative currency. Please use RemoveCurrency for this.</color>");
-			}
-		}
-
-		//Removes currency from the player's currency pool, clamping to zero.
-		public void RemoveCurrency(int currencyToRemove)
-		{
-			if (currencyToRemove >= 0)
-			{
-				m_Data.currency -= currencyToRemove;
-				if (m_Data.currency < 0)
-				{
-					m_Data.currency = 0;
-				}
-				if (onCurrencyChanged != null)
-				{
-					onCurrencyChanged(m_Data.currency);
-				}
-			}
-			else
-			{
-				Debug.Log("<color=red>Attempting to remove negative currency. Please use AddCurrency for this.</color>");
-			}
-		}
-
 		//Returns whether a tank for a given index is unlocked.
 		public bool IsTankUnlocked(int index)
 		{
@@ -186,125 +127,10 @@ namespace Tanks.Data
 			return false;
 		}
 
-		//Allows a tank index's unlocked status to be set. Defaults to unlocking the tank.
-		public void SetTankUnlocked(int index, bool setUnlocked = true)
-		{
-			if (m_Data.unlockedTanks.Length > index && index >= 0)
-			{
-				m_Data.unlockedTanks[index] = setUnlocked;
-			}
-			else
-			{
-				throw new IndexOutOfRangeException("Tank index invalid");
-			}
-		}
-
-		//Returns whether a decoration for a given index is unlocked.
-		public bool IsDecorationUnlocked(int index)
-		{
-			if (m_Data.decorations.Length > index && index >= 0)
-			{
-				return m_Data.decorations[index].unlocked;
-			}
-
-			return false;
-		}
-
-		//Allows a decoration index's unlocked status to be set. Defaults to unlocking the decoration.
-		public void SetDecorationUnlocked(int index, bool setUnlocked = true)
-		{
-			if (m_Data.decorations.Length > index && index >= 0)
-			{
-				m_Data.decorations[index].unlocked = setUnlocked;
-			}
-			else
-			{
-				throw new IndexOutOfRangeException("Tank index invalid");
-			}
-		}
-
-		//Returns whether a given material of a specific decoration has been unlocked.
-		public bool IsColourUnlockedForDecoration(int decorationIndex, int colourIndex)
-		{
-			if (m_Data.decorations.Length > decorationIndex && decorationIndex >= 0)
-			{
-				return m_Data.decorations[decorationIndex].availableColours.Contains(colourIndex);
-			}
-
-			return false;
-		}
-
-		//Sets whether a given material of a specific decoration is unlocked. Defaults to unlocking the colour.
-		public void SetDecorationColourUnlocked(int decorationIndex, int colourIndex, bool setUnlocked = true)
-		{
-			if (m_Data.decorations.Length > decorationIndex && decorationIndex >= 0)
-			{
-				if (IsColourUnlockedForDecoration(decorationIndex, colourIndex) != setUnlocked)
-				{
-					if (setUnlocked)
-					{
-						m_Data.decorations[decorationIndex].availableColours.Add(colourIndex);
-					}
-					else
-					{
-						m_Data.decorations[decorationIndex].availableColours.Remove(colourIndex);
-					}
-				}
-			}
-		}
-
-
-		//Returns the number of materials that have been unlocked for a given decoration.
-		public int GetNumberOfUnlockedColours(int decorationIndex)
-		{
-			if (m_Data.decorations.Length > decorationIndex && decorationIndex >= 0)
-			{
-				return m_Data.decorations[decorationIndex].availableColours.Count;
-			}
-
-			return 0;
-		}
-
-		//Returns the number of materials that remain locked for a given decoration.
-		public int GetNumberOfLockedColours(int decorationIndex)
-		{
-			return 0;
-		}
-
 		//Returns data for the latest level entered.
 		public LevelData GetLevelData(string id)
 		{
 			return m_Data.GetLevelData(id);
-		}
-
-		//Returns the total number of medals that the player has earned across all SP missions for progression purposes.
-		public int GetTotalMedalCount()
-		{
-			List<LevelData> allLevelData = m_Data.GetAllLevelData();
-
-			int totalMedalCount = 0;
-
-			for (int i = 0; i < allLevelData.Count; i++)
-			{
-				List<bool> objectives = allLevelData[i].objectivesAchieved;
-				if (objectives != null)
-				{
-					for (int j = 0; j < objectives.Count; j++)
-					{
-						if (objectives[j] == true)
-						{
-							totalMedalCount++;
-						}
-					}
-				}
-			}
-			return totalMedalCount;
-		}
-
-		//Returns whether a given decoration still has any locked colours.
-		public bool DecorationHasLockedColours(int decorationIndex)
-		{
-			return (GetNumberOfLockedColours(decorationIndex) > 0);
 		}
 
 		//Sets whether a multiplayer map is unlocked or not. Defaults to unlocking.
