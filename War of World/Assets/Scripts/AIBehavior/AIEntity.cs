@@ -79,7 +79,11 @@ namespace AIToolkit
                 return 0;
             }
             //update working data
-            _behaviorWorkingData.entityAnimator.speed = AITimer.instance.timeScale;
+			if (null != _behaviorWorkingData.entityAnimator) 
+			{
+				_behaviorWorkingData.entityAnimator.speed = AITimer.instance.timeScale;
+			}
+            
             _behaviorWorkingData.gameTime  = gameTime;
             _behaviorWorkingData.deltaTime = deltaTime;
 
@@ -102,7 +106,7 @@ namespace AIToolkit
 
 		public void AutoMove(Vector3 v3)
 		{
-			if (_navagent.enabled )
+			if (_navagent.enabled)
 				_navagent.SetDestination(v3);
 		}
 

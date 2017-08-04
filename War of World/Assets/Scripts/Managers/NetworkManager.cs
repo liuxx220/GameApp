@@ -49,6 +49,8 @@ namespace Tanks.Networking
 
         public GameObject                       m_NetworkPlayerPrefab;
 
+		public GameObject m_newPlayer;
+
 		#region Events
 		public event Action<NetworkPlayer>      playerJoined;
 		public event Action<NetworkPlayer>      playerLeft;
@@ -803,6 +805,7 @@ namespace Tanks.Networking
 
             GameObject newPlayer = Instantiate(m_NetworkPlayerPrefab);
             DontDestroyOnLoad(newPlayer);
+			m_newPlayer = newPlayer;
             NetworkServer.AddPlayerForConnection(conn, newPlayer, playerControllerId);
         }
 
