@@ -162,8 +162,8 @@ namespace Tanks.TankControllers
 
 			initialized = true;
 
-			this.player = player;
-			playerTankType = TankLibrary.s_Instance.GetTankDataForIndex(player.tankType);
+			this.player     = player;
+			playerTankType  = TankLibrary.s_Instance.GetTankDataForIndex(player.tankType);
 
 			// Create visual tank
             player.transform.position = transform.position;

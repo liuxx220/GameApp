@@ -170,16 +170,9 @@ namespace Tanks.Map
             HUDPlayer hud               = HUDPlayerManager.Get().CreateHUDPlayerPrefab(pEnemy.transform);
             if( hud != null )
             {
-                Npc pNpc                = pEnemy.GetComponent<Npc>();
-                if( pNpc != null )
-                {
-                    pNpc.hudPlayer      = hud;
-                }
+              
             }
             mapObjectList.Add(pEnemy);
-
-			//添加行为树AI
-
 			GameObject obj = Tanks.Networking.NetworkManager.s_Instance.m_newPlayer;
 			AIToolkit.AIEntity pAIEntity = pEnemy.AddComponent<AIToolkit.AIEntity> ().Init (obj);//GameObject.FindGameObjectWithTag ("Player"));
 			AIToolkit.AIEnityManager.instance.AddEntity (pAIEntity);
