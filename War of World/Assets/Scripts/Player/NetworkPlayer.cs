@@ -469,18 +469,6 @@ namespace Tanks.Networking
             m_PlayerTankType = tankType;
         }
 
-        /// -------------------------------------------------------------------------------------------------------
-        /// <summary>
-        /// …Ë÷√”¢–€µƒÕ‚√≤
-        /// </summary>
-        /// -------------------------------------------------------------------------------------------------------
-        [Command]
-        public void CmdChangeDecorationProperties(int decorationIndex, int decorationMaterial)
-        {
-            Debug.Log("CmdChangeDecorationProperties");
-            //m_PlayerTankDecoration = decorationIndex;
-            //m_PlayerTankDecorationMaterial = decorationMaterial;
-        }
 
         /// -------------------------------------------------------------------------------------------------------
         /// <summary>

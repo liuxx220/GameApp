@@ -387,7 +387,6 @@ namespace Tanks
                 if (m_NetManager.AllPlayersReady())
                 {
                     m_State = GameState.Preplay;
-                    RpcInstantiateHudScore();
                     RpcGameStarted();
 
                     // Reset all ready states for players again
@@ -742,18 +741,7 @@ namespace Tanks
             {
                 return;
             }
-
-            LocalRespawn(tank, showLeaderboard, SpawnManager.s_Instance.GetSpawnPointTransformByIndex(spawnPointIndex));
         }
-
-        /// <summary>
-        /// Locals the respawn
-        /// </summary>
-        protected void LocalRespawn(TankManager tank, bool showLeaderboard, Transform respawnPoint)
-        {
-            
-        }
-
         #endregion
 
         /// <summary>
@@ -799,44 +787,6 @@ namespace Tanks
                     m_LocalPlayerNumber = s_Tanks[i].playerNumber;
                 }
             }
-        }
-
-        //Instantiates the multiplayer score tracker on this client's HUD, and stores a reference to its script for later update
-        [ClientRpc]
-        void RpcInstantiateHudScore()
-        {
-            
-        }
-
-        //Called by the current Rules Manager to update the multiplayer score on all clients via RPC
-        //These colours and scores are preformatted by the rules manager to suit the game type
-        public void UpdateHudScore(Color[] teamColours, int[] scores)
-        {
-            if (!m_GameSettings.isSinglePlayer)
-            {
-                RpcUpdateHudScore(teamColours, scores);
-            }
-        }
-
-        //Fired to update multiplayer score display on this client, using the reference cached during client HUD instantiation
-        [ClientRpc]
-        void RpcUpdateHudScore(Color[] teamColours, int[] scores)
-        {
-            if (scores.Length != teamColours.Length)
-            {
-                Debug.LogWarning("Score arrays different size");
-                return;
-            }
-
-            UpdateScoreDictionary(teamColours, scores);
-        }
-
-        /// <summary>
-        /// Updates the score dictionary
-        /// </summary>
-        void UpdateScoreDictionary(Color[] teamColours, int[] scores)
-        {
-            
         }
 
 

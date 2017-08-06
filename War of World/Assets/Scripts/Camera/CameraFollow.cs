@@ -17,8 +17,8 @@ namespace Tanks.CameraControl
         protected Vector3 m_MoveVelocity;
         protected Vector3 m_Offset2Camera = Vector3.zero;
 
-        public float distanceAway = 24;    //相机到目标的水平距离
-        public float distanceUp = 32;      //相机到目标的垂直距离
+        public float distanceAway = 20;    //相机到目标的水平距离
+        public float distanceUp = 20;      //相机到目标的垂直距离
         public float fixedRotationYaw = 45;//相机的固定朝向 
 
 
@@ -43,8 +43,12 @@ namespace Tanks.CameraControl
         /// ------------------------------------------------------------------------------------------------------------------------------
         private void Update()
         {
+            float radian        = fixedRotationYaw * Mathf.Deg2Rad;
+            m_Offset2Camera.x   = -(distanceAway * Mathf.Sin(radian));
+            m_Offset2Camera.z   = -(distanceAway * Mathf.Cos(radian));
+            m_Offset2Camera.y   = distanceUp;
             Vector3 targetPosition = m_PlayerTransform.position + m_Offset2Camera;
-            transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref m_MoveVelocity, 0.2f, float.PositiveInfinity, Time.unscaledDeltaTime);
+            transform.position  = Vector3.SmoothDamp(transform.position, targetPosition, ref m_MoveVelocity, 0.1f, float.PositiveInfinity, Time.unscaledDeltaTime);
         }
 
         /// ------------------------------------------------------------------------------------------------------------------------------

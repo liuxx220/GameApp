@@ -121,14 +121,14 @@ namespace Tanks.TankControllers
             Esplasetimer += Time.deltaTime;
             if (m_WeaponProtol.m_ShootMode == SHOOTINGMODE.Shoot_pulse)
             {
-                if (m_FireInput && Esplasetimer >= 1.0f && Time.timeScale != 0)
+                if (m_FireInput && Esplasetimer >= 0.5f && Time.timeScale != 0)
                 {
                     Shoot();
                 }
             }
             else
             {
-                if (m_FireInput && Esplasetimer >= 0.1f && Time.timeScale != 0)
+                if (m_FireInput && Esplasetimer >= 0.2f && Time.timeScale != 0)
                 {
                     Shoot();
                 }

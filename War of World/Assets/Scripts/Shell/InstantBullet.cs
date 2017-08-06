@@ -98,7 +98,7 @@ namespace Tanks.Shells
             if( c.gameObject != null )
             {
                 Npc enemy = c.gameObject.GetComponent<Npc>();
-                if( enemy != null )
+                if (enemy != null)
                     enemy.TakeDamage(20, hitPos);
             }
 
