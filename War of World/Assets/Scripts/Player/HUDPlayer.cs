@@ -14,14 +14,14 @@ using Tanks.Extensions;
 namespace Tanks.Data
 {
 	/// <summary>
-	/// ½ÇÉ«ÑªÌõ
+	/// ï¿½ï¿½É«Ñªï¿½ï¿½
 	/// </summary>
     public class HUDPlayer : MonoBehaviour
     {
         public    float             m_TestNeatorFar = 1f;
        
         /// <summary>
-        /// ÑªÌõÊý×ÖµÄ¿Ø¼þ
+        /// Ñªï¿½ï¿½ï¿½ï¿½ï¿½ÖµÄ¿Ø¼ï¿½
         /// </summary>
         protected Transform         m_Pivot = null;
         protected UISprite          m_hideSprite = null; 
@@ -32,7 +32,7 @@ namespace Tanks.Data
         protected Transform         m_hideSlider = null;
 
         /// <summary>
-        /// Ã°Ñª¹ÜÀí
+        /// Ã°Ñªï¿½ï¿½ï¿½ï¿½
         /// </summary>
         protected class Entry
         {
@@ -88,35 +88,35 @@ namespace Tanks.Data
 
         /// ------------------------------------------------------------------------------------------------------
         /// <summary>
-        /// ÑªÌõµÄÖ÷Âß¼­
+        /// Ñªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß¼ï¿½
         /// </summary>
         /// ------------------------------------------------------------------------------------------------------
         void Awake()
         {
-            m_hpSprite    = transform.FindChild("Progress HP/Foreground").GetComponent<UISprite>();
+            m_hpSprite    = transform.Find("Progress HP/Foreground").GetComponent<UISprite>();
             //m_hpLable     = transform.FindChild("Name").GetComponent<UILabel>();
-            m_hideSlider  = transform.transform.FindChild("Progress HP/ProgressHide");
-            m_hideSprite  = m_hideSlider.transform.FindChild("HideBg").GetComponent<UISprite>();
+            m_hideSlider  = transform.transform.Find("Progress HP/ProgressHide");
+            m_hideSprite  = m_hideSlider.transform.Find("HideBg").GetComponent<UISprite>();
             m_hideSprite.fillAmount = 0;
         }
 
         /// ------------------------------------------------------------------------------------------------------
         /// <summary>
-        /// ³õÊ¼»¯ÑªÌõÐèÒªµÄÉãÏñ»úºÍÓµÓÐÕß¶ÔÏó
+        /// ï¿½ï¿½Ê¼ï¿½ï¿½Ñªï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Óµï¿½ï¿½ï¿½ß¶ï¿½ï¿½ï¿?
         /// </summary>
         /// ------------------------------------------------------------------------------------------------------
         public void Init( Transform form )
         {
             m_mainCamera = Camera.main;
             m_uiCamera   = HUDPlayerManager.Get().GetUICamera();
-            Transform o  = form.FindChild("Pivot");
+            Transform o  = form.Find("Pivot");
             m_Pivot      = o;
         }
 
 
         /// ------------------------------------------------------------------------------------------------------
         /// <summary>
-        /// ÑªÌõµÄÖ÷Âß¼­
+        /// Ñªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß¼ï¿½
         /// </summary>
         /// ------------------------------------------------------------------------------------------------------
         void Update()
@@ -128,9 +128,9 @@ namespace Tanks.Data
             if (m_Pivot != null && m_mainCamera != null && m_uiCamera != null)
             {
                 Vector3 pos          = m_Pivot.position;
-                // ÑªÌõ¶ÔÓ¦ÔÚÆÁÄ»µÄÎ»ÖÃ
+                // Ñªï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½Ä»ï¿½ï¿½Î»ï¿½ï¿½
                 Vector2 pos_screen   = m_mainCamera.WorldToScreenPoint(pos);
-                // ÑªÌõ¶ÔÓ¦ÔÚuiÖÐµÄÎ»ÖÃ
+                // Ñªï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½uiï¿½Ðµï¿½Î»ï¿½ï¿½
                 Vector3 pos_ui       = m_uiCamera.ScreenToWorldPoint(pos_screen);
                 transform.position   = Vector3.Slerp(transform.position, pos_ui, Time.time);
 
@@ -173,7 +173,7 @@ namespace Tanks.Data
 
         /// ------------------------------------------------------------------------------------------------------
         /// <summary>
-        /// ÉèÖÃÑªÌõµÄ½ø¶È
+        /// ï¿½ï¿½ï¿½ï¿½Ñªï¿½ï¿½ï¿½Ä½ï¿½ï¿½ï¿½
         /// </summary>
         /// ------------------------------------------------------------------------------------------------------
         public void SetProcess( float fPress )
@@ -183,7 +183,7 @@ namespace Tanks.Data
 
         /// ------------------------------------------------------------------------------------------------------
         /// <summary>
-        /// ÑªÌõ¶¯»­
+        /// Ñªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         /// </summary>
         /// ------------------------------------------------------------------------------------------------------
         IEnumerator SlowDown()
@@ -205,7 +205,7 @@ namespace Tanks.Data
 
         /// ------------------------------------------------------------------------------------------------------
         /// <summary>
-        /// ¶¯»­ÉËº¦
+        /// ï¿½ï¿½ï¿½ï¿½ï¿½Ëºï¿½
         /// </summary>
         /// ------------------------------------------------------------------------------------------------------
         public void XueTiaoDmgShow(int currentHp, int dmg, int maxHp)
@@ -237,7 +237,7 @@ namespace Tanks.Data
 
         /// ------------------------------------------------------------------------------------------------------
         /// <summary>
-        /// ¼ÆËãÑªÌõµÄ¸ß¶È
+        /// ï¿½ï¿½ï¿½ï¿½Ñªï¿½ï¿½ï¿½Ä¸ß¶ï¿½
         /// </summary>
         /// ------------------------------------------------------------------------------------------------------
         protected virtual float GetXueTiaoHeight()
@@ -247,7 +247,7 @@ namespace Tanks.Data
 
         /// -----------------------------------------------------------------------------------------------------
         /// <summary>
-        /// ´´½¨Ã°Ñª¶ÔÏó
+        /// ï¿½ï¿½ï¿½ï¿½Ã°Ñªï¿½ï¿½ï¿½ï¿½
         /// </summary>
         /// -----------------------------------------------------------------------------------------------------
         private Entry CreateHUDPlayerPrefab( )
@@ -283,7 +283,7 @@ namespace Tanks.Data
 
         /// -----------------------------------------------------------------------------------------------------
         /// <summary>
-        /// Ôö¼ÓÉËº¦Êý×Ö
+        /// ï¿½ï¿½ï¿½ï¿½ï¿½Ëºï¿½ï¿½ï¿½ï¿½ï¿½
         /// </summary>
         /// -----------------------------------------------------------------------------------------------------
         public void AddHUD(object obj, Color c, float stayDuration )
@@ -315,7 +315,7 @@ namespace Tanks.Data
 
         /// -----------------------------------------------------------------------------------------------------
         /// <summary>
-        /// ×ÊÔ´»ØÊÕ
+        /// ï¿½ï¿½Ô´ï¿½ï¿½ï¿½ï¿½
         /// </summary>
         /// -----------------------------------------------------------------------------------------------------
         void Delete(Entry ent)

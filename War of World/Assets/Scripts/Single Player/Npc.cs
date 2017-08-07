@@ -53,7 +53,7 @@ namespace Tanks.SinglePlayer
 		protected virtual void OnDied()
 		{
             m_IsDead    = true;
-            entityAnimator.SetTrigger("Dead");
+            //entityAnimator.SetTrigger("Dead");
             enemyAudio.clip = deathClip;
             enemyAudio.Play();
 
@@ -110,7 +110,12 @@ namespace Tanks.SinglePlayer
         /// -----------------------------------------------------------------------------------------------
         public void UpdateHpChange(byte reason, int curHp)
         {
-            hudPlayer.AddHUD( curHp, Color.red, 0f );
+            if (hudPlayer != null)
+            {
+                float nProcess = m_CurrentHealth / m_MaximumHealth;
+                hudPlayer.SetProcess(nProcess);
+                hudPlayer.AddHUD(curHp, Color.red, 0f);
+            }
         }
 
         /// ------------------------------------------------------------------------------------------

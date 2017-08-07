@@ -39,7 +39,7 @@ namespace Tanks.TankControllers
         public float                maxIdleSpeed = 0.5f;
 
         [SyncVar]
-        private float               walkingSpeed = 8f;
+        private float               walkingSpeed = 5f;
 
         private float               Speed = 0;
         private float               Angle = 0f;
@@ -148,7 +148,11 @@ namespace Tanks.TankControllers
         /// ------------------------------------------------------------------------------------------
         private void Update()
         {
-            
+            if (!hasAuthority)
+            {
+                return;
+            }
+
             idleWeight = Mathf.Lerp(idleWeight, Mathf.InverseLerp(minWalkSpeed, maxIdleSpeed, Speed), Time.deltaTime * 10);
             m_animation[idle.name].weight = idleWeight;
             if( Speed > 0 )
@@ -169,8 +173,7 @@ namespace Tanks.TankControllers
                         smallestDiff = diff;
                     }
                 }
-
-                m_animation.CrossFade(bestAnimation.clip.name );
+                m_animation.CrossFade(bestAnimation.clip.name, 0.2f );
             }
             else
             {
@@ -178,7 +181,7 @@ namespace Tanks.TankControllers
             }
 
             if (lowerBodyForward != lowerBodyForwardTarget && idleWeight >= 0.9)
-                m_animation.CrossFade(turn.name, 0.05f);
+               m_animation.CrossFade(turn.name, 0.2f);
 
             if ( bestAnimation != null && idleWeight < 0.9f )
             {
@@ -189,6 +192,9 @@ namespace Tanks.TankControllers
                 }
                 lastAnimTime = newAnimTime;
             }
+
+           
+            UpdateMove();
         }
 
         /// ------------------------------------------------------------------------------------------
@@ -203,13 +209,6 @@ namespace Tanks.TankControllers
             Speed           = m_localVelocity.magnitude;
             Angle           = HorizontalAngle(m_localVelocity);
             m_lastPosition  = transform.position;
-
-            if( !hasAuthority )
-            {
-                return;
-            }
-
-            UpdateMove();
         }
 
         private void LateUpdate()
