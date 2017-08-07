@@ -43,6 +43,15 @@ namespace Tanks.CameraControl
         /// ------------------------------------------------------------------------------------------------------------------------------
         private void Update()
         {
+            if (m_PlayerTransform == null)
+            {
+                LazyLoadTankToFollow();
+            }
+
+            if (m_PlayerTransform == null)
+            {
+                return;
+            }
             Vector3 targetPosition = m_PlayerTransform.position + m_Offset2Camera;
             transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref m_MoveVelocity, 0.2f, float.PositiveInfinity, Time.unscaledDeltaTime);
         }

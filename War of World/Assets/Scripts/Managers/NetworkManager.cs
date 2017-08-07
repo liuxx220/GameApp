@@ -153,7 +153,6 @@ namespace Tanks.Networking
 		{
             s_Instance          = this;
             connectedPlayers    = new List<NetworkPlayer>();
-            SceneManager.activeSceneChanged += OnClientSceneChanged;
             DontDestroyOnLoad(this);
 		}
 
@@ -202,7 +201,8 @@ namespace Tanks.Networking
 					else
 					{
 						MapDetails map = GameSettings.s_Instance.map;
-                        SceneManager.LoadScene(map.sceneName);
+                        //SceneManager.LoadScene(map.sceneName);
+                        ServerChangeScene(map.sceneName);
 						state = NetworkState.InGame;
 					}
 
@@ -220,7 +220,7 @@ namespace Tanks.Networking
 			{
 				s_Instance = null;
 			}
-            SceneManager.activeSceneChanged -= OnClientSceneChanged;
+        
 		}
 		#endregion
 
@@ -591,6 +591,7 @@ namespace Tanks.Networking
 		{
 
 			MapDetails currentMap = m_Settings.map;
+            Debug.Log("Player joined");
 			connectedPlayers.Add(newPlayer);
             newPlayer.becameReady += OnPlayerSetReady;
 
@@ -645,51 +646,14 @@ namespace Tanks.Networking
 		#endregion
 
 
-        private void OnClientSceneChanged( Scene scene1, Scene newScene )
-        {
-            if (m_Settings == null)
-                return;
-
-            if (connectedPlayers.Count < 1)
-                return;
-
-
-            MapDetails currentMap = m_Settings.map;
-            NetworkPlayer localPlayer = connectedPlayers[0];
-            if (!localPlayer)
-            {
-                return;
-            }
-
-            LoadingModal modal = LoadingModal.s_Instance;
-            if( modal != null )
-            {
-                modal.FadeOut();
-            }
-
-            string sceneName = SceneManager.GetActiveScene().name;
-            if (currentMap != null && sceneName == currentMap.sceneName)
-            {
-                state = NetworkState.InGame;
-                for (int i = 0; i < connectedPlayers.Count; ++i)
-                {
-                    NetworkPlayer np = connectedPlayers[i];
-                    if (np != null)
-                    {
-                        np.OnEnterGameScene();
-                    }
-                }
-            }
-            GameSettings.s_Instance.m_PlayerGameModel = Explosions.PLAYGAMEMODEL.PLAYGAME_TPS;
-        }
-
-
+       
         /// ------------------------------------------------------------------------------------------------------
         #region Networking event
 
 
         public override void OnClientError(NetworkConnection conn, int errorCode)
         {
+            Debug.Log("OnClientError");
             base.OnClientError(conn, errorCode);
             if( clientError != null )
             {
@@ -699,6 +663,7 @@ namespace Tanks.Networking
 
         public override void OnClientConnect(NetworkConnection conn)
         {
+            Debug.Log("OnClientConnect");
             ClientScene.Ready(conn);
             ClientScene.AddPlayer(0);
             
@@ -711,6 +676,7 @@ namespace Tanks.Networking
 
         public override void OnClientDisconnect(NetworkConnection conn)
         {
+            Debug.Log("OnClientDisconnect");
             base.OnClientDisconnect(conn);
             if( clientDisconnected != null )
             {
@@ -720,6 +686,7 @@ namespace Tanks.Networking
 
         public override void OnServerError(NetworkConnection conn, int errorCode)
         {
+            Debug.Log("OnClientDisconnect");
             base.OnServerError(conn, errorCode);
             if( serverError != null )
             {
@@ -729,6 +696,7 @@ namespace Tanks.Networking
 
         public override void OnServerSceneChanged(string sceneName)
         {
+            Debug.Log("OnServerSceneChanged");
             base.OnServerSceneChanged(sceneName);
             if( sceneChanged != null )
             {
@@ -745,6 +713,7 @@ namespace Tanks.Networking
         public override void OnClientSceneChanged(NetworkConnection conn)
         {
             MapDetails currentMap = m_Settings.map;
+            Debug.Log("OnClientSceneChanged");
             base.OnClientSceneChanged(conn);
 
             PlayerController pc = conn.playerControllers[0];
