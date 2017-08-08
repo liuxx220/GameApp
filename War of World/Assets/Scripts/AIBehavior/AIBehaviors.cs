@@ -22,11 +22,30 @@ namespace AIToolkit
 				return _bevTreeAct;
             }
 			_bevTreeAct = new TBTActionPrioritizedSelector();
-			_bevTreeAct.AddChild(new TBTActionSequence()
-                    .SetPrecondition(new TBTPreconditionNOT(new CON_HasReachedTarget()))
-                    .AddChild(new NOD_TurnTo())
-                    .AddChild(new NOD_MoveTo()))
-                .AddChild(new NOD_Attack());
+//			_bevTreeAct.AddChild(new TBTActionSequence()
+//                    .SetPrecondition(new TBTPreconditionNOT(new CON_HasReachedTarget()))
+//                    .AddChild(new NOD_TurnTo())
+//                    .AddChild(new NOD_MoveTo()))
+//                .AddChild(new NOD_Attack());
+
+			TBTActionSequence actionSequence = new TBTActionSequence ();
+			_bevTreeAct.AddChild (actionSequence);
+
+			CON_HasReachedTarget hasReachedTarget = new CON_HasReachedTarget ();
+			TBTPreconditionNOT preconditionNOT = new TBTPreconditionNOT (hasReachedTarget);
+			actionSequence.SetPrecondition (preconditionNOT);
+
+
+			NOD_TurnTo turnTo = new NOD_TurnTo ();
+			NOD_MoveTo moveTo = new NOD_MoveTo ();
+			NOD_Attack attackTo = new NOD_Attack ();
+
+			actionSequence.AddChild (turnTo);
+			actionSequence.AddChild (moveTo);
+			actionSequence.AddChild (attackTo);
+
+
+
 			return _bevTreeAct;
         }
     }
