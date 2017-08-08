@@ -20,6 +20,9 @@ namespace Tanks.Networking
         [SerializeField]
         protected GameObject                m_LobbyPrefab;
 
+        [SerializeField]
+        protected GameObject                m_TankPrefab;
+
         [SyncVar]
         public int                          m_StartingHealth = 100;
         [SyncVar(hook = "OnCurrentHealthChanged")]
@@ -318,6 +321,10 @@ namespace Tanks.Networking
                 m_NetManager = TanksNetworkManager.s_Instance;
             }
 
+            if (!hasAuthority)
+            {
+                Debug.Log("Client not is hasAuthority");
+            }
             base.OnStartClient();
             Debug.Log("Client Network Player start");
             m_NetManager.RegisterNetworkPlayer(this);
@@ -438,8 +445,9 @@ namespace Tanks.Networking
         private void CmdClientReadyInScene()
         {
             Debug.Log("CmdClientReadyInScene");
-            NetworkServer.SpawnWithClientAuthority(gameObject, connectionToClient);
-            tank = gameObject.GetComponent<TankManager>();
+            GameObject player = Instantiate(m_TankPrefab);
+            NetworkServer.SpawnWithClientAuthority(player, connectionToClient);
+            tank = player.GetComponent<TankManager>();
             tank.SetPlayerId(playerId);
         }
 

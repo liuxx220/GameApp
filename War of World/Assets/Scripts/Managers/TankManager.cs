@@ -122,16 +122,84 @@ namespace Tanks.TankControllers
 
 		#region Methods
 
+        /// ------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// 初始化
+        /// </summary>
+        /// ------------------------------------------------------------------------------------------------------
         public override void OnStartClient()
         {
             base.OnStartClient();
-
             if (!initialized && m_PlayerId >= 0)
             {
                 Initialize();
             }
         }
 
+
+        /// ------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// 初始化
+        /// </summary>
+        /// ------------------------------------------------------------------------------------------------------
+        private void Initialize()
+        {
+            Initialize(TanksNetworkManager.s_Instance.GetPlayerById(m_PlayerId));
+        }
+
+
+        /// ------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Set up this tank with the correct properties
+        /// </summary>
+        /// ------------------------------------------------------------------------------------------------------
+        private void Initialize(TanksNetworkPlayer player)
+        {
+            if (initialized)
+            {
+                return;
+            }
+
+            initialized = true;
+
+            this.player = player;
+            playerTankType = TankLibrary.s_Instance.GetTankDataForIndex(player.tankType);
+
+
+            // Analytics messages on server
+            if (isServer)
+            {
+                AnalyticsHelper.PlayerUsedTankInGame(playerTankType.id);
+            }
+
+            // Create visual tank
+            player.transform.position = transform.position;
+            player.transform.SetParent(transform, true);
+            if (isServer)
+            {
+                AnalyticsHelper.PlayerUsedTankInGame(playerTankType.id);
+            }
+
+            movement        = GetComponent<TankMovement>();
+            shooting        = GetComponent<TankShooting>();
+            hudPlayer       = GetComponent<HUDPlayer>();
+            movement.Init(this);
+
+            shooting.SetPlayerWeapon(0);
+            GameManager.AddTank(this);
+
+            if (player.hasAuthority)
+            {
+                DisableShooting();
+                player.CmdSetReady();
+            }
+        }
+
+        /// ------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// 初始化
+        /// </summary>
+        /// ------------------------------------------------------------------------------------------------------
         public override void OnNetworkDestroy()
         {
             base.OnNetworkDestroy();
@@ -144,64 +212,34 @@ namespace Tanks.TankControllers
                 GameManager.s_Instance.RemoveTank(this);
         }
 
-
-		private void Initialize()
-		{
-			Initialize(TanksNetworkManager.s_Instance.GetPlayerById(m_PlayerId));
-		}
-
-		/// <summary>
-		/// Set up this tank with the correct properties
-		/// </summary>
-		private void Initialize(TanksNetworkPlayer player)
-		{
-			if (initialized)
-			{
-				return;
-			}
-
-			initialized = true;
-
-			this.player     = player;
-			playerTankType  = TankLibrary.s_Instance.GetTankDataForIndex(player.tankType);
-
-			// Create visual tank
-            player.transform.position = transform.position;
-            //player.transform.rotation = transform.rotation;
-            player.transform.SetParent(transform, true);
-            if (isServer)
-            {
-                AnalyticsHelper.PlayerUsedTankInGame(playerTankType.id);
-            }
-
-			movement        = GetComponent<TankMovement>();
-			shooting        = GetComponent<TankShooting>();
-            hudPlayer       = GetComponent<HUDPlayer>();
-			movement.Init(this);
-
-            shooting.SetPlayerWeapon(0);
-			GameManager.AddTank(this);
-
-            if (player.hasAuthority)
-            {
-                DisableShooting();
-                player.CmdSetReady();
-            }
-		}
-
+        /// ------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// 禁止射击
+        /// </summary>
+        /// ------------------------------------------------------------------------------------------------------
 		public void DisableShooting()
 		{
-			shooting.enabled = false;
+			shooting.enabled = true;
 		}
 
-		// Used during the phases of the game where the player shouldn't be able to control their tank.
+
+        /// ------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// 禁止射击，移动
+        /// </summary>
+        /// ------------------------------------------------------------------------------------------------------
 		public void DisableControl()
 		{
 			movement.DisableMovement();
 			shooting.enabled = false;
 		}
 
-		// Used during the phases of the game where the player should be able to control their tank.
+
+        /// ------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// 禁止射击
+        /// </summary>
+        /// ------------------------------------------------------------------------------------------------------
 		public void EnableControl()
 		{
 			movement.EnableMovement();
@@ -218,13 +256,7 @@ namespace Tanks.TankControllers
 			{
 				m_AssignedSpawnPoint = spawnPoint;
 			}
-
-			//movement.Rigidbody.position = m_AssignedSpawnPoint.position;
 			movement.transform.position = m_AssignedSpawnPoint.position;
-			
-			//movement.Rigidbody.rotation = m_AssignedSpawnPoint.rotation;
-			//movement.transform.rotation = m_AssignedSpawnPoint.rotation;
-            //shooting.BackShootingAngles(movement.transform.rotation.eulerAngles.y);
 		}
 
 		/// <summary>
@@ -257,11 +289,7 @@ namespace Tanks.TankControllers
 				return;
 			}
 
-			//movement.Rigidbody.position = position;
 			movement.transform.position = position;
-
-			//movement.Rigidbody.rotation = rotation;
-			//movement.transform.rotation = rotation;
 		}
 
 		/// <summary>

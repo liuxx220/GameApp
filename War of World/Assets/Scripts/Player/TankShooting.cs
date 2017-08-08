@@ -107,7 +107,6 @@ namespace Tanks.TankControllers
         }
 
 
-        [ClientCallback]
         private void Update()
         {
             if (m_WeaponProtol == null)

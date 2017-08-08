@@ -173,12 +173,12 @@ namespace Tanks.Map
                 Npc pNpc = pEnemy.GetComponent<Npc>();
                 if( pNpc != null )
                 {
+                    pNpc.hudPlayer = hud;
                     pNpc.SetPlayerWeapon(0);
                 }
             }
             mapObjectList.Add(pEnemy);
-			GameObject obj = Tanks.Networking.NetworkManager.s_Instance.m_newPlayer;
-			AIToolkit.AIEntity pAIEntity = pEnemy.AddComponent<AIToolkit.AIEntity> ().Init (obj);//GameObject.FindGameObjectWithTag ("Player"));
+			AIToolkit.AIEntity pAIEntity = pEnemy.AddComponent<AIToolkit.AIEntity> ().Init (null);
 			AIToolkit.AIEnityManager.instance.AddEntity (pAIEntity);
         }
 

@@ -46,10 +46,8 @@ namespace Tanks.Networking
 		#region Constants
 		private static readonly string          s_LobbySceneName = "LobbyScene";
 		#endregion
-
-        public GameObject                       m_NetworkPlayerPrefab;
-
-		public GameObject m_newPlayer;
+        [SerializeField]
+        protected NetworkPlayer                 m_NetworkPlayerPrefab;
 
 		#region Events
 		public event Action<NetworkPlayer>      playerJoined;
@@ -153,7 +151,6 @@ namespace Tanks.Networking
 		{
             s_Instance          = this;
             connectedPlayers    = new List<NetworkPlayer>();
-            DontDestroyOnLoad(this);
 		}
 
 
@@ -772,10 +769,9 @@ namespace Tanks.Networking
         {
             Debug.Log("OnServerAddPlayer");
 
-            GameObject newPlayer = Instantiate(m_NetworkPlayerPrefab);
+            NetworkPlayer newPlayer = Instantiate<NetworkPlayer>(m_NetworkPlayerPrefab);
             DontDestroyOnLoad(newPlayer);
-			m_newPlayer = newPlayer;
-            NetworkServer.AddPlayerForConnection(conn, newPlayer, playerControllerId);
+            NetworkServer.AddPlayerForConnection(conn, newPlayer.gameObject, playerControllerId);
         }
 
         public override void OnServerRemovePlayer(NetworkConnection conn, PlayerController player)
@@ -903,6 +899,7 @@ namespace Tanks.Networking
 
         public override void OnStartServer()
         {
+            Debug.Log("OnStartServer");
             base.OnStartServer();
             networkSceneName = string.Empty;
         }

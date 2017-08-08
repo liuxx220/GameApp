@@ -192,8 +192,6 @@ namespace Tanks.TankControllers
                 }
                 lastAnimTime = newAnimTime;
             }
-
-           
             UpdateMove();
         }
 
@@ -201,6 +199,7 @@ namespace Tanks.TankControllers
         /// <summary>
         /// 行为的心跳帧
         /// </summary>
+        /// ------------------------------------------------------------------------------------------
         private void FixedUpdate()
         {
             m_Velocity      = (transform.position - m_lastPosition) / Time.deltaTime;
@@ -211,6 +210,11 @@ namespace Tanks.TankControllers
             m_lastPosition  = transform.position;
         }
 
+        /// ------------------------------------------------------------------------------------------
+        /// <summary>
+        /// 行为的心跳帧
+        /// </summary>
+        /// ------------------------------------------------------------------------------------------
         private void LateUpdate()
         {
             float idle = Mathf.InverseLerp(minWalkSpeed, maxIdleSpeed, Speed);
