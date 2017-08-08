@@ -171,6 +171,7 @@ namespace Tanks.Networking
         /// ----------------------------------------------------------------------------------------------
 		protected virtual void OnDestroy()
 		{
+            Debug.Log("NetworkPlayer OnDestroy");
             if (s_LocalPlayer != null)
 			{
                 Destroy(s_LocalPlayer.gameObject);
@@ -185,6 +186,7 @@ namespace Tanks.Networking
         /// ----------------------------------------------------------------------------------------------
         public override void OnNetworkDestroy()
         {
+            Debug.Log("NetworkPlayer OnNetworkDestroy");
             base.OnNetworkDestroy();
             if( lobbyObject != null )
             {
@@ -197,26 +199,6 @@ namespace Tanks.Networking
             }
         }
 
-
-        /// ----------------------------------------------------------------------------------------------
-        /// <summary>
-        /// 开始本地玩家
-        /// </summary>
-        /// ----------------------------------------------------------------------------------------------
-        public void StartLocalPlayer()
-        {
-            if (m_Settings == null)
-            {
-                m_Settings = GameSettings.s_Instance;
-            }
-
-            if (m_NetManager == null)
-            {
-                m_NetManager = TanksNetworkManager.s_Instance;
-            }
-
-            m_NetManager.RegisterNetworkPlayer(this);
-        }
 
         /// ----------------------------------------------------------------------------------------------
         /// <summary>
@@ -299,6 +281,15 @@ namespace Tanks.Networking
             Debug.Log("Local Network Player start");
             UpdatePlayerSelections();
 
+            if (!hasAuthority)
+            {
+                Debug.Log("hasAuthority is false");
+            }
+            else
+            {
+                Debug.Log("hasAuthority is true");
+            }
+
             s_LocalPlayer = this;
         }
 
@@ -323,8 +314,9 @@ namespace Tanks.Networking
 
             if (!hasAuthority)
             {
-                Debug.Log("Client not is hasAuthority");
+                Debug.Log("hasAuthority is false");
             }
+
             base.OnStartClient();
             Debug.Log("Client Network Player start");
             m_NetManager.RegisterNetworkPlayer(this);
@@ -341,7 +333,6 @@ namespace Tanks.Networking
             if( hasAuthority )
             {
                 CmdClientReadyInScene();
-                HUDPlayerManager.Get().CreateHUDPlayerPrefab( transform );
             }
         }
 
@@ -435,7 +426,7 @@ namespace Tanks.Networking
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////
         // 命令层
-
+        #region Commands
         /// -------------------------------------------------------------------------------------------------------
         /// <summary>
         /// 创建我们自己的英雄
@@ -449,6 +440,7 @@ namespace Tanks.Networking
             NetworkServer.SpawnWithClientAuthority(player, connectionToClient);
             tank = player.GetComponent<TankManager>();
             tank.SetPlayerId(playerId);
+            //HUDPlayerManager.Get().CreateHUDPlayerPrefab(transform);
         }
 
         /// -------------------------------------------------------------------------------------------------------
@@ -497,6 +489,8 @@ namespace Tanks.Networking
                 }
             }
         }
+
+        #endregion
 
         ///----------------------------------------------------------------------------------------------------------------------
         /// <summary>
