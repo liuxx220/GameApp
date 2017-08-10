@@ -62,6 +62,7 @@ namespace Tanks.Networking
         public  event Action<int>            healthChanged;
         #endregion
 
+
         /// 需要同步的变量
         [SyncVar(hook = "OnMyName")]
         private string                      m_PlayerName = "";

@@ -62,7 +62,6 @@ namespace Tanks.TankControllers
 
 
         private Vector3             m_DesiredDirection;
-
         private Vector3             m_lastPosition      = Vector3.zero;
         private Vector3             m_Velocity          = Vector3.zero;
         private Vector3             m_localVelocity     = Vector3.zero;
@@ -174,6 +173,7 @@ namespace Tanks.TankControllers
                     }
                 }
                 m_animation.CrossFade(bestAnimation.clip.name, 0.2f );
+                Debug.Log(bestAnimation.clip.name);
             }
             else
             {

@@ -33,7 +33,7 @@ namespace Tanks.UI
 		/// </summary>
 		public void OnStartClick()
 		{
-            GameManager.s_Instance.StartGame();
+            //GameManager.s_Instance.StartGame();
 			Time.timeScale = 1f;
 			CloseModal();
 		}
