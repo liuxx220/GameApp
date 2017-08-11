@@ -229,7 +229,7 @@ namespace Tanks.TankControllers
         {
             // ¹«¹²CD
             m_fFireCommandCD += Time.deltaTime;
-            if (m_fFireCommandCD < 1.5f)
+            if (m_fFireCommandCD < 1.0f)
                 return;
 
             m_fFireCommandCD = 0f;

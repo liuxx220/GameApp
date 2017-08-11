@@ -52,6 +52,8 @@ namespace Tanks.UI
 				m_CameraOffset = m_TankDrawingCamera.transform.forward *
 				Vector3.Dot(m_TankDrawingCamera.transform.position - m_CurrentCamTarget, m_TankDrawingCamera.transform.forward);
 			}
+
+            LoadModelForTankIndex(1);
 		}
 
 		private void Update()
