@@ -44,8 +44,9 @@ namespace Tanks.TankControllers
         private float           m_fOldEulerAngles = 0;
 
 
-        //[SyncVar]
+        [SyncVar]
         private float           m_TurretHeading;
+        private float           m_LastLookUpdate;
 
         /// <summary>
         /// 预测目标点的变量
@@ -69,6 +70,7 @@ namespace Tanks.TankControllers
             m_curLookatDeg      = transform.rotation.eulerAngles.y;
             m_TurretHeading     = m_curLookatDeg;
             m_fOldEulerAngles   = m_curLookatDeg;
+            m_LastLookUpdate    = Time.realtimeSinceStartup;
             RedPoint.SetActive(false);
             muzzleFlash.SetActive(false);
         }
@@ -106,14 +108,19 @@ namespace Tanks.TankControllers
             }
         }
 
-
+        [ClientCallback]
         private void Update()
         {
             if (m_WeaponProtol == null)
                 return;
 
-            m_shootRay.origin       = gunHead.transform.position;
-            m_shootRay.direction    = gunHead.transform.forward;
+            if (!hasAuthority)
+            {
+                return;
+            }
+
+            //m_shootRay.origin       = gunHead.transform.position;
+            //m_shootRay.direction    = gunHead.transform.forward;
             //Physics.Raycast(m_shootRay, out m_shootHit, 50, shootableMask);
             //DrawPulseLine();
 
@@ -243,7 +250,12 @@ namespace Tanks.TankControllers
         public void SetDesiredFirePosition( Vector3 facedir )
         {
             float angle     = 90f - Mathf.Atan2(facedir.y, facedir.x) * Mathf.Rad2Deg;
-            CmdSetLook(angle + m_fOldEulerAngles);
+
+            if (Time.realtimeSinceStartup - m_LastLookUpdate >= 0.2f)
+            {
+                CmdSetLook(angle + m_fOldEulerAngles);
+                m_LastLookUpdate = Time.realtimeSinceStartup;
+            }
         }
 
         /// ------------------------------------------------------------------------------------------
