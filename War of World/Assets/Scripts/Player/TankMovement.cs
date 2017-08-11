@@ -147,10 +147,6 @@ namespace Tanks.TankControllers
         /// ------------------------------------------------------------------------------------------
         private void Update()
         {
-            if (!hasAuthority)
-            {
-                return;
-            }
 
             idleWeight = Mathf.Lerp(idleWeight, Mathf.InverseLerp(minWalkSpeed, maxIdleSpeed, Speed), Time.deltaTime * 10);
             m_animation[idle.name].weight = idleWeight;
@@ -192,7 +188,20 @@ namespace Tanks.TankControllers
                 }
                 lastAnimTime = newAnimTime;
             }
-            UpdateMove();
+
+            if (!hasAuthority)
+            {
+                return;
+            }
+
+            if (isMoving)
+            {
+                Vector3 targetVelocity = m_DesiredDirection * walkingSpeed * Time.deltaTime;
+                if (m_Controller != null)
+                {
+                    m_Controller.Move(targetVelocity);
+                }
+            }
         }
 
         /// ------------------------------------------------------------------------------------------
@@ -217,6 +226,11 @@ namespace Tanks.TankControllers
         /// ------------------------------------------------------------------------------------------
         private void LateUpdate()
         {
+            if (!hasAuthority)
+            {
+                return;
+            }
+
             float idle = Mathf.InverseLerp(minWalkSpeed, maxIdleSpeed, Speed);
             if ( idle < 1)
             {
@@ -253,18 +267,6 @@ namespace Tanks.TankControllers
             upperBodyBone.rotation              = Quaternion.Inverse(lowerBodyDeltaRotation) * upperBodyBone.rotation;
         }
 
-
-        private void UpdateMove( )
-        {
-            if (isMoving)
-            {
-                Vector3 targetVelocity = m_DesiredDirection * walkingSpeed * Time.deltaTime;
-                if (m_Controller != null)
-                {
-                    m_Controller.Move(targetVelocity);
-                }
-            }
-        }
 
         public void SetDefaults()
         {

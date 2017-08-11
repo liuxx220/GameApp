@@ -42,7 +42,7 @@ namespace Tanks.TankControllers
         private bool            m_FireInput;
         public  float           m_curLookatDeg = 0;
         private float           m_fOldEulerAngles = 0;
-
+        private float           m_fFireCommandCD = 0;
 
         [SyncVar]
         private float           m_TurretHeading;
@@ -63,6 +63,11 @@ namespace Tanks.TankControllers
         /// 当前武器的配置信息
         /// </summary>
         private TankWeaponDefinition    m_WeaponProtol;
+
+        /// <summary>
+        /// 当前武器的配置信息
+        /// </summary>
+        private int             m_curShootBullets = 0;
 
         void Awake()
         {
@@ -114,31 +119,18 @@ namespace Tanks.TankControllers
             if (m_WeaponProtol == null)
                 return;
 
-            if (!hasAuthority)
-            {
-                return;
-            }
-
-            //m_shootRay.origin       = gunHead.transform.position;
-            //m_shootRay.direction    = gunHead.transform.forward;
-            //Physics.Raycast(m_shootRay, out m_shootHit, 50, shootableMask);
-            //DrawPulseLine();
-
             Esplasetimer += Time.deltaTime;
-            if (m_WeaponProtol.m_ShootMode == SHOOTINGMODE.Shoot_pulse)
+            if (m_FireInput && Esplasetimer >= 0.2f && m_curShootBullets < m_WeaponProtol.m_ShootBulletNumPer)
             {
-                if (m_FireInput && Esplasetimer >= 0.5f && Time.timeScale != 0)
-                {
-                    Shoot();
-                }
+                ShootFire();
             }
-            else
+
+            if (m_curShootBullets >= m_WeaponProtol.m_ShootBulletNumPer)
             {
-                if (m_FireInput && Esplasetimer >= 0.2f && Time.timeScale != 0)
-                {
-                    Shoot();
-                }
+                m_FireInput = false;
+                m_curShootBullets = 0;
             }
+            
             SmoothFaceDirection();
         }
 
@@ -226,19 +218,25 @@ namespace Tanks.TankControllers
         /// 攻击
         /// </summary>
         /// ----------------------------------------------------------------------------------------------
-        void Shoot()
+        void Fire()
         {
-            Esplasetimer        = 0f;
-            Vector3 position    = gunHead.transform.position;
-            Vector3 shotVector  = gunHead.transform.forward;
-
-            // 随机种子
-            int randSeed        = UnityEngine.Random.Range(int.MinValue, int.MaxValue);
-            CmdFire(shotVector, position, randSeed);
+            m_curShootBullets   = 0;
+            CmdFire();
         }
 
+       
         public void SetFireIsHeld(bool fireHeld)
         {
+            // 公共CD
+            m_fFireCommandCD += Time.deltaTime;
+            if (m_fFireCommandCD < 1.5f)
+                return;
+
+            m_fFireCommandCD = 0f;
+            if (m_FireInput != fireHeld && fireHeld )
+            {
+                Fire();
+            }
             m_FireInput = fireHeld;
         }
 
@@ -369,21 +367,31 @@ namespace Tanks.TankControllers
         }
 
         [Command]
-        private void CmdFire( Vector3 shotVector, Vector3 position, int randSedd )
+        private void CmdFire()
         {
-            RpcFire(0, shotVector, position, randSedd);
+            RpcFire();
         }
 
         [ClientRpc]
-        private void RpcFire(int playerId, Vector3 shotVector, Vector3 position, int randSeed)
+        private void RpcFire()
         {
             if (fired != null)
             {
                 fired();
             }
 
+            // 远端玩家的话走这个逻辑
+            if( !hasAuthority )
+                m_FireInput = true;
+        }
 
-            // If this fire message is for our own local player id, we skip. We already spawned a projectile
+        private void ShootFire( )
+        {
+            Esplasetimer        = 0f;
+            Vector3 position    = gunHead.transform.position;
+            Vector3 shotVector  = gunHead.transform.forward;
+            int randSeed        = UnityEngine.Random.Range(int.MinValue, int.MaxValue);
+        
             if (m_WeaponProtol.m_ShootMode == SHOOTINGMODE.Shoot_continued)
             {
                 FireEffect1(shotVector, position, randSeed);
@@ -400,6 +408,7 @@ namespace Tanks.TankControllers
             {
                 FireEffect4(shotVector, position, randSeed);
             }
+            m_curShootBullets++;
         }
 	}
 }
