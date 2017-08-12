@@ -165,12 +165,13 @@ namespace Tanks.Map
         /// ------------------------------------------------------------------------------------------------------------------------------
         void Spawn()
         {
+            Npc pNpc = null;
             int i                       = Random.Range(0, spawnPoints.Count);
             GameObject pEnemy           = Instantiate(enemy, spawnPoints[i].transform.position, spawnPoints[i].transform.rotation);
             HUDPlayer hud               = HUDPlayerManager.Get().CreateHUDPlayerPrefab(pEnemy.transform);
             if( hud != null )
             {
-                Npc pNpc = pEnemy.GetComponent<Npc>();
+                pNpc = pEnemy.GetComponent<Npc>();
                 if( pNpc != null )
                 {
                     pNpc.hudPlayer = hud;
@@ -180,6 +181,10 @@ namespace Tanks.Map
             mapObjectList.Add(pEnemy);
 			AIToolkit.AIEntity pAIEntity = pEnemy.AddComponent<AIToolkit.AIEntity> ().Init (null);
 			AIToolkit.AIEnityManager.instance.AddEntity (pAIEntity);
+            if (pNpc != null )
+            {
+                pNpc.SetAIEntity(pAIEntity);
+            }
         }
 
         /// ------------------------------------------------------------------------------------------------------------------------------
@@ -208,6 +213,7 @@ namespace Tanks.Map
                 weaponlist.Add(weapon);
             }
         }
+
 
         /// ------------------------------------------------------------------------------------------------------------------------------
         /// <summary>

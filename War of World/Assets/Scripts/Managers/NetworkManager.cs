@@ -114,6 +114,12 @@ namespace Tanks.Networking
 			private set;
 		}
 
+        public List<GameObject> playerList
+        {
+            get;
+            private set;
+        }
+
 		public int playerCount
 		{
 			get{ return connectedPlayers.Count;}
@@ -151,6 +157,7 @@ namespace Tanks.Networking
 		{
             s_Instance          = this;
             connectedPlayers    = new List<NetworkPlayer>();
+            playerList          = new List<GameObject>();
 		}
 
 
@@ -590,6 +597,7 @@ namespace Tanks.Networking
 			MapDetails currentMap = m_Settings.map;
             Debug.Log("Player joined");
 			connectedPlayers.Add(newPlayer);
+            playerList.Add(newPlayer.gameObject);
             newPlayer.becameReady += OnPlayerSetReady;
 
             if (s_IsServer)
@@ -626,6 +634,7 @@ namespace Tanks.Networking
 			if (index >= 0)
 			{
 				connectedPlayers.RemoveAt(index);
+                playerList.Remove(removedPlayer.gameObject);
 			}
 
             UpdatePlayerIDs();
