@@ -46,10 +46,8 @@ namespace Tanks.Networking
 		#region Constants
 		private static readonly string          s_LobbySceneName = "LobbyScene";
 		#endregion
-
-        public GameObject                       m_NetworkPlayerPrefab;
-
-		public GameObject m_newPlayer;
+        [SerializeField]
+        protected NetworkPlayer                 m_NetworkPlayerPrefab;
 
 		#region Events
 		public event Action<NetworkPlayer>      playerJoined;
@@ -153,8 +151,6 @@ namespace Tanks.Networking
 		{
             s_Instance          = this;
             connectedPlayers    = new List<NetworkPlayer>();
-            SceneManager.activeSceneChanged += OnClientSceneChanged;
-            DontDestroyOnLoad(this);
 		}
 
 
@@ -202,7 +198,8 @@ namespace Tanks.Networking
 					else
 					{
 						MapDetails map = GameSettings.s_Instance.map;
-                        SceneManager.LoadScene(map.sceneName);
+                        //SceneManager.LoadScene(map.sceneName);
+                        ServerChangeScene(map.sceneName);
 						state = NetworkState.InGame;
 					}
 
@@ -220,7 +217,7 @@ namespace Tanks.Networking
 			{
 				s_Instance = null;
 			}
-            SceneManager.activeSceneChanged -= OnClientSceneChanged;
+        
 		}
 		#endregion
 
@@ -591,6 +588,7 @@ namespace Tanks.Networking
 		{
 
 			MapDetails currentMap = m_Settings.map;
+            Debug.Log("Player joined");
 			connectedPlayers.Add(newPlayer);
             newPlayer.becameReady += OnPlayerSetReady;
 
@@ -645,51 +643,14 @@ namespace Tanks.Networking
 		#endregion
 
 
-        private void OnClientSceneChanged( Scene scene1, Scene newScene )
-        {
-            if (m_Settings == null)
-                return;
-
-            if (connectedPlayers.Count < 1)
-                return;
-
-
-            MapDetails currentMap = m_Settings.map;
-            NetworkPlayer localPlayer = connectedPlayers[0];
-            if (!localPlayer)
-            {
-                return;
-            }
-
-            LoadingModal modal = LoadingModal.s_Instance;
-            if( modal != null )
-            {
-                modal.FadeOut();
-            }
-
-            string sceneName = SceneManager.GetActiveScene().name;
-            if (currentMap != null && sceneName == currentMap.sceneName)
-            {
-                state = NetworkState.InGame;
-                for (int i = 0; i < connectedPlayers.Count; ++i)
-                {
-                    NetworkPlayer np = connectedPlayers[i];
-                    if (np != null)
-                    {
-                        np.OnEnterGameScene();
-                    }
-                }
-            }
-            GameSettings.s_Instance.m_PlayerGameModel = Explosions.PLAYGAMEMODEL.PLAYGAME_TPS;
-        }
-
-
+       
         /// ------------------------------------------------------------------------------------------------------
         #region Networking event
 
 
         public override void OnClientError(NetworkConnection conn, int errorCode)
         {
+            Debug.Log("OnClientError");
             base.OnClientError(conn, errorCode);
             if( clientError != null )
             {
@@ -699,6 +660,7 @@ namespace Tanks.Networking
 
         public override void OnClientConnect(NetworkConnection conn)
         {
+            Debug.Log("OnClientConnect");
             ClientScene.Ready(conn);
             ClientScene.AddPlayer(0);
             
@@ -711,6 +673,7 @@ namespace Tanks.Networking
 
         public override void OnClientDisconnect(NetworkConnection conn)
         {
+            Debug.Log("OnClientDisconnect");
             base.OnClientDisconnect(conn);
             if( clientDisconnected != null )
             {
@@ -720,6 +683,7 @@ namespace Tanks.Networking
 
         public override void OnServerError(NetworkConnection conn, int errorCode)
         {
+            Debug.Log("OnClientDisconnect");
             base.OnServerError(conn, errorCode);
             if( serverError != null )
             {
@@ -729,6 +693,7 @@ namespace Tanks.Networking
 
         public override void OnServerSceneChanged(string sceneName)
         {
+            Debug.Log("OnServerSceneChanged");
             base.OnServerSceneChanged(sceneName);
             if( sceneChanged != null )
             {
@@ -745,6 +710,7 @@ namespace Tanks.Networking
         public override void OnClientSceneChanged(NetworkConnection conn)
         {
             MapDetails currentMap = m_Settings.map;
+            Debug.Log("OnClientSceneChanged");
             base.OnClientSceneChanged(conn);
 
             PlayerController pc = conn.playerControllers[0];
@@ -803,10 +769,9 @@ namespace Tanks.Networking
         {
             Debug.Log("OnServerAddPlayer");
 
-            GameObject newPlayer = Instantiate(m_NetworkPlayerPrefab);
+            NetworkPlayer newPlayer = Instantiate<NetworkPlayer>(m_NetworkPlayerPrefab);
             DontDestroyOnLoad(newPlayer);
-			m_newPlayer = newPlayer;
-            NetworkServer.AddPlayerForConnection(conn, newPlayer, playerControllerId);
+            NetworkServer.AddPlayerForConnection(conn, newPlayer.gameObject, playerControllerId);
         }
 
         public override void OnServerRemovePlayer(NetworkConnection conn, PlayerController player)
@@ -934,6 +899,7 @@ namespace Tanks.Networking
 
         public override void OnStartServer()
         {
+            Debug.Log("OnStartServer");
             base.OnStartServer();
             networkSceneName = string.Empty;
         }

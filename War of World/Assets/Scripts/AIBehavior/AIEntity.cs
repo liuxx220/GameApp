@@ -78,6 +78,12 @@ namespace AIToolkit
             {
                 return 0;
             }
+
+            if (_targetDummyObject == null )
+            {
+                return 0;
+            }
+
             //update working data
 			if (null != _behaviorWorkingData.entityAnimator) 
 			{

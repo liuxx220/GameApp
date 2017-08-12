@@ -43,6 +43,15 @@ namespace Tanks.CameraControl
         /// ------------------------------------------------------------------------------------------------------------------------------
         private void Update()
         {
+            if (m_PlayerTransform == null)
+            {
+                LazyLoadTankToFollow();
+            }
+
+            if (m_PlayerTransform == null)
+            {
+                return;
+            }
             float radian        = fixedRotationYaw * Mathf.Deg2Rad;
             m_Offset2Camera.x   = -(distanceAway * Mathf.Sin(radian));
             m_Offset2Camera.z   = -(distanceAway * Mathf.Cos(radian));

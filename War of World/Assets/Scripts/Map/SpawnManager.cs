@@ -178,8 +178,7 @@ namespace Tanks.Map
                 }
             }
             mapObjectList.Add(pEnemy);
-			GameObject obj = Tanks.Networking.NetworkManager.s_Instance.m_newPlayer;
-			AIToolkit.AIEntity pAIEntity = pEnemy.AddComponent<AIToolkit.AIEntity> ().Init (obj);//GameObject.FindGameObjectWithTag ("Player"));
+			AIToolkit.AIEntity pAIEntity = pEnemy.AddComponent<AIToolkit.AIEntity> ().Init (null);
 			AIToolkit.AIEnityManager.instance.AddEntity (pAIEntity);
         }
 

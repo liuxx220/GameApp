@@ -62,7 +62,6 @@ namespace Tanks.TankControllers
 
 
         private Vector3             m_DesiredDirection;
-
         private Vector3             m_lastPosition      = Vector3.zero;
         private Vector3             m_Velocity          = Vector3.zero;
         private Vector3             m_localVelocity     = Vector3.zero;
@@ -148,10 +147,6 @@ namespace Tanks.TankControllers
         /// ------------------------------------------------------------------------------------------
         private void Update()
         {
-            if (!hasAuthority)
-            {
-                return;
-            }
 
             idleWeight = Mathf.Lerp(idleWeight, Mathf.InverseLerp(minWalkSpeed, maxIdleSpeed, Speed), Time.deltaTime * 10);
             m_animation[idle.name].weight = idleWeight;
@@ -174,6 +169,7 @@ namespace Tanks.TankControllers
                     }
                 }
                 m_animation.CrossFade(bestAnimation.clip.name, 0.2f );
+                Debug.Log(bestAnimation.clip.name);
             }
             else
             {
@@ -193,14 +189,26 @@ namespace Tanks.TankControllers
                 lastAnimTime = newAnimTime;
             }
 
-           
-            UpdateMove();
+            if (!hasAuthority)
+            {
+                return;
+            }
+
+            if (isMoving)
+            {
+                Vector3 targetVelocity = m_DesiredDirection * walkingSpeed * Time.deltaTime;
+                if (m_Controller != null)
+                {
+                    m_Controller.Move(targetVelocity);
+                }
+            }
         }
 
         /// ------------------------------------------------------------------------------------------
         /// <summary>
         /// 行为的心跳帧
         /// </summary>
+        /// ------------------------------------------------------------------------------------------
         private void FixedUpdate()
         {
             m_Velocity      = (transform.position - m_lastPosition) / Time.deltaTime;
@@ -211,8 +219,18 @@ namespace Tanks.TankControllers
             m_lastPosition  = transform.position;
         }
 
+        /// ------------------------------------------------------------------------------------------
+        /// <summary>
+        /// 行为的心跳帧
+        /// </summary>
+        /// ------------------------------------------------------------------------------------------
         private void LateUpdate()
         {
+            if (!hasAuthority)
+            {
+                return;
+            }
+
             float idle = Mathf.InverseLerp(minWalkSpeed, maxIdleSpeed, Speed);
             if ( idle < 1)
             {
@@ -249,18 +267,6 @@ namespace Tanks.TankControllers
             upperBodyBone.rotation              = Quaternion.Inverse(lowerBodyDeltaRotation) * upperBodyBone.rotation;
         }
 
-
-        private void UpdateMove( )
-        {
-            if (isMoving)
-            {
-                Vector3 targetVelocity = m_DesiredDirection * walkingSpeed * Time.deltaTime;
-                if (m_Controller != null)
-                {
-                    m_Controller.Move(targetVelocity);
-                }
-            }
-        }
 
         public void SetDefaults()
         {

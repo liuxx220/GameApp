@@ -19,6 +19,7 @@ namespace Tanks.SinglePlayer
 {
 	public class Npc : MonoBehaviour
 	{
+
 		protected float         m_MaximumHealth = 50;
 		private float           m_CurrentHealth;
 		private bool            m_IsDead = false;
@@ -44,6 +45,17 @@ namespace Tanks.SinglePlayer
             entityAnimator      = GetComponent<Animator>();
             enemyAudio          = GetComponent<AudioSource>();
 		}
+
+
+        /// ------------------------------------------------------------------------------------------
+        /// <summary>
+        /// 行为的心跳帧
+        /// </summary>
+        /// ------------------------------------------------------------------------------------------
+        private void FixedUpdate()
+        {
+            
+        }
 
         /// -----------------------------------------------------------------------------------------------
         /// <summary>

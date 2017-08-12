@@ -42,10 +42,11 @@ namespace Tanks.TankControllers
         private bool            m_FireInput;
         public  float           m_curLookatDeg = 0;
         private float           m_fOldEulerAngles = 0;
+        private float           m_fFireCommandCD = 0;
 
-
-        //[SyncVar]
+        [SyncVar]
         private float           m_TurretHeading;
+        private float           m_LastLookUpdate;
 
         /// <summary>
         /// 预测目标点的变量
@@ -63,12 +64,18 @@ namespace Tanks.TankControllers
         /// </summary>
         private TankWeaponDefinition    m_WeaponProtol;
 
+        /// <summary>
+        /// 当前武器的配置信息
+        /// </summary>
+        private int             m_curShootBullets = 0;
+
         void Awake()
         {
             shootableMask       = LayerMask.GetMask("Shootable");
             m_curLookatDeg      = transform.rotation.eulerAngles.y;
             m_TurretHeading     = m_curLookatDeg;
             m_fOldEulerAngles   = m_curLookatDeg;
+            m_LastLookUpdate    = Time.realtimeSinceStartup;
             RedPoint.SetActive(false);
             muzzleFlash.SetActive(false);
         }
@@ -106,33 +113,24 @@ namespace Tanks.TankControllers
             }
         }
 
-
         [ClientCallback]
         private void Update()
         {
             if (m_WeaponProtol == null)
                 return;
 
-            m_shootRay.origin       = gunHead.transform.position;
-            m_shootRay.direction    = gunHead.transform.forward;
-            //Physics.Raycast(m_shootRay, out m_shootHit, 50, shootableMask);
-            //DrawPulseLine();
-
             Esplasetimer += Time.deltaTime;
-            if (m_WeaponProtol.m_ShootMode == SHOOTINGMODE.Shoot_pulse)
+            if (m_FireInput && Esplasetimer >= 0.2f && m_curShootBullets < m_WeaponProtol.m_ShootBulletNumPer)
             {
-                if (m_FireInput && Esplasetimer >= 0.5f && Time.timeScale != 0)
-                {
-                    Shoot();
-                }
+                ShootFire();
             }
-            else
+
+            if (m_curShootBullets >= m_WeaponProtol.m_ShootBulletNumPer)
             {
-                if (m_FireInput && Esplasetimer >= 0.2f && Time.timeScale != 0)
-                {
-                    Shoot();
-                }
+                m_FireInput = false;
+                m_curShootBullets = 0;
             }
+            
             SmoothFaceDirection();
         }
 
@@ -220,19 +218,25 @@ namespace Tanks.TankControllers
         /// 攻击
         /// </summary>
         /// ----------------------------------------------------------------------------------------------
-        void Shoot()
+        void Fire()
         {
-            Esplasetimer        = 0f;
-            Vector3 position    = gunHead.transform.position;
-            Vector3 shotVector  = gunHead.transform.forward;
-
-            // 随机种子
-            int randSeed        = UnityEngine.Random.Range(int.MinValue, int.MaxValue);
-            CmdFire(shotVector, position, randSeed);
+            m_curShootBullets   = 0;
+            CmdFire();
         }
 
+       
         public void SetFireIsHeld(bool fireHeld)
         {
+            // 公共CD
+            m_fFireCommandCD += Time.deltaTime;
+            if (m_fFireCommandCD < 1.0f)
+                return;
+
+            m_fFireCommandCD = 0f;
+            if (m_FireInput != fireHeld && fireHeld )
+            {
+                Fire();
+            }
             m_FireInput = fireHeld;
         }
 
@@ -244,7 +248,12 @@ namespace Tanks.TankControllers
         public void SetDesiredFirePosition( Vector3 facedir )
         {
             float angle     = 90f - Mathf.Atan2(facedir.y, facedir.x) * Mathf.Rad2Deg;
-            CmdSetLook(angle + m_fOldEulerAngles);
+
+            if (Time.realtimeSinceStartup - m_LastLookUpdate >= 0.2f)
+            {
+                CmdSetLook(angle + m_fOldEulerAngles);
+                m_LastLookUpdate = Time.realtimeSinceStartup;
+            }
         }
 
         /// ------------------------------------------------------------------------------------------
@@ -358,21 +367,31 @@ namespace Tanks.TankControllers
         }
 
         [Command]
-        private void CmdFire( Vector3 shotVector, Vector3 position, int randSedd )
+        private void CmdFire()
         {
-            RpcFire(0, shotVector, position, randSedd);
+            RpcFire();
         }
 
         [ClientRpc]
-        private void RpcFire(int playerId, Vector3 shotVector, Vector3 position, int randSeed)
+        private void RpcFire()
         {
             if (fired != null)
             {
                 fired();
             }
 
+            // 远端玩家的话走这个逻辑
+            if( !hasAuthority )
+                m_FireInput = true;
+        }
 
-            // If this fire message is for our own local player id, we skip. We already spawned a projectile
+        private void ShootFire( )
+        {
+            Esplasetimer        = 0f;
+            Vector3 position    = gunHead.transform.position;
+            Vector3 shotVector  = gunHead.transform.forward;
+            int randSeed        = UnityEngine.Random.Range(int.MinValue, int.MaxValue);
+        
             if (m_WeaponProtol.m_ShootMode == SHOOTINGMODE.Shoot_continued)
             {
                 FireEffect1(shotVector, position, randSeed);
@@ -389,6 +408,7 @@ namespace Tanks.TankControllers
             {
                 FireEffect4(shotVector, position, randSeed);
             }
+            m_curShootBullets++;
         }
 	}
 }
