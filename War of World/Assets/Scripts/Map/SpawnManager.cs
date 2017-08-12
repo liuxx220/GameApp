@@ -173,6 +173,7 @@ namespace Tanks.Map
                 Npc pNpc = pEnemy.GetComponent<Npc>();
                 if( pNpc != null )
                 {
+                    pNpc.hudPlayer = hud;
                     pNpc.SetPlayerWeapon(0);
                 }
             }
