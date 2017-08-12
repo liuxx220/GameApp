@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using Tanks.Rules.SinglePlayer;
+using System;
+using System.Collections.Generic;
 using Tanks;
 using Tanks.Shells;
 using Tanks.Map;
@@ -17,7 +19,7 @@ using TanksNetworkPlayer = Tanks.Networking.NetworkPlayer;
 
 namespace Tanks.SinglePlayer
 {
-	public class Npc : MonoBehaviour
+    public class Npc : MonoBehaviour
 	{
 
 		protected float         m_MaximumHealth = 50;
@@ -34,9 +36,18 @@ namespace Tanks.SinglePlayer
         public GameObject       gunHead;
 
         /// <summary>
+        /// 怪物AI组件
+        /// </summary>
+        private AIToolkit.AIEntity     m_EntityAI = null;
+        public void SetAIEntity( AIToolkit.AIEntity ai )
+        {
+            m_EntityAI = ai;
+        }
+
+        /// <summary>
         /// 当前武器的配置信息
         /// </summary>
-        private TankWeaponDefinition m_Weapon = null;
+        private TankWeaponDefinition    m_Weapon = null;
 
 		void Awake()
 		{
@@ -54,7 +65,19 @@ namespace Tanks.SinglePlayer
         /// ------------------------------------------------------------------------------------------
         private void FixedUpdate()
         {
-            
+            if( m_EntityAI == null )
+            {
+                m_EntityAI = GetComponent<AIToolkit.AIEntity>();
+            }
+
+            if( m_EntityAI != null )
+            {
+                GameObject target = GetLastestEnemy();
+                if( target != null )
+                {
+                    m_EntityAI._targetDummyObject = target;
+                }
+            }
         }
 
         /// -----------------------------------------------------------------------------------------------
@@ -169,6 +192,29 @@ namespace Tanks.SinglePlayer
             {
                 m_Weapon = def;
             }
+        }
+
+        /// ------------------------------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// 找到附近最近的敌人
+        /// </summary>
+        /// ------------------------------------------------------------------------------------------------------------------------------
+        public GameObject GetLastestEnemy( )
+        {
+            GameObject obj  = null;
+            Vector3 dir     = Vector3.zero;
+            float fMaxDist  = float.MaxValue;
+            List<GameObject> list = NetworkManager.s_Instance.playerList;
+            for (int i = 0; i < list.Count; i++)
+            {
+                dir = transform.position - list[i].transform.position;
+                if (dir.sqrMagnitude < fMaxDist)
+                {
+                    fMaxDist = dir.sqrMagnitude;
+                    obj = list[i];
+                }
+            }
+            return obj;
         }
 	}
 }
