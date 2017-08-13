@@ -980,7 +980,7 @@ public class EasyJoystick : MonoBehaviour {
 	}
 	
 	void OnGUI(){
-							
+
 		if (enable && visible){
 	
 			GUI.depth = guiDepth;

@@ -184,6 +184,7 @@ namespace Tanks.TankControllers
             movement        = GetComponent<TankMovement>();
             shooting        = GetComponent<TankShooting>();
             movement.Init(this);
+            hudPlayer.Init(transform);
 
             shooting.SetPlayerWeapon(0);
             GameManager.AddTank(this);
