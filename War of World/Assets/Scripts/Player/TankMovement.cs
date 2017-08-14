@@ -169,7 +169,6 @@ namespace Tanks.TankControllers
                     }
                 }
                 m_animation.CrossFade(bestAnimation.clip.name, 0.2f );
-                Debug.Log(bestAnimation.clip.name);
             }
             else
             {

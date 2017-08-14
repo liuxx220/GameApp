@@ -3,7 +3,7 @@ using TsiU;
 
 namespace AIToolkit
 {
-    class AIEntity : MonoBehaviour
+    public class AIEntity : MonoBehaviour
     {
         //-----------------------------------------------
         public const string BBKEY_NEXTMOVINGPOSITION = "NextMovingPosition";
@@ -15,7 +15,7 @@ namespace AIToolkit
         private AIBehaviorRequest _currentRequest;
         private AIBehaviorRequest _nextRequest;
 
-        private GameObject _targetDummyObject;
+        public  GameObject _targetDummyObject;
 
         private float _nextTimeToGenMovingTarget;
 

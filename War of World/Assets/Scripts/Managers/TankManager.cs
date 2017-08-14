@@ -180,10 +180,11 @@ namespace Tanks.TankControllers
                 AnalyticsHelper.PlayerUsedTankInGame(playerTankType.id);
             }
 
+            hudPlayer       = HUDPlayerManager.Get().CreateHUDPlayerPrefab(transform);
             movement        = GetComponent<TankMovement>();
             shooting        = GetComponent<TankShooting>();
-            hudPlayer       = GetComponent<HUDPlayer>();
             movement.Init(this);
+            hudPlayer.Init(transform);
 
             shooting.SetPlayerWeapon(0);
             GameManager.AddTank(this);

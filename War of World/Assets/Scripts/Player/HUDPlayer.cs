@@ -19,11 +19,14 @@ namespace Tanks.Data
     public class HUDPlayer : MonoBehaviour
     {
         public    float             m_TestNeatorFar = 1f;
-       
+
+
+
         /// <summary>
         /// Ѫ�����ֵĿؼ�
         /// </summary>
         protected Transform         m_Pivot = null;
+        protected UISlider          m_hpProcess = null;
         protected UISprite          m_hideSprite = null; 
         protected UILabel           m_hpLable    = null;
         protected UISprite          m_hpSprite   = null;
@@ -93,6 +96,7 @@ namespace Tanks.Data
         /// ------------------------------------------------------------------------------------------------------
         void Awake()
         {
+            m_hpProcess   = transform.Find("Progress HP").GetComponent<UISlider>();
             m_hpSprite    = transform.Find("Progress HP/Foreground").GetComponent<UISprite>();
             //m_hpLable     = transform.FindChild("Name").GetComponent<UILabel>();
             m_hideSlider  = transform.transform.Find("Progress HP/ProgressHide");
@@ -178,7 +182,7 @@ namespace Tanks.Data
         /// ------------------------------------------------------------------------------------------------------
         public void SetProcess( float fPress )
         {
-            m_hpSprite.fillAmount = fPress;
+            m_hpProcess.value = fPress;
         }
 
         /// ------------------------------------------------------------------------------------------------------
