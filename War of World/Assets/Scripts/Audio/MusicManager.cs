@@ -40,7 +40,8 @@ namespace Tanks.Audio
 			m_MusicSource = GetComponent<AudioSource>();
 			SceneManager.activeSceneChanged += OnSceneChanged;
 
-			m_OriginalVolume = m_MusicSource.volume;
+			m_OriginalVolume = m_MusicSource.volume/5f;
+
 
 			PlayMusic(m_MenuMusic);
 		}
@@ -57,7 +58,7 @@ namespace Tanks.Audio
 					m_FadeLevel = 1f;
 				}
 
-				m_MusicSource.volume = m_OriginalVolume * m_FadeLevel;
+				m_MusicSource.volume = m_OriginalVolume * m_FadeLevel/5f;
 			}
 		}
 
