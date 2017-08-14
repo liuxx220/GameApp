@@ -78,13 +78,24 @@ namespace Tanks.Rules
         {
             get { return m_nMinDamage; }
         }
-
         [SerializeField]
         public int m_ShootBulletNumPer; // 单词射击子弹数量
         public int ShootBulletNumPer
         {
             get { return ShootBulletNumPer; }
         }
+		[SerializeField]
+		public int m_nBulletClip;	//弹夹容量
+		public int BulletClip
+		{
+			get { return m_nBulletClip; }
+		}
+		[SerializeField]
+		public int m_nBullets;	//子弹数量
+		public int Bullets
+		{
+			get { return m_nBullets; }
+		}
     }
 
 }

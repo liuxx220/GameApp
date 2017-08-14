@@ -391,7 +391,24 @@ namespace Tanks.TankControllers
             Vector3 position    = gunHead.transform.position;
             Vector3 shotVector  = gunHead.transform.forward;
             int randSeed        = UnityEngine.Random.Range(int.MinValue, int.MaxValue);
-        
+
+			//没子弹了
+			if (m_WeaponProtol.m_nBullets <= 0) {
+				// 播发空枪的声效
+
+				return;
+			}
+
+			int i = 0;
+			// 一次射击消耗的子弹数量
+			if (m_WeaponProtol.m_nBullets > m_WeaponProtol.m_ShootBulletNumPer) {
+				m_WeaponProtol.m_nBullets -= m_WeaponProtol.m_ShootBulletNumPer;
+			}
+			else {
+				m_WeaponProtol.m_nBullets = 0;
+			}
+				
+			// 播放射击特效
             if (m_WeaponProtol.m_ShootMode == SHOOTINGMODE.Shoot_continued)
             {
                 FireEffect1(shotVector, position, randSeed);
