@@ -54,6 +54,13 @@ namespace Tanks.TankControllers
         
         public MoveAnimation[]      moveAnimations;
 
+
+
+		/// <summary>
+		/// 资源相关, 音效控制器
+		/// </summary>
+		AudioSource                         m_AudioSource;
+
         /// <summary>
         /// 角色动画和行为控制器对象
         /// </summary>
@@ -119,6 +126,8 @@ namespace Tanks.TankControllers
         {
             m_lastPosition  = transform.position;
             LazyLoadRigidBody();
+		
+			m_AudioSource       = transform.FindChild("FootAudio").GetComponent<AudioSource>();
         }
 
         private void LazyLoadRigidBody()
@@ -193,14 +202,18 @@ namespace Tanks.TankControllers
                 return;
             }
 
-            if (isMoving)
-            {
-                Vector3 targetVelocity = m_DesiredDirection * walkingSpeed * Time.deltaTime;
-                if (m_Controller != null)
-                {
-                    m_Controller.Move(targetVelocity);
-                }
-            }
+			if (isMoving) {
+				Vector3 targetVelocity = m_DesiredDirection * walkingSpeed * Time.deltaTime;
+				if (m_Controller != null) {
+					m_Controller.Move (targetVelocity);
+				}
+
+				if (!m_AudioSource.isPlaying)
+					m_AudioSource.Play ();
+			} else {
+				if(m_AudioSource.isPlaying)
+					m_AudioSource.Stop ();
+			}
         }
 
         /// ------------------------------------------------------------------------------------------

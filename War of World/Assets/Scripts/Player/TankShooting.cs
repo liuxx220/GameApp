@@ -82,7 +82,7 @@ namespace Tanks.TankControllers
             m_TurretHeading     = m_curLookatDeg;
             m_fOldEulerAngles   = m_curLookatDeg;
             m_LastLookUpdate    = Time.realtimeSinceStartup;
-			m_AudioSource       = GetComponent<AudioSource>();
+			m_AudioSource       = transform.FindChild("GunAudio").GetComponent<AudioSource>();
             RedPoint.SetActive(false);
             muzzleFlash.SetActive(false);
         }
@@ -405,8 +405,7 @@ namespace Tanks.TankControllers
 
 				return;
 			}
-
-			int i = 0;
+				
 			// 一次射击消耗的子弹数量
 			if (m_WeaponProtol.m_nBullets > m_WeaponProtol.m_ShootBulletNumPer) {
 				m_WeaponProtol.m_nBullets -= m_WeaponProtol.m_ShootBulletNumPer;
