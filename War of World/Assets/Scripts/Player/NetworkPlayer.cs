@@ -222,7 +222,7 @@ namespace Tanks.Networking
             if (m_IsDead)
                 return;
 
-            m_AudioSource.Play();
+            //m_AudioSource.Play();
             m_CurrentHealth -= amount;
             m_BehitParticles.transform.position = hitPoint;
             m_BehitParticles.Play();
@@ -260,8 +260,8 @@ namespace Tanks.Networking
         {
             m_IsDead = true;
             m_CtrlAnimator.SetTrigger("Dead");
-            m_AudioSource.clip = m_DeathClip;
-            m_AudioSource.Play();
+            //m_AudioSource.clip = m_DeathClip;
+            //m_AudioSource.Play();
             tank.hudPlayer.gameObject.SetActive(false);
         }
 

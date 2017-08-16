@@ -69,6 +69,12 @@ namespace Tanks.TankControllers
         /// </summary>
         private int             m_curShootBullets = 0;
 
+		/// <summary>
+		/// 资源相关, 音效控制器
+		/// </summary>
+		AudioSource                         m_AudioSource;
+
+
         void Awake()
         {
             shootableMask       = LayerMask.GetMask("Shootable");
@@ -76,6 +82,7 @@ namespace Tanks.TankControllers
             m_TurretHeading     = m_curLookatDeg;
             m_fOldEulerAngles   = m_curLookatDeg;
             m_LastLookUpdate    = Time.realtimeSinceStartup;
+			m_AudioSource       = GetComponent<AudioSource>();
             RedPoint.SetActive(false);
             muzzleFlash.SetActive(false);
         }
@@ -407,6 +414,8 @@ namespace Tanks.TankControllers
 			else {
 				m_WeaponProtol.m_nBullets = 0;
 			}
+
+			m_AudioSource.Play ();
 				
 			// 播放射击特效
             if (m_WeaponProtol.m_ShootMode == SHOOTINGMODE.Shoot_continued)
