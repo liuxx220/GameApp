@@ -152,7 +152,6 @@ namespace Tanks.TankControllers
 			{
 				m_curShootBullets = m_WeaponProtol.m_nBullets;
 				m_ReplaceClipTimer = 0f;
-				//m_FireInput = true;
 			}
             
             SmoothFaceDirection();
