@@ -74,6 +74,11 @@ namespace Tanks.TankControllers
 		/// </summary>
 		AudioSource                         m_AudioSource;
 
+		/// <summary>
+		/// 替换弹夹
+		/// </summary>
+		private float m_ReplaceClipTimer;
+
 
         void Awake()
         {
@@ -85,6 +90,7 @@ namespace Tanks.TankControllers
 			m_AudioSource       = transform.FindChild("GunAudio").GetComponent<AudioSource>();
             RedPoint.SetActive(false);
             muzzleFlash.SetActive(false);
+			m_ReplaceClipTimer = 0f;
         }
 
 
@@ -116,6 +122,10 @@ namespace Tanks.TankControllers
                 weapon.transform.localScale     = Vector3.one;
                 m_WeaponProtol = def;
                 m_EquipWeapon  = weapon;
+
+
+				// 装弹操作
+				m_curShootBullets = m_WeaponProtol.m_nBullets;
                 
             }
         }
@@ -127,16 +137,23 @@ namespace Tanks.TankControllers
                 return;
 
             Esplasetimer += Time.deltaTime;
-            if (m_FireInput && Esplasetimer >= 0.2f && m_curShootBullets < m_WeaponProtol.m_ShootBulletNumPer)
+            if (m_FireInput && Esplasetimer >= 0.2f && m_curShootBullets >= m_WeaponProtol.m_ShootBulletNumPer)
             {
                 ShootFire();
             }
 
-            if (m_curShootBullets >= m_WeaponProtol.m_ShootBulletNumPer)
+            if (m_curShootBullets < m_WeaponProtol.m_ShootBulletNumPer)
             {
+				m_ReplaceClipTimer += Time.deltaTime;
                 m_FireInput = false;
-                m_curShootBullets = 0;
             }
+
+			if (m_ReplaceClipTimer >= 2f) 
+			{
+				m_curShootBullets = m_WeaponProtol.m_nBullets;
+				m_ReplaceClipTimer = 0f;
+				//m_FireInput = true;
+			}
             
             SmoothFaceDirection();
         }
@@ -227,7 +244,6 @@ namespace Tanks.TankControllers
         /// ----------------------------------------------------------------------------------------------
         void Fire()
         {
-            m_curShootBullets   = 0;
             CmdFire();
         }
 
@@ -400,18 +416,23 @@ namespace Tanks.TankControllers
             int randSeed        = UnityEngine.Random.Range(int.MinValue, int.MaxValue);
 
 			//没子弹了
-			if (m_WeaponProtol.m_nBullets <= 0) {
+			if (m_curShootBullets <= 0) {
 				// 播发空枪的声效
 
 				return;
 			}
 				
 			// 一次射击消耗的子弹数量
-			if (m_WeaponProtol.m_nBullets > m_WeaponProtol.m_ShootBulletNumPer) {
-				m_WeaponProtol.m_nBullets -= m_WeaponProtol.m_ShootBulletNumPer;
-			}
-			else {
-				m_WeaponProtol.m_nBullets = 0;
+			if (m_curShootBullets >= m_WeaponProtol.m_ShootBulletNumPer) 
+			{
+				m_curShootBullets -= m_WeaponProtol.m_ShootBulletNumPer;
+
+				string str = m_curShootBullets.ToString ();
+				Debug.Log (str);
+			} 
+			else 
+			{
+				m_ReplaceClipTimer = 0f;
 			}
 
 			m_AudioSource.Play ();
@@ -433,7 +454,6 @@ namespace Tanks.TankControllers
             {
                 FireEffect4(shotVector, position, randSeed);
             }
-            m_curShootBullets++;
         }
 	}
 }
