@@ -127,7 +127,7 @@ namespace Tanks.TankControllers
             m_lastPosition  = transform.position;
             LazyLoadRigidBody();
 		
-			m_AudioSource       = transform.FindChild("FootAudio").GetComponent<AudioSource>();
+			m_AudioSource       = transform.Find("FootAudio").GetComponent<AudioSource>();
         }
 
         private void LazyLoadRigidBody()

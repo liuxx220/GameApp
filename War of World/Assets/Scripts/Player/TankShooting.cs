@@ -82,6 +82,19 @@ namespace Tanks.TankControllers
 		private float m_ReplaceClipTimer;
 
 
+		//effect 
+		public GameObject shot;
+		public GameObject effectShot;
+		private GameObject effectShot1;
+		private GameObject effectShot2;
+		private GameObject effectShot3;
+		private ParticleSystem particleEffectShot1;		
+		private ParticleSystem particleEffectShot2;		
+		private ParticleSystem particleEffectShot3;		
+		private Vector3 m_PlayerPos;
+
+
+
         void Awake()
         {
             shootableMask       = LayerMask.GetMask("Shootable");
@@ -93,6 +106,15 @@ namespace Tanks.TankControllers
             RedPoint.SetActive(false);
             muzzleFlash.SetActive(false);
 			m_ReplaceClipTimer = 0f;
+
+			//m_PlayerPos = transform.position;
+
+			effectShot1 = Instantiate( effectShot, transform.position,  transform.rotation ) as GameObject;
+			particleEffectShot1 = effectShot1.GetComponentInChildren<ParticleSystem>() as ParticleSystem;
+			effectShot2 = Instantiate( effectShot, transform.position, transform.rotation ) as GameObject;
+			particleEffectShot2 = effectShot2.GetComponentInChildren<ParticleSystem>() as ParticleSystem;
+			effectShot3 = Instantiate( effectShot, transform.position, transform.rotation ) as GameObject;
+			particleEffectShot3 = effectShot3.GetComponentInChildren<ParticleSystem>() as ParticleSystem;
         }
 
 
@@ -461,6 +483,66 @@ namespace Tanks.TankControllers
             }
 
 			m_curShootBullets++;
+
+			Firing ();
         }
+
+		void  Firing()
+		{
+			// ショットオブジェクトが存在するか?.
+			if (shot) {
+				Vector3 v3 = transform.position;
+				v3.y += 3f;
+
+				// 弾1作成.
+				//Instantiate( shot, transform.position, transform.rotation );
+				effectShot1.transform.rotation = transform.rotation;
+				effectShot1.transform.position = effectShot1.transform.forward * 1.5f;
+				effectShot1.transform.position = v3;
+				effectShot1.transform.localScale = new Vector3 (10f, 10f, 10f);
+				// エフェクトの角度を補正.
+				//  - 素材の方向補正.90fを足しているのは単に素材の方向を補正するため.
+				//  - 57.29578fで割ると丁度プレイヤーの前方位置になる.(ParticleSystemのstartRotationはこれをしないとずれる).
+				//particleEffectShot1.startRotation = ( transform.rotation.eulerAngles.y + 90f ) / 57.29578f;
+				// エフェクトの再生.
+				particleEffectShot1.Play ();
+
+				// 一定時間待つ.
+				//yield return new WaitForSeconds( fireInterval );
+
+				// 弾2作成.
+				//Instantiate( shot, transform.position, transform.rotation );
+				effectShot2.transform.rotation = transform.rotation;
+				effectShot2.transform.position = effectShot2.transform.forward * 1.5f;
+				effectShot2.transform.position = v3;
+				// エフェクトの角度を補正.
+				//  - 素材の方向補正.90fを足しているのは単に素材の方向を補正するため.
+				//  - 57.29578fで割ると丁度プレイヤーの前方位置になる.(ParticleSystemのstartRotationはこれをしないとずれる).
+				//particleEffectShot2.startRotation = ( transform.rotation.eulerAngles.y + 90f ) / 57.29578f;
+				// エフェクトの再生.
+				//particleEffectShot2.Play();
+
+				// 一定時間待つ.
+				//yield return new WaitForSeconds( fireInterval );
+
+				// 弾3作成.
+				//Instantiate( shot, transform.position, transform.rotation );
+				effectShot3.transform.rotation = transform.rotation;
+				effectShot3.transform.position = effectShot3.transform.forward * 1.5f;
+				effectShot3.transform.position = v3;
+				// エフェクトの角度を補正.
+				//  - 素材の方向補正.90fを足しているのは単に素材の方向を補正するため.
+				//  - 57.29578fで割ると丁度プレイヤーの前方位置になる.(ParticleSystemのstartRotationはこれをしないとずれる).
+				//particleEffectShot3.startRotation = ( transform.rotation.eulerAngles.y + 90f ) / 57.29578f;
+				// エフェクトの再生.
+				//particleEffectShot3.Play();
+
+				// 次の発射まで一定時間待つ.
+				//yield return new WaitForSeconds( fireSetInterval );
+
+				// 発射終了.
+				//isFiring = false;
+			}
+		}
 	}
 }
