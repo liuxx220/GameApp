@@ -28,8 +28,8 @@ namespace Tanks.TankControllers
         #endregion
 
         [SerializeField]
-        protected GameObject    m_WeaponHP;             // ÎäÆ÷¹Òµã
-        protected GameObject    m_EquipWeapon = null;  // µ±Ç°×°±¸µÄÎäÆ÷
+        protected GameObject    m_WeaponHP;             // ï¿½ï¿½ï¿½ï¿½ï¿½Òµï¿½
+        protected GameObject    m_EquipWeapon = null;  // ï¿½ï¿½Ç°×°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         public GameObject       gunHead;
         public GameObject       muzzleFlash;
         public GameObject       RedPoint;
@@ -49,33 +49,35 @@ namespace Tanks.TankControllers
         private float           m_LastLookUpdate;
 
         /// <summary>
-        /// Ô¤²âÄ¿±êµãµÄ±äÁ¿
+        /// Ô¤ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½Ä±ï¿½ï¿½ï¿½
         /// </summary>
         private Ray             m_shootRay = new Ray();
         private RaycastHit      m_shootHit;
 
         /// <summary>
-        /// ÆÁÄ»ÉäÏßÏà¹ØµÄÊý¾Ý
+        /// ï¿½ï¿½Ä»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Øµï¿½ï¿½ï¿½ï¿½ï¿½
         /// </summary>
         private LineRenderer    m_LineRender;
 
         /// <summary>
-        /// µ±Ç°ÎäÆ÷µÄÅäÖÃÐÅÏ¢
+        /// ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
         /// </summary>
         private TankWeaponDefinition    m_WeaponProtol;
 
         /// <summary>
-        /// µ±Ç°ÎäÆ÷µÄÅäÖÃÐÅÏ¢
+        /// ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
         /// </summary>
         private int             m_curShootBullets = 0;
 
+		private int 			m_curBullets = 0;
+
 		/// <summary>
-		/// ×ÊÔ´Ïà¹Ø, ÒôÐ§¿ØÖÆÆ÷
+		/// ï¿½ï¿½Ô´ï¿½ï¿½ï¿½, ï¿½ï¿½Ð§ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		/// </summary>
 		AudioSource                         m_AudioSource;
 
 		/// <summary>
-		/// Ìæ»»µ¯¼Ð
+		/// ï¿½æ»»ï¿½ï¿½ï¿½ï¿½
 		/// </summary>
 		private float m_ReplaceClipTimer;
 
@@ -87,7 +89,7 @@ namespace Tanks.TankControllers
             m_TurretHeading     = m_curLookatDeg;
             m_fOldEulerAngles   = m_curLookatDeg;
             m_LastLookUpdate    = Time.realtimeSinceStartup;
-			m_AudioSource       = transform.FindChild("GunAudio").GetComponent<AudioSource>();
+			m_AudioSource       = transform.Find("GunAudio").GetComponent<AudioSource>();
             RedPoint.SetActive(false);
             muzzleFlash.SetActive(false);
 			m_ReplaceClipTimer = 0f;
@@ -96,7 +98,7 @@ namespace Tanks.TankControllers
 
         /// -----------------------------------------------------------------------------------------------
         /// <summary>
-        /// ½ÇÉ«°²×°ÎäÆ÷£¬Ó¦¸ÃÍ¨ÖªÆäËû¿Í»§¶Ë
+        /// ï¿½ï¿½É«ï¿½ï¿½×°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½Í¨Öªï¿½ï¿½ï¿½ï¿½ï¿½Í»ï¿½ï¿½ï¿½
         /// </summary>
         /// -----------------------------------------------------------------------------------------------
         public void SetPlayerWeapon(int nWeaponID)
@@ -124,8 +126,8 @@ namespace Tanks.TankControllers
                 m_EquipWeapon  = weapon;
 
 
-				// ×°µ¯²Ù×÷
-				m_curShootBullets = m_WeaponProtol.m_nBullets;
+				// ×°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+				m_curBullets = m_WeaponProtol.m_nBullets;
                 
             }
         }
@@ -137,20 +139,26 @@ namespace Tanks.TankControllers
                 return;
 
             Esplasetimer += Time.deltaTime;
-            if (m_FireInput && Esplasetimer >= 0.2f && m_curShootBullets >= m_WeaponProtol.m_ShootBulletNumPer)
+			if (m_FireInput && Esplasetimer >= 0.2f && m_curBullets >= m_WeaponProtol.m_ShootBulletNumPer && m_curShootBullets < m_WeaponProtol.m_ShootBulletNumPer)
             {
                 ShootFire();
             }
 
-            if (m_curShootBullets < m_WeaponProtol.m_ShootBulletNumPer)
+			if (m_curBullets < m_WeaponProtol.m_ShootBulletNumPer)
             {
 				m_ReplaceClipTimer += Time.deltaTime;
                 m_FireInput = false;
             }
 
+			if (m_curShootBullets >= m_WeaponProtol.m_ShootBulletNumPer)
+			{
+				m_FireInput = false;
+				m_curShootBullets = 0;
+			}
+
 			if (m_ReplaceClipTimer >= 2f) 
 			{
-				m_curShootBullets = m_WeaponProtol.m_nBullets;
+				m_curBullets = m_WeaponProtol.m_nBullets;
 				m_ReplaceClipTimer = 0f;
 			}
             
@@ -159,7 +167,7 @@ namespace Tanks.TankControllers
 
         /// ----------------------------------------------------------------------------------------------
         /// <summary>
-        /// ¸üÐÂÂö³åÉãÏñ
+        /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         /// </summary>
         /// ----------------------------------------------------------------------------------------------
         void DrawPulseLine()
@@ -193,7 +201,7 @@ namespace Tanks.TankControllers
 
         /// ----------------------------------------------------------------------------------------------
         /// <summary>
-        /// ÅÐ¶ÏÊÇ·ñÊÇ³ÖÐøÉä»÷
+        /// ï¿½Ð¶ï¿½ï¿½Ç·ï¿½ï¿½Ç³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         /// </summary>
         /// ----------------------------------------------------------------------------------------------
         public bool IsShootContinued()
@@ -203,7 +211,7 @@ namespace Tanks.TankControllers
 
         /// ----------------------------------------------------------------------------------------------
         /// <summary>
-        /// ÅÐ¶ÏÊÇ·ñÊÇÌ§ÆðÉä»÷
+        /// ï¿½Ð¶ï¿½ï¿½Ç·ï¿½ï¿½ï¿½Ì§ï¿½ï¿½ï¿½ï¿½ï¿½
         /// </summary>
         /// ----------------------------------------------------------------------------------------------
         public bool IsShootPressup()
@@ -213,7 +221,7 @@ namespace Tanks.TankControllers
 
         /// ----------------------------------------------------------------------------------------------
         /// <summary>
-        /// ÅÐ¶ÏÊÇ·ñÊÇÌ§ÆðÉä»÷
+        /// ï¿½Ð¶ï¿½ï¿½Ç·ï¿½ï¿½ï¿½Ì§ï¿½ï¿½ï¿½ï¿½ï¿½
         /// </summary>
         /// ----------------------------------------------------------------------------------------------
         public bool IsShootPulse()
@@ -223,7 +231,7 @@ namespace Tanks.TankControllers
 
         /// ----------------------------------------------------------------------------------------------
         /// <summary>
-        /// Æ½»¬Ðý×ªÃæÏò
+        /// Æ½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½
         /// </summary>
         /// ----------------------------------------------------------------------------------------------
         void SmoothFaceDirection( )
@@ -238,18 +246,19 @@ namespace Tanks.TankControllers
 
         /// ----------------------------------------------------------------------------------------------
         /// <summary>
-        /// ¹¥»÷
+        /// ï¿½ï¿½ï¿½ï¿½
         /// </summary>
         /// ----------------------------------------------------------------------------------------------
         void Fire()
         {
+			m_curShootBullets = 0;
             CmdFire();
         }
 
        
         public void SetFireIsHeld(bool fireHeld)
         {
-            // ¹«¹²CD
+            // ï¿½ï¿½ï¿½ï¿½CD
             m_fFireCommandCD += Time.deltaTime;
             if (m_fFireCommandCD < 1.0f)
                 return;
@@ -264,7 +273,7 @@ namespace Tanks.TankControllers
 
         /// ------------------------------------------------------------------------------------------
         /// <summary>
-        /// ÉèÖÃÇ¹¿ÚµÄ³¯Ïò£¬¼´½ÇÉ«µÄÃæÏà
+        /// ï¿½ï¿½ï¿½ï¿½Ç¹ï¿½ÚµÄ³ï¿½ï¿½ò£¬¼ï¿½ï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         /// </summary>
         /// ------------------------------------------------------------------------------------------
         public void SetDesiredFirePosition( Vector3 facedir )
@@ -280,7 +289,7 @@ namespace Tanks.TankControllers
 
         /// ------------------------------------------------------------------------------------------
         /// <summary>
-        /// ÕâÀïÔÝÊ±ÏÈÕâÃ´ÊµÏÖ¸÷ÖÖ×Óµ¯£¬×Óµ¯1Éä»÷µÄÐ§¹û
+        /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½Ã´Êµï¿½Ö¸ï¿½ï¿½ï¿½ï¿½Óµï¿½ï¿½ï¿½ï¿½Óµï¿½1ï¿½ï¿½ï¿½ï¿½ï¿½Ð§ï¿½ï¿½
         /// </summary>
         /// ------------------------------------------------------------------------------------------
         private void FireEffect1( Vector3 shootVector, Vector3 position, int randSeed )
@@ -296,7 +305,7 @@ namespace Tanks.TankControllers
             shellInstance.transform.position   = position;
             shellInstance.transform.forward    = shootVector;
 
-            // ºöÂÔÓë×ÔÉíµÄÅö×²
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×²
             Physics.IgnoreCollision(shellInstance.GetComponent<Collider>(), GetComponentInChildren<Collider>(), true);
             InstantBullet shell = shellInstance.GetComponent<InstantBullet>();
             shell.Setup(0, null, 100);
@@ -305,7 +314,7 @@ namespace Tanks.TankControllers
 
         /// ------------------------------------------------------------------------------------------
         /// <summary>
-        /// ÕâÀïÔÝÊ±ÏÈÕâÃ´ÊµÏÖ¸÷ÖÖ×Óµ¯£¬×Óµ¯2Éä»÷µÄÐ§¹û
+        /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½Ã´Êµï¿½Ö¸ï¿½ï¿½ï¿½ï¿½Óµï¿½ï¿½ï¿½ï¿½Óµï¿½2ï¿½ï¿½ï¿½ï¿½ï¿½Ð§ï¿½ï¿½
         /// </summary>
         /// ------------------------------------------------------------------------------------------
         private void FireEffect2( Vector3 shootVector, Vector3 position, int randSeed )
@@ -321,7 +330,7 @@ namespace Tanks.TankControllers
             shellInstance.transform.position = position;
             shellInstance.transform.forward = shootVector;
 
-            // ºöÂÔÓë×ÔÉíµÄÅö×²
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×²
             Physics.IgnoreCollision(shellInstance.GetComponent<Collider>(), GetComponentInChildren<Collider>(), true);
             ScatteringBullet shell = shellInstance.GetComponent<ScatteringBullet>();
             shell.Setup(0, null, 100);
@@ -330,7 +339,7 @@ namespace Tanks.TankControllers
 
         /// ------------------------------------------------------------------------------------------
         /// <summary>
-        /// ÕâÀïÔÝÊ±ÏÈÕâÃ´ÊµÏÖ¸÷ÖÖ×Óµ¯£¬×Óµ¯2Éä»÷µÄÐ§¹û
+        /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½Ã´Êµï¿½Ö¸ï¿½ï¿½ï¿½ï¿½Óµï¿½ï¿½ï¿½ï¿½Óµï¿½2ï¿½ï¿½ï¿½ï¿½ï¿½Ð§ï¿½ï¿½
         /// </summary>
         /// ------------------------------------------------------------------------------------------
         private void FireEffect3(Vector3 shootVector, Vector3 position, int randSeed )
@@ -346,7 +355,7 @@ namespace Tanks.TankControllers
             shellInstance.transform.position = position;
             shellInstance.transform.forward = shootVector;
 
-            // ºöÂÔÓë×ÔÉíµÄÅö×²
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×²
             Physics.IgnoreCollision(shellInstance.GetComponent<Collider>(), GetComponentInChildren<Collider>(), true);
             PulseBullet shell = shellInstance.GetComponent<PulseBullet>();
             shell.Setup(0, null, 100);
@@ -355,7 +364,7 @@ namespace Tanks.TankControllers
 
         /// ------------------------------------------------------------------------------------------
         /// <summary>
-        /// ÕâÀïÔÝÊ±ÏÈÕâÃ´ÊµÏÖ¸÷ÖÖ×Óµ¯£¬×Óµ¯2Éä»÷µÄÐ§¹û
+        /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½Ã´Êµï¿½Ö¸ï¿½ï¿½ï¿½ï¿½Óµï¿½ï¿½ï¿½ï¿½Óµï¿½2ï¿½ï¿½ï¿½ï¿½ï¿½Ð§ï¿½ï¿½
         /// </summary>
         /// ------------------------------------------------------------------------------------------
         private void FireEffect4(Vector3 shootVector, Vector3 position, int randSeed)
@@ -371,7 +380,7 @@ namespace Tanks.TankControllers
             shellInstance.transform.position = position;
             shellInstance.transform.forward = shootVector;
 
-            // ºöÂÔÓë×ÔÉíµÄÅö×²
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×²
             Physics.IgnoreCollision(shellInstance.GetComponent<Collider>(), GetComponentInChildren<Collider>(), true);
             Shell shell = shellInstance.GetComponent<Shell>();
             shell.Setup(0, null, 100);
@@ -380,7 +389,7 @@ namespace Tanks.TankControllers
 
 
         /// ------------------------------------------------------------------------------------------------
-        /// ÍøÂç²ã
+        /// ï¿½ï¿½ï¿½ï¿½ï¿½
         
         [Command]
         private void CmdSetLook( float turretHeading )
@@ -402,7 +411,7 @@ namespace Tanks.TankControllers
                 fired();
             }
 
-            // Ô¶¶ËÍæ¼ÒµÄ»°×ßÕâ¸öÂß¼­
+            // Ô¶ï¿½ï¿½ï¿½ï¿½ÒµÄ»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß¼ï¿½
             if( !hasAuthority )
                 m_FireInput = true;
         }
@@ -414,20 +423,17 @@ namespace Tanks.TankControllers
             Vector3 shotVector  = gunHead.transform.forward;
             int randSeed        = UnityEngine.Random.Range(int.MinValue, int.MaxValue);
 
-			//Ã»×Óµ¯ÁË
-			if (m_curShootBullets <= 0) {
-				// ²¥·¢¿ÕÇ¹µÄÉùÐ§
+			//Ã»ï¿½Óµï¿½ï¿½ï¿½
+			if (m_curBullets <= 0) {
+				// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç¹ï¿½ï¿½ï¿½ï¿½Ð§
 
 				return;
 			}
 				
-			// Ò»´ÎÉä»÷ÏûºÄµÄ×Óµ¯ÊýÁ¿
-			if (m_curShootBullets >= m_WeaponProtol.m_ShootBulletNumPer) 
+			// Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Äµï¿½ï¿½Óµï¿½ï¿½ï¿½ï¿½ï¿½
+			if (m_curBullets >= m_WeaponProtol.m_ShootBulletNumPer) 
 			{
-				m_curShootBullets -= m_WeaponProtol.m_ShootBulletNumPer;
-
-				string str = m_curShootBullets.ToString ();
-				Debug.Log (str);
+				m_curBullets -= m_WeaponProtol.m_ShootBulletNumPer;
 			} 
 			else 
 			{
@@ -436,7 +442,7 @@ namespace Tanks.TankControllers
 
 			m_AudioSource.Play ();
 				
-			// ²¥·ÅÉä»÷ÌØÐ§
+			// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð§
             if (m_WeaponProtol.m_ShootMode == SHOOTINGMODE.Shoot_continued)
             {
                 FireEffect1(shotVector, position, randSeed);
@@ -453,6 +459,8 @@ namespace Tanks.TankControllers
             {
                 FireEffect4(shotVector, position, randSeed);
             }
+
+			m_curShootBullets++;
         }
 	}
 }
