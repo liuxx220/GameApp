@@ -491,19 +491,24 @@ namespace Tanks.TankControllers
 		{
 			// ショットオブジェクトが存在するか?.
 			if (shot) {
-				Vector3 v3 = transform.position;
-				v3.y += 3f;
+				//Vector3 v3 = transform.position;
 
+				Vector3 v3 = m_WeaponHP.transform.position;
+
+		 
+
+			
 				// 弾1作成.
 				//Instantiate( shot, transform.position, transform.rotation );
-				effectShot1.transform.rotation = transform.rotation;
-				effectShot1.transform.position = effectShot1.transform.forward * 1.5f;
+				effectShot1.transform.parent = m_WeaponHP.transform;
+				effectShot1.transform.rotation = m_WeaponHP.transform.rotation;
+				//effectShot1.transform.localRotation  = Quaternion.identity;
+				//effectShot1.transform.position = effectShot1.transform.forward * 1.5f;
 				effectShot1.transform.position = v3;
-				effectShot1.transform.localScale = new Vector3 (10f, 10f, 10f);
 				// エフェクトの角度を補正.
 				//  - 素材の方向補正.90fを足しているのは単に素材の方向を補正するため.
 				//  - 57.29578fで割ると丁度プレイヤーの前方位置になる.(ParticleSystemのstartRotationはこれをしないとずれる).
-				//particleEffectShot1.startRotation = ( transform.rotation.eulerAngles.y + 90f ) / 57.29578f;
+				particleEffectShot1.startRotation = ( m_WeaponHP.transform.rotation.eulerAngles.y + 90f ) / 57.29578f;
 				// エフェクトの再生.
 				particleEffectShot1.Play ();
 
